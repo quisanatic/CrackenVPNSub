@@ -226,7 +226,7 @@
                     {% if not user.expire or user.expire == 0 %}
                         <span class="gold">Вечный</span>
                     {% else %}
-                        {{ expiration_date }}
+                        {{ user.expiration_date }}
                     {% endif %}
                 </strong>
             </div>
