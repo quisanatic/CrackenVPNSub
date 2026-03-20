@@ -304,7 +304,7 @@
         
         </div>
         {% if user.status == 'active' %}
-        <div class="instr-title">2. Установите Связь</div>
+        <div class="instr-title">2. Установите связь</div>
         
         
             <a href="happ://add/{{ sub_link_encoded if sub_link_encoded else sub_link }}#🐙КракенVPN" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
@@ -315,11 +315,19 @@
             </div>
         {% endif %}
 
+        {% if user.status != 'active' %}
+        <div class="instr-title">2. Возобновить связь</div>
+        
+        
+            <a href="happ://add/{{ sub_link_encoded if sub_link_encoded else sub_link }}#🐙КракенVPN" class="btn-happ">📥 Продлить подписку</a>
+ 
+        {% endif %}
+
         <div style="margin-top: 20px;">
-        <a href="https://t.me/CrackenVPN_bot" class="btn-bot">
-            <i class="fab fa-telegram"></i>⚓️ Управление в @CrackenVPN_bot
-        </a>
-    </div>
+            <a href="https://t.me/CrackenVPN_bot" class="btn-bot">
+                <i class="fab fa-telegram"></i>⚓️ Управление в @CrackenVPN_bot
+            </a>
+        </div>
 
     </div>
 
