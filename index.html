@@ -307,10 +307,10 @@
         <div class="instr-title">2. Установите связь</div>
         
         
-            <a href="happ://add/{{ link }}#🐙КракенVPN" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
+            <a href="happ://add/ {{ link }}#🐙КракенVPN" id="vpn-link" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
             
             <div class="secondary-actions">
-                <button class="btn-sec" onclick="copyLink('{{ link }}', this)">Копировать руну</button>
+                <button id="vpn-link" class="btn-sec" onclick="copyLink('{{ link }}', this)">Копировать руну</button>
                 <!-- <button class="btn-sec qr-button" data-link="{{ sub_link }}">Печать Кракен</button> -->
             </div>
         {% endif %}
@@ -338,8 +338,8 @@
 
 </div>
 
-<script>
-    function copyLink(link, button) {
+    <script>
+        function copyLink(link, button) {
             const tempInput = document.createElement('input');
             tempInput.setAttribute('value', link);
             document.body.appendChild(tempInput);
@@ -352,7 +352,29 @@
                 button.textContent = 'Copy';
             }, 1500);
         }
-</script>
+
+        const qrButtons = document.querySelectorAll('.qr-button');
+        const qrPopup = document.getElementById('qrPopup');
+
+        qrButtons.forEach((qrButton) => {
+            qrButton.addEventListener('click', () => {
+                const link = qrButton.dataset.link;
+                while (qrCodeContainer.firstChild) {
+                    qrCodeContainer.removeChild(qrCodeContainer.firstChild);
+                }
+                const qrCode = new QRCode(qrCodeContainer, {
+                    text: link,
+                    width: 256,
+                    height: 256,
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+                qrPopup.style.display = 'block';
+            });
+        });
+        function closeQrPopup() {
+            document.getElementById('qrPopup').style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
