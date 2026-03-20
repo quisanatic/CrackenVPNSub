@@ -234,7 +234,7 @@
         </div>
 
     </div>
-
+    {% if user.status == 'active' %}
     <div class="action-box">
         <div class="instr-title">1. Призовите Happ</div>
         
@@ -303,7 +303,7 @@
             </div>
         
         </div>
-        {% if not blocked %}
+        
         <div class="instr-title">2. Установите Связь</div>
         
         
@@ -313,21 +313,16 @@
                 <button class="btn-sec" onclick="copyLink('{{ sub_link }}', this)">Копировать руну</button>
                 <button class="btn-sec qr-button" data-link="{{ sub_link }}">Печать Кракен</button>
             </div>
-        {% endif %}
+        
     </div>
 
-
-    <div class="qr-popup" id="qrPopup">
-        <div class="qr-close"><button onclick="closeQrPopup()">×</button></div>
-        <div id="qrCodeContainer"></div>
-    </div>
 
     <div style="margin-top: 20px;">
         <a href="https://t.me/CrackenVPN_bot" class="btn-bot">
             <i class="fab fa-telegram"></i>⚓️ Управление в @CrackenVPN_bot
         </a>
     </div>
-
+    {% endif %}
 </div>
 
 <script>
