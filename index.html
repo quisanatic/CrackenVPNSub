@@ -211,7 +211,7 @@
             <div>
                 <span>Поглощено:</span> 
                 <strong>
-                    {{ user.used_traffic }} / 
+                    {{ user.used_traffic | bytesformat }} / 
                     {% if not user.data_limit or user.data_limit == 0 %}
                         <span class="gold">Бездонно</span>
                     {% else %}
