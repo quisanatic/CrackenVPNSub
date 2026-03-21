@@ -1,422 +1,254 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cracken VPN | {{ user.username }}</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <style>
-      :root[data-theme="dark"] {
-        --bg-body: #0b0d14;
-        --bg-card: #161a26;
-        --bg-item: #1c2230;
-        --text-main: #ffffff;
-        --text-dim: #717686;
-        --accent: #4d77ff;
-        --border: rgba(255, 255, 255, 0.05);
-        --pg-bg: #1c2230;
-        --pg-fill: #4d77ff;
-        --deny: #e74c3c;
-      }
+        :root[data-theme="dark"] {
+            --bg-body: #0b0d14;
+            --bg-card: #161a26;
+            --bg-item: #1c2230;
+            --text-main: #ffffff;
+            --text-dim: #717686;
+            --accent: #4d77ff;
+            --border: rgba(255, 255, 255, 0.05);
+            --pg-bg: #1c2230;
+        }
 
-      :root[data-theme="light"] {
-        --bg-body: #f4f7fa;
-        --bg-card: #ffffff;
-        --bg-item: #f8f9fc;
-        --text-main: #1a1c23;
-        --text-dim: #676d7c;
-        --accent: #3b5bdb;
-        --border: rgba(0, 0, 0, 0.05);
-        --pg-bg: #e1e7f0;
-        --pg-fill: #4d77ff;
-        --deny: #e74c3c;
-      }
+        :root[data-theme="light"] {
+            --bg-body: #f4f7fa;
+            --bg-card: #ffffff;
+            --bg-item: #f8f9fc;
+            --text-main: #1a1c23;
+            --text-dim: #676d7c;
+            --accent: #3b5bdb;
+            --border: rgba(0, 0, 0, 0.05);
+            --pg-bg: #e1e7f0;
+        }
 
-      body {
-        background-color: var(--bg-body);
-        color: var(--text-main);
-        font-family:
-          "Inter",
-          -apple-system,
-          sans-serif;
-        transition:
-          background 0.3s,
-          color 0.3s;
-        margin: 0;
-        padding: 20px;
-      }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            transition: background 0.3s, color 0.3s;
+            margin: 0; padding: 20px;
+        }
 
-      .container {
-        max-width: 480px;
-        margin: 0 auto;
-      }
+        .container { max-width: 480px; margin: 0 auto; }
 
-      /* Header */
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-      }
-      .logo-text {
-        font-weight: 800;
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
+        /* Header */
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px;
+        }
+        .logo-text { font-weight: 800; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .theme-btn {
+            background: var(--bg-card); border: 1px solid var(--border);
+            color: var(--text-main); width: 40px; height: 40px; 
+            border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
 
-      .theme-btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+        /* User Grid */
+        .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        
+        .user-card.profile {
+            grid-column: span 2; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 16px 20px;
+        }
+        
+        .stat-card, .user-card {
+            background: var(--bg-card); border-radius: 18px; padding: 16px;
+            border: 1px solid var(--border);
+        }
 
-      /* User Grid */
-      .user-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 24px;
-      }
+        .avatar-wrapper {
+            width: 54px; height: 54px; border-radius: 14px;
+            overflow: hidden; border: 1px solid var(--border);
+        }
+        .avatar { width: 100%; height: 100%; object-fit: cover; }
+        
+        .profile-info { flex-grow: 1; }
+        .profile-info h3 { margin: 0; font-size: 16px; }
+        .profile-info p { margin: 2px 0 0; font-size: 13px; color: var(--text-dim); }
 
-      .user-card.profile {
-        grid-column: span 2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 16px 20px;
-      }
+        /* Circle Progress */
+        .traffic-progress {
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            /* Цвет динамически меняется через JS переменную --dynamic-color */
+            background: conic-gradient(
+                var(--dynamic-color, #2ecc71) calc(var(--pg-percent) * 1%),
+                var(--pg-bg) calc(var(--pg-percent) * 1%)
+            );
+            position: relative; transition: background 0.3s;
+        }
+        .traffic-progress::after {
+            content: ''; position: absolute; width: 46px; height: 46px; border-radius: 50%;
+            background: var(--bg-card);
+        }
+        .pg-text { position: relative; z-index: 1; font-weight: 800; font-size: 13px; color: var(--text-main); }
 
-      .stat-card,
-      .user-card {
-        background: var(--bg-card);
-        border-radius: 18px;
-        padding: 16px;
-        border: 1px solid var(--border);
-      }
+        .stat-label { display: block; font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
+        .stat-value { font-size: 15px; font-weight: 700; }
 
-      .avatar-wrapper {
-        width: 54px;
-        height: 54px;
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid var(--border);
-      }
-      .avatar {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+        /* Actions */
+        .section-title { font-size: 14px; font-weight: 700; margin: 24px 0 12px; color: var(--text-dim); text-transform: uppercase; }
 
-      .profile-info {
-        flex-grow: 1;
-      }
-      .profile-info h3 {
-        margin: 0;
-        font-size: 16px;
-      }
-      .profile-info p {
-        margin: 2px 0 0;
-        font-size: 13px;
-        color: var(--text-dim);
-      }
+        .os-item { background: var(--bg-card); border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .os-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .os-content { display: none; padding: 0 16px 16px; flex-direction: column; gap: 8px; }
+        .os-item.open .os-content { display: flex; }
+        .os-item.open .arrow { transform: rotate(180deg); transition: 0.2s; }
 
-      /* Circle Progress */
-      .traffic-progress {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: conic-gradient(
-          var(--progress-color) calc(var(--pg-percent) * 1%),
-          var(--pg-bg) calc(var(--pg-percent) * 1%)
-        );
-        position: relative;
-        transition: background 0.3s;
-      }
-      .traffic-progress::after {
-        content: "";
-        position: absolute;
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
-        background: var(--bg-card);
-      }
-      .pg-text {
-        position: relative;
-        z-index: 1;
-        font-weight: 800;
-        font-size: 13px;
-        color: var(--text-main);
-      }
+        .btn-dl {
+            background: var(--bg-item); color: var(--text-main); text-decoration: none;
+            padding: 10px; border-radius: 10px; font-size: 13px; display: flex; align-items: center; gap: 10px;
+        }
 
-      .stat-label {
-        display: block;
-        font-size: 11px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        margin-bottom: 6px;
-      }
-      .stat-value {
-        font-size: 15px;
-        font-weight: 700;
-      }
+        .btn-main {
+            background: var(--accent); color: white; display: block; text-align: center;
+            padding: 16px; border-radius: 14px; text-decoration: none; font-weight: 600;
+            margin-top: 15px; box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
+        }
 
-      /* Actions */
-      .section-title {
-        font-size: 14px;
-        font-weight: 700;
-        margin: 24px 0 12px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-      }
+        .btn-secondary {
+            background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);
+            width: 100%; padding: 14px; border-radius: 14px; cursor: pointer; margin-top: 10px; font-weight: 600;
+        }
 
-      .os-item {
-        background: var(--bg-card);
-        border-radius: 14px;
-        margin-bottom: 8px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-      }
-      .os-header {
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .os-content {
-        display: none;
-        padding: 0 16px 16px;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .os-item.open .os-content {
-        display: flex;
-      }
-      .os-item.open .arrow {
-        transform: rotate(180deg);
-        transition: 0.2s;
-      }
-
-      .btn-dl {
-        background: var(--bg-item);
-        color: var(--text-main);
-        text-decoration: none;
-        padding: 10px;
-        border-radius: 10px;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .btn-main {
-        background: var(--accent);
-        color: white;
-        display: block;
-        text-align: center;
-        padding: 16px;
-        border-radius: 14px;
-        text-decoration: none;
-        font-weight: 600;
-        margin-top: 15px;
-        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
-      }
-
-      .btn-secondary {
-        background: var(--bg-card);
-        color: var(--text-main);
-        border: 1px solid var(--border);
-        width: 100%;
-        padding: 14px;
-        border-radius: 14px;
-        cursor: pointer;
-        margin-top: 10px;
-        font-weight: 600;
-      }
-
-      .status-active {
-        color: #2ecc71;
-      }
-      .status-expired {
-        color: #e74c3c;
-      }
-      .gold {
-        color: #f1c40f;
-      }
+        .status-active { color: #2ecc71; }
+        .status-expired { color: #e74c3c; }
+        .gold { color: #f1c40f; }
     </style>
-  </head>
-  <body>
-    {# РАСЧЕТ ПРОЦЕНТА С ЗАЩИТОЙ #} {% set used = user.used_traffic | default(0)
-    %} {% set limit = user.data_limit | default(0) %} {% if limit and limit > 0
-    %} {% set percent = ((used / limit) * 100) | round %} {% else %} {% set
-    percent = 0 %} {% endif %} {% set display_percent = percent if percent <=
-    100 else 100 %}
+</head>
+<body>
 
-    <div class="container">
-      <header class="header">
+{# Расчет процента #}
+{% set used = user.used_traffic | default(0) %}
+{% set limit = user.data_limit | default(0) %}
+{% if limit and limit > 0 %}
+    {% set percent = ((used / limit) * 100) | round %}
+{% else %}
+    {% set percent = 0 %}
+{% endif %}
+{% set display_percent = percent if percent <= 100 else 100 %}
+
+<div class="container">
+    <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
         <button id="theme-toggle" class="theme-btn">
-          <i class="fas fa-moon"></i>
+            <i class="fas fa-moon"></i>
         </button>
-      </header>
+    </header>
 
-      <section class="user-grid">
+    <section class="user-grid">
         <div class="user-card profile">
-          <div class="avatar-wrapper">
-            <img
-              src="https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true"
-              alt="Kraken"
-              class="avatar"
-            />
-          </div>
-          <div class="profile-info">
-            <h3>{{ user.username }}</h3>
-            <p>@{{ user.username }}</p>
-          </div>
-          <div
-            class="traffic-progress"
-            style="--pg-percent: {{ display_percent }}; 
-                        --progress-color: {% if display_percent < 95 %}var(--pg-fill){% else %}var(--deny){% endif %};"
-          >
-            <span class="pg-text">{{ display_percent }}%</span>
-          </div>
+            <div class="avatar-wrapper">
+                <img src="https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true" alt="Kraken" class="avatar">
+            </div>
+            <div class="profile-info">
+                <h3>{{ user.username }}</h3>
+                <p>@{{ user.username }}</p>
+            </div>
+            <div id="progress-circle" class="traffic-progress" style="--pg-percent: {{ display_percent }};">
+                <span class="pg-text">{{ display_percent }}%</span>
+            </div>
         </div>
-
+        
         <div class="stat-card">
-          <span class="stat-label">Состояние</span>
-          <strong
-            class="stat-value {% if user.status == 'active' %}status-active{% else %}status-expired{% endif %}"
-          >
-            {% if user.status == 'active' %}На плаву{% else %}В бездне{% endif
-            %}
-          </strong>
+            <span class="stat-label">Состояние</span>
+            <strong class="stat-value {% if user.status == 'active' %}status-active{% else %}status-expired{% endif %}">
+                {% if user.status == 'active' %}На плаву{% else %}В бездне{% endif %}
+            </strong>
         </div>
         <div class="stat-card">
-          <span class="stat-label">Поглощено</span>
-          <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}
-            <span class="gold">∞</span> {% else %} {{ limit | bytesformat }} {%
-            endif %}
-          </strong>
+            <span class="stat-label">Поглощено</span>
+            <strong class="stat-value">
+                {{ used | bytesformat }} / 
+                {% if not limit or limit == 0 %} <span class="gold">∞</span> {% else %} {{ limit | bytesformat }} {% endif %}
+            </strong>
         </div>
-      </section>
+    </section>
 
-      <main class="action-box">
+    <main class="action-box">
         <h2 class="section-title">1. Призовите Happ</h2>
         <div class="os-list">
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-windows"></i> Windows</span>
-              <i class="fas fa-chevron-down arrow"></i>
+            <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header"><span><i class="fab fa-windows"></i> Windows</span> <i class="fas fa-chevron-down arrow"></i></div>
+                <div class="os-content">
+                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe" class="btn-dl"><i class="fab fa-windows"></i> Скачать Happ (.exe)</a>
+                </div>
             </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                class="btn-dl"
-                ><i class="fab fa-windows"></i> Скачать Happ (.exe)</a
-              >
+            <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header"><span><i class="fab fa-android"></i> Android</span> <i class="fas fa-chevron-down arrow"></i></div>
+                <div class="os-content">
+                    <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl"><i class="fab fa-google-play"></i> Google Play</a>
+                </div>
             </div>
-          </div>
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-android"></i> Android</span>
-              <i class="fas fa-chevron-down arrow"></i>
+            <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header"><span><i class="fab fa-apple"></i> iOS / macOS</span> <i class="fas fa-chevron-down arrow"></i></div>
+                <div class="os-content">
+                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"><i class="fab fa-apple"></i> App Store</a>
+                </div>
             </div>
-            <div class="os-content">
-              <a
-                href="https://play.google.com/store/apps/details?id=com.happproxy"
-                class="btn-dl"
-                ><i class="fab fa-google-play"></i> Google Play</a
-              >
-            </div>
-          </div>
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> iOS / macOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-                ><i class="fab fa-apple"></i> App Store</a
-              >
-            </div>
-          </div>
         </div>
 
         <h2 class="section-title">2. Установите связь</h2>
         {% if user.status == 'active' %}
-        <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
-          >📥 ВЦЕПИТЬСЯ В Happ</a
-        >
-        <button
-          class="btn-secondary"
-          onclick="copyLink('{{ user.subscription_url }}', this)"
-        >
-          Копировать руну
-        </button>
+            <a href="happ://add/{{ user.subscription_url }}" class="btn-main">📥 ВЦЕПИТЬСЯ В Happ</a>
+            <button class="btn-secondary" onclick="copyLink('{{ user.subscription_url }}', this)">Копировать руну</button>
         {% else %}
-        <a href="https://t.me/CrackenVPN_bot" class="btn-main"
-          >⚓️ Продлить в боте</a
-        >
+            <a href="https://t.me/CrackenVPN_bot" class="btn-main">⚓️ Продлить в боте</a>
         {% endif %}
-      </main>
-    </div>
+    </main>
+</div>
 
-    <script>
-      const toggleBtn = document.getElementById("theme-toggle");
-      const html = document.documentElement;
+<script>
+    // Динамический расчет цвета прогресс-бара
+    function updateProgressColor() {
+        const pg = document.getElementById('progress-circle');
+        const percent = parseInt(pg.style.getPropertyValue('--pg-percent')) || 0;
+        
+        // Hue: 120 (зеленый) -> 60 (желтый) -> 0 (красный)
+        const hue = Math.max(0, 120 - (percent * 1.2));
+        pg.style.setProperty('--dynamic-color', `hsl(${hue}, 75%, 50%)`);
+    }
+    
+    updateProgressColor();
 
-      const savedTheme = localStorage.getItem("theme") || "dark";
-      html.setAttribute("data-theme", savedTheme);
-      updateIcon(savedTheme);
+    // Переключатель темы
+    const toggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    
+    html.setAttribute('data-theme', savedTheme);
+    updateIcon(savedTheme);
 
-      toggleBtn.addEventListener("click", () => {
-        const currentTheme = html.getAttribute("data-theme");
-        const newTheme = currentTheme === "dark" ? "light" : "dark";
-        html.setAttribute("data-theme", newTheme);
-        localStorage.setItem("theme", newTheme);
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
         updateIcon(newTheme);
-      });
+    });
 
-      function updateIcon(theme) {
-        toggleBtn.innerHTML =
-          theme === "dark"
-            ? '<i class="fas fa-moon"></i>'
-            : '<i class="fas fa-sun"></i>';
-      }
+    function updateIcon(theme) {
+        toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    }
 
-      async function copyLink(link, button) {
+    async function copyLink(link, button) {
         try {
-          await navigator.clipboard.writeText(link);
-          const oldText = button.textContent;
-          button.textContent = "Свиток скопирован!";
-          setTimeout(() => {
-            button.textContent = oldText;
-          }, 1500);
+            await navigator.clipboard.writeText(link);
+            const oldText = button.textContent;
+            button.textContent = "Свиток скопирован!";
+            setTimeout(() => { button.textContent = oldText; }, 1500);
         } catch (err) {
-          alert("Ошибка копирования");
+            alert("Ошибка копирования");
         }
-      }
-    </script>
-  </body>
+    }
+</script>
+
+</body>
 </html>
