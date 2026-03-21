@@ -685,7 +685,7 @@
                   color: var(--text-main);
                 "
               >
-                {# Выводим часть после # как есть, JS потом это декодирует #} {{
+                {# Просто вырезаем название, JS сам его декодирует #} {{
                 link.split('#')[1] if '#' in link else 'VPN Сервер' }}
               </span>
               <span
@@ -904,7 +904,7 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Функция превращения кода 'de' в эмодзи 🇩🇪
+        // Функция для превращения кода 'de' в эмодзи 🇩🇪
         const getFlag = (code) => {
           return code
             .toUpperCase()
@@ -917,10 +917,10 @@
 
         serverTitles.forEach((el) => {
           try {
-            // 1. Декодируем URL (заменяем %F0%9F... на символы)
+            // 1. Декодируем URL (убираем % символы)
             let decodedText = decodeURIComponent(el.textContent.trim());
 
-            // 2. Ищем код страны в начале (например, deГермания)
+            // 2. Ищем код страны в начале (например, nlНидерланды)
             const countryMatch = decodedText.match(/^([a-z]{2})(.*)/i);
 
             if (countryMatch) {
@@ -931,7 +931,7 @@
               el.textContent = decodedText;
             }
           } catch (e) {
-            console.error("Ошибка обработки ссылки:", e);
+            console.error("Ошибка обработки текста:", e);
           }
         });
       });
