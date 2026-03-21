@@ -10,74 +10,178 @@
     
     <style>
         :root {
-            /* Цвета из скриншота */
-            --bg-deep: #0b0d14;         /* Основной фон */
-            --card-bg: #161a26;         /* Фон карточек */
-            --accent-blue: #4d77ff;     /* Яркий синий для кнопок */
-            --accent-glow: rgba(77, 119, 255, 0.3);
-            --text-white: #ffffff;
-            --text-gray: #717686;
-            --border-subtle: rgba(255, 255, 255, 0.05);
+            /* МОРСКАЯ ФЭНТЕЗИ ПАЛИТРА */
+            --bg-deep: #050a14; /* Бездна */
+            --bg-marine: #0a192f; /* Глубина */
+            --card-abyss: rgba(10, 25, 47, 0.8); /* Полупрозрачная бездна */
+            --accent-cyan: #00ffff; /* Биолюминесценция */
+            --glow-cyan: rgba(0, 255, 255, 0.5);
+            --accent-gold: #c6a059; /* Затонувшие сокровища */
+            --text-foam: #e2e8f0; /* Морская пена */
+            --text-dark: #94a3b8;
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-white);
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
-
-        /* Карточка подписки в стиле скриншота */
-        .sub-card, .action-box {
-            background-color: var(--card-bg);
-            border-radius: 16px; /* Более мягкие углы */
-            border: 1px solid var(--border-subtle);
-            box-shadow: none; /* Убираем лишние тени для чистого вида */
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: radial-gradient(circle at center, var(--bg-marine) 0%, var(--bg-deep) 100%);
+            color: var(--text-foam);
+            display: flex;
+            justify-content: center;
             padding: 20px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Главная кнопка действия (как "Купить подписку") */
+        /* Стиль для фэнтези заголовков */
+        h1, h2, h3, .logo-area, .instr-title {
+            font-family: 'Cormorant SC', serif;
+            letter-spacing: 1px;
+        }
+
+        .container { width: 100%; max-width: 480px; text-align: center; }
+
+        .logo-area {
+            font-size: 32px;
+            margin-bottom: 25px;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 15px var(--glow-cyan);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* КАРТОЧКА ПОДПИСКИ С ЭФФЕКТОМ ГЛУБИНЫ */
+        .sub-card {
+            background-color: var(--card-abyss);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(0,255,255,0.1);
+            border: 1px solid rgba(0,255,255,0.15); /* Едва заметная граница биолюминесценции */
+        }
+
+        .chart-side { flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+        .circle-progress {
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--accent-cyan) {{ (user.used_traffic / user.data_limit * 100) | round if user.data_limit else 0 }}%, 
+                #162a4a 0%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 20px var(--glow-cyan);
+        }
+
+        .circle-progress::after {
+            content: "";
+            position: absolute;
+            width: 94px;
+            height: 94px;
+            background-image: url('https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+        }
+
+        .status-text.active { color: var(--status-active); }
+        .status-text.expired { color: var(--status-expired); }
+
+        .username { font-weight: bold; font-size: 19px; margin: 10px 0; color: #f1f5f9; }
+
+        .info-side { flex: 1.2; text-align: left; font-size: 14px; padding-left: 15px; border-left: 1px solid rgba(0,255,255,0.1); }
+        .info-side div { margin-bottom: 12px; }
+        .info-side span { color: var(--text-dark); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .info-side strong { font-size: 15px; color: #e2e8f0; }
+        .info-side .gold { color: var(--accent-gold); } /* Для бесконечных значений */
+
+        /* --- БЛОК ПОДКЛЮЧЕНИЯ И КНОПКИ Happ --- */
+        .action-box { 
+            background-color: var(--card-abyss); 
+            padding: 25px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(0,255,255,0.1);
+            box-shadow: 0 8px 30px rgba(0,255,255,0.1);
+        }
+
+        .instr-title { font-size: 24px; color: var(--accent-cyan); margin-bottom: 20px; }
+
+        /* ПЛИТКИ ОС В СТИЛЕ ГЛУБИН */
+        .os-list { margin-bottom: 30px; }
+        .os-item { border-radius: 16px; margin-bottom: 10px; overflow: hidden; background: #0c1f3a; border: 1px solid rgba(0,255,255,0.05); transition: 0.3s; }
+        .os-item:hover { border-color: var(--accent-cyan); box-shadow: 0 0 10px var(--glow-cyan); }
+        
+        .os-header { padding: 18px 20px; display: flex; justify-content: space-between; cursor: pointer; font-weight: bold; }
+        .os-header span i { color: var(--accent-cyan); margin-right: 8px;}
+        .os-header i.arrow { font-style: normal; transition: 0.3s; color: var(--text-dark); }
+
+        .os-content { 
+            display: none; padding: 20px; 
+            background: rgba(0,0,0,0.3); text-align: center;
+            flex-direction: column; gap: 12px; align-items: center;
+        }
+
+        .os-item.open .os-content { display: flex; }
+        .os-item.open .os-header i.arrow { transform: rotate(180deg); color: var(--accent-cyan); }
+
+        /* Стиль для кнопки бота */
+        .btn-bot {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Cormorant SC', serif;
+            font-size: 18px;
+            border-bottom: 1px solid var(--accent-gold);
+            transition: 0.3s;
+        }
+
+        /* Кнопки скачивания в стиле "Морская пена" */
+        .btn-dl { 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--text-foam); color: #000; padding: 12px 24px; 
+            border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 14px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; min-width: 180px;
+        }
+        .btn-dl:active { transform: scale(0.96); }
+        .btn-dl i { font-size: 16px; color: #000; }
+
+        /* DEEP-LINK Happ */
         .btn-happ {
-            background: var(--accent-blue);
-            color: white;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px var(--accent-glow);
-            text-transform: none; /* Убираем лишний капс, если был */
+            display: block; background: var(--accent-cyan); color: #000; padding: 18px; 
+            border-radius: 16px; text-decoration: none; font-weight: 900;
+            margin-top: 15px; box-shadow: 0 0 20px var(--glow-cyan);
+            transition: 0.2s; font-size: 18px;
         }
+        .btn-happ:active { transform: scale(0.98); background: var(--text-foam); }
 
-        /* Плитки выбора ОС */
-        .os-item {
-            background: #1c2230;
-            border-radius: 12px;
-            border: none;
-            margin-bottom: 8px;
-        }
-
-        .os-header {
-            color: var(--text-white);
-            font-weight: 500;
-        }
-
-        /* Вторичные кнопки (Копировать/QR) */
+        /* КНОПКИ ВНИЗУ (QR/Копировать) */
+        .secondary-actions { margin-top: 25px; display: flex; gap: 10px; justify-content: center; }
         .btn-sec {
-            background: #1c2230;
-            border: none;
-            color: var(--text-white);
-            border-radius: 12px;
-            padding: 12px 20px;
+            padding: 12px 24px; border-radius: 20px; border: 1px solid var(--accent-cyan); 
+            background: none; color: var(--accent-cyan); cursor: pointer; 
+            font-weight: bold; transition: 0.2s;
         }
+        .btn-sec:hover { background: var(--glow-cyan); box-shadow: 0 0 10px var(--glow-cyan); }
 
-        /* Заголовки */
-        .logo-area, .instr-title {
-            text-align: left;
-            font-family: 'Inter', sans-serif; /* На скрине шрифт без засечек */
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 20px;
-            margin-bottom: 20px;
+        /* МОДАЛЬНОЕ ОКНО QR (Фэнтези светлое внутри) */
+        .qr-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: var(--text-foam); padding: 25px; border-radius: 12px;
+            display: none; z-index: 9999; box-shadow: 0 0 30px #000;
         }
+        .qr-close { text-align: right; margin-bottom: 10px; }
+        .qr-close button { cursor: pointer; border: none; background: none; font-size: 24px; color: #000; font-weight: bold;}
     </style>
 
 </head>
