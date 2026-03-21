@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="shortcut icon"
-      href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.ico?raw=true"
+      href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
       type="image/x-icon"
     />
     <title>Cracken VPN | {{ user.username }}</title>
@@ -278,6 +278,68 @@
         font-size: 13px;
         font-weight: 500;
       }
+
+      /* Кнопка QR и контейнер для кнопок */
+      .action-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn-qr {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 80px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      /* Модальное окно */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: var(--bg-card);
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        text-align: center;
+        position: relative;
+        max-width: 90%;
+      }
+
+      #qrcode {
+        padding: 15px;
+        background: white; /* Белый фон для лучшей читаемости кода */
+        border-radius: 12px;
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-dim);
+      }
     </style>
   </head>
   <body>
@@ -388,12 +450,34 @@
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
           >📥 ВЦЕПИТЬСЯ В Happ</a
         >
-        <button
-          class="btn-secondary"
-          onclick="copyLink('{{ user.subscription_url }}', this)"
-        >
-          Копировать руну
-        </button>
+        <div class="action-row">
+          <button
+            class="btn-secondary"
+            style="margin-top: 0"
+            onclick="copyLink('{{ user.subscription_url }}', this)"
+          >
+            Копировать руну
+          </button>
+          <button
+            class="btn-qr"
+            onclick="showQR('happ://add/{{ user.subscription_url }}')"
+          >
+            <i class="fas fa-qrcode"></i>
+          </button>
+        </div>
+
+        <div id="qrModal" class="modal-overlay" onclick="closeQR()">
+          <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeQR()">&times;</span>
+            <h3 style="margin-top: 0">Сканируй руну</h3>
+            <div id="qrcode"></div>
+            <p
+              style="font-size: 12px; color: var(--text-dim); margin-bottom: 0"
+            >
+              Наведи камеру Happ на этот код
+            </p>
+          </div>
+        </div>
 
         <a href="https://t.me/CrackenVPN_bot" class="footer-link">
           <i class="fab fa-telegram-plane"></i> Управление в @CrackenVPN_bot
@@ -455,6 +539,37 @@
           alert("Ошибка копирования");
         }
       }
+
+      let qrInstance = null;
+
+      function showQR(link) {
+        const modal = document.getElementById("qrModal");
+        const qrContainer = document.getElementById("qrcode");
+
+        // Очищаем старый код если был
+        qrContainer.innerHTML = "";
+
+        // Генерируем новый
+        new QRCode(qrContainer, {
+          text: link,
+          width: 200,
+          height: 200,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+
+        modal.style.display = "flex";
+      }
+
+      function closeQR() {
+        document.getElementById("qrModal").style.display = "none";
+      }
+
+      // Закрытие по ESC
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeQR();
+      });
     </script>
   </body>
 </html>
