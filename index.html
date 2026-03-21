@@ -685,8 +685,8 @@
                   color: var(--text-main);
                 "
               >
-                {# Берем текст после знака # и выводим как есть #} {{
-                link.split('#')[1] if '#' in link else 'VPN Сервер' }}
+                {{ (link.split('#')[1] if '#' in link else 'VPN Сервер') | safe
+                }}
               </span>
               <span
                 style="
@@ -904,17 +904,15 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Находим все заголовки серверов
-        const serverTitles = document.querySelectorAll(".server-title");
-
-        serverTitles.forEach((el) => {
+        document.querySelectorAll(".server-title").forEach((el) => {
           try {
-            // decodeURIComponent — это стандартная функция, которая
-            // превращает %F0%9F%87%A9%F0%9F%87%AA в 🇩🇪
-            const rawText = el.textContent.trim();
-            el.textContent = decodeURIComponent(rawText);
+            // Декодируем содержимое, если оно пришло в URL-формате
+            const content = el.textContent.trim();
+            if (content.includes("%")) {
+              el.textContent = decodeURIComponent(content);
+            }
           } catch (e) {
-            console.error("Ошибка при чтении флага:", e);
+            console.error("Ошибка отображения флага:", e);
           }
         });
       });
