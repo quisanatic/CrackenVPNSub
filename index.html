@@ -163,6 +163,7 @@
         position: relative;
         flex-shrink: 0;
       }
+
       .traffic-progress::after {
         content: "";
         position: absolute;
@@ -171,6 +172,7 @@
         border-radius: 50%;
         background: var(--bg-card);
       }
+
       .pg-text {
         position: relative;
         z-index: 1;
@@ -209,6 +211,7 @@
         border: 1px solid var(--border);
         overflow: hidden;
       }
+
       .os-header {
         padding: 14px 18px;
         display: flex;
@@ -218,15 +221,18 @@
         font-size: 14px;
         font-weight: 600;
       }
+
       .os-content {
         display: none;
         padding: 0 16px 16px;
         flex-direction: column;
         gap: 8px;
       }
+
       .os-item.open .os-content {
         display: flex;
       }
+
       .os-item.open .arrow {
         transform: rotate(180deg);
         transition: 0.2s;
@@ -264,6 +270,7 @@
         gap: 10px;
         margin-top: 10px;
       }
+
       .btn-secondary {
         background: var(--bg-card);
         color: var(--text-main);
@@ -291,9 +298,11 @@
       .status-active {
         color: #2ecc71;
       }
+
       .status-expired {
         color: #e74c3c;
       }
+
       .gold {
         color: #f1c40f;
       }
@@ -314,10 +323,12 @@
         opacity: 0;
         transition: opacity 0.3s;
       }
+
       .modal-overlay.active {
         display: flex;
         opacity: 1;
       }
+
       .modal-content {
         background: var(--bg-card);
         padding: 25px;
@@ -326,6 +337,7 @@
         position: relative;
         max-width: 280px;
       }
+
       #qrcode {
         background: #fff;
         padding: 12px;
@@ -333,6 +345,7 @@
         margin: 15px 0;
         display: inline-block;
       }
+
       .modal-close {
         position: absolute;
         top: 12px;
@@ -353,12 +366,12 @@
       }
     </style>
   </head>
+
   <body>
     {% set used = user.used_traffic | default(0) %} {% set limit =
     user.data_limit | default(0) %} {% set percent = ((used / limit) * 100) |
     round if limit > 0 else 0 %} {% set display_percent = percent if percent <=
     100 else 100 %}
-
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
