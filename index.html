@@ -220,14 +220,6 @@
     </style>
   </head>
   <body>
-    {% if user.admin and user.admin.is_sudo %}
-    <div
-      class="admin-badge"
-      style="color: var(--accent-blue); font-size: 12px; margin-top: 5px"
-    >
-      <i class="fas fa-user-shield"></i> Режим Sudo активирован
-    </div>
-    {% endif %}
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
