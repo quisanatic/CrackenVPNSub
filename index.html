@@ -20,6 +20,7 @@
         --border: rgba(255, 255, 255, 0.05);
         --pg-bg: #1c2230;
         --pg-fill: #4d77ff;
+        --deny: #d15b24;
       }
 
       :root[data-theme="light"] {
@@ -31,7 +32,8 @@
         --accent: #3b5bdb;
         --border: rgba(0, 0, 0, 0.05);
         --pg-bg: #e1e7f0;
-        --pg-fill: #97a1b3;
+        --pg-fill: #4d77ff;
+        --deny: #d15b24;
       }
 
       body {
@@ -292,7 +294,7 @@
           <div
             class="traffic-progress"
             style="--pg-percent: {{ display_percent }}; 
-                        --progress-color: {% if display_percent < 100 %}var(--pg-fill){% else %}var(--accent){% endif %};"
+                        --progress-color: {% if display_percent < 95 %}var(--pg-fill){% else %}var(--deny){% endif %};"
           >
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
