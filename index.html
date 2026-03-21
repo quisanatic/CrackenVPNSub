@@ -388,7 +388,7 @@
             class="traffic-progress"
             style="--pg-percent: {{ display_percent }};"
           >
-          {% endif %}
+          
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -397,6 +397,7 @@
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
         </div>
+        {% endif %}
 
         <div class="stat-card">
           <span class="stat-label">Состояние</span>
