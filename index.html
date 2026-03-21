@@ -133,7 +133,19 @@
 
 <div class="container">
     <header class="header">
-        <div class="logo-text">        <h3>{{ user.username }}</h3>
+        <div class="logo-text">🐙 Cracken VPN</div>
+        <button id="theme-toggle" class="theme-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <section class="user-grid">
+        <div class="user-card profile">
+            <div class="avatar-wrapper">
+                <img src="https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true" alt="Kraken" class="avatar">
+            </div>
+            <div class="profile-info">
+                <h3>{{ user.username }}</h3>
                 <p>@{{ user.username }}</p>
             </div>
             <div class="traffic-progress" 
