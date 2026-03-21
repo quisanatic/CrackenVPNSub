@@ -417,14 +417,14 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
               <div>
                 <p style="font-size: 11px; color: var(--text-dim);">Активация</p>
-                <strong class="stat-value" style="font-size: 13px;">{{ user.created_at | bytesformat }}</strong>
+                <strong class="stat-value" style="font-size: 13px;">{{ user.created_at | default('—') }}</strong>
               </div>
               <div style="text-align: center; color: var(--text-dim); font-size: 14px;">
                 <i class="fas fa-arrow-right"></i>
               </div>
               <div style="text-align: right;">
                 <p style="font-size: 11px; color: var(--text-dim);">Истекает</p>
-                <strong class="stat-value" style="font-size: 13px; color: var(--accent);">{{ user.data_limit | bytesformat }}</strong>
+                <strong class="stat-value" style="font-size: 13px; color: var(--accent);">{{ user.expire | default('—') }}</strong>
               </div>
             </div>
           </div>
