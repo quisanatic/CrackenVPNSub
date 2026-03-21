@@ -93,185 +93,76 @@
 <body>
 
 <div class="container">
-    <div class="logo-area">🐙 Cracken VPN Глубин</div>
+    <header class="header">
+        <div class="logo">🐙 CRACKEN VPN</div>
+        <button id="theme-toggle" class="theme-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
 
-    <div class="sub-card">
-        <div class="chart-side">
-            <div class="circle-progress"></div>
-            <div class="username">{{ user.username }}</div>
+    <section class="user-grid">
+        <div class="user-card profile">
+            <div class="avatar-wrapper">
+                <img src="https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true" alt="Kraken" class="avatar">
+            </div>
+            <div class="profile-info">
+                <h3>{{ user.username }}</h3>
+                <p>@{{ user.username }}</p>
+            </div>
         </div>
-
-        <div class="info-side">
-            <div>
-                <span>Состояние:</span> 
-                <strong class="status-text {{ user.status }}">
-                    {% if user.status == 'active' %}
-                        На плаву (Активна)
-                    {% else %}
-                        В бездне (Истек)
-                    {% endif %}
-                </strong>
-            </div>
-
-            <div>
-                <span>Поглощено:</span> 
-                <strong>
-                    {{ user.used_traffic | bytesformat }} / 
-                    {% if not user.data_limit or user.data_limit == 0 %}
-                        <span class="gold">Бездонно</span>
-                    {% else %}
-                        {{ user.data_limit | bytesformat }}
-                    {% endif %}
-                </strong>
-            </div>
-
-            <div>
-                <span>Срок Владения:</span> 
-                <strong>
-                    {% if not user.expire or user.expire == 0 %}
-                        <span class="gold">Вечный</span>
-                    {% else %}
-                        {{ user.expire | datetime }}
-                    {% endif %}
-                </strong>
-            </div>
-
-        </div>
-
-    </div>
-    
-    <div class="action-box">
-        <div class="instr-title">1. Призовите Happ</div>
         
+        <div class="stat-card">
+            <span class="stat-label">Состояние</span>
+            <strong class="status-active">На плаву</strong>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Поглощено</span>
+            <strong>{{ user.used_traffic | bytesformat }} / {{ user.data_limit | bytesformat }}</strong>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Срок владения</span>
+            <strong>{{ user.expire | datetime }}</strong>
+        </div>
+    </section>
+
+    <main class="action-box">
+        <h2 class="section-title">1. Призовите Happ</h2>
         <div class="os-list">
-            <div class="os-item win">
-                <div class="os-header" onclick="this.parentElement.classList.toggle('open')"><span><i class="fab fa-windows"></i> Windows</span> <span>⌄</span></div>
+            <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                    <span><i class="fab fa-windows"></i> Windows</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </div>
                 <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe" class="btn-dl">
-                        <i class="fab fa-windows"></i> Скачать Happ
-                    </a>
+                    <a href="#" class="btn-primary">Скачать Happ</a>
                 </div>
             </div>
-            
-            <div class="os-item macos">
-                <div class="os-header" onclick="this.parentElement.classList.toggle('open')"><span><i class="fab fa-apple"></i> macOS</span> <span>⌄</span></div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl">
-                        <i class="fas fa-hard-drive"></i> Happ.dmg
-                    </a>
-                </div>
-            </div>
-            
-            <div class="os-item linux">
-                <div class="os-header" onclick="this.parentElement.classList.toggle('open')"><span><i class="fab fa-linux"></i> Linux</span> <span>⌄</span></div>
-                <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb" class="btn-dl">
-                        <i class="fas fa-box"></i> Happ.deb
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm" class="btn-dl">
-                        <i class="fas fa-box"></i> Happ.rpm
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst" class="btn-dl">
-                        <i class="fas fa-file-archive"></i> Happ.pkg
-                    </a>
-                </div>
             </div>
 
-            <div class="os-item android">
-                <div class="os-header" onclick="this.parentElement.classList.toggle('open')"><span><i class="fab fa-android"></i> Android</span> <span>⌄</span></div>
-                <div class="os-content">
-                    <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl">
-                        <i class="fab fa-google-play"></i> Google Play
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl">
-                        <i class="fas fa-file-download"></i> Скачать APK
-                    </a>
-                </div>
-            </div>
-            
-            <div class="os-item ios">
-                <div class="os-header" onclick="this.parentElement.classList.toggle('open')"><span><i class="fab fa-apple"></i> iOS</span> <span>⌄</span></div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                </div>
-            </div>
-        
+        <h2 class="section-title">2. Установите связь</h2>
+        <div class="buttons-group">
+            <a href="happ://add/{{ user.subscription_url }}" class="btn-main">📥 ВЦЕПИТЬСЯ В Happ</a>
+            <button class="btn-secondary" onclick="copyLink('{{ user.subscription_url }}', this)">Копировать руну</button>
         </div>
-        {% if user.status == 'active' %}
-        <div class="instr-title">2. Установите связь</div>
-        
-            
-            <a href="happ://add/{{ user.subscription_url }}" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
-            
-            <div class="secondary-actions">
-                <button id="vpn-link" class="btn-sec" onclick="copyLink('{{ user.subscription_url }}', this)">Копировать руну</button>
-                <!-- <button class="btn-sec qr-button" data-link="{{ sub_link }}">Печать Кракен</button> -->
-            </div>
-        {% endif %}
-
-        {% if user.status != 'active' %}
-        <div class="instr-title">2. Возобновить связь</div>
-        <div>
-        
-            <a href="https://t.me/CrackenVPN_bot" class="btn-happ">
-                                
-            
-                                
-<svg fill="#000000" width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.665 3.717-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701h-.002l.002.001-.314 4.692c.46 0 .663-.211.921-.46l2.211-2.15 4.599 3.397c.848.467 1.457.227 1.668-.785l3.019-14.228c.309-1.239-.473-1.8-1.282-1.434z"/></svg> Продлить подписку</a>
-    </div>
- 
-        {% endif %}
-
-        <div style="margin-top: 20px;">
-            <a href="https://t.me/CrackenVPN_bot" class="btn-bot">
-                <i class="fab fa-telegram"></i>⚓️ Управление в @CrackenVPN_bot
-            </a>
-        </div>
-
-    </div>
-
+    </main>
 </div>
 
 <script>
-    async function copyLink(link, button) {
-        try {
-            // Используем современное API для копирования
-            await navigator.clipboard.writeText(link);
+    // Логика переключения темы
+    const toggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
 
-            // Визуальное подтверждение
-            const originalText = button.textContent;
-            const originalColor = button.style.color;
-            
-            button.textContent = "Скопировано!";
-            button.style.color = "#00ffff"; // Цвет биолюминесценции из вашего CSS
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.color = originalColor;
-            }, 1500);
-        } catch (err) {
-            // Резервный вариант, если Clipboard API не сработает (например, в старых браузерах или без HTTPS)
-            const tempInput = document.createElement("input");
-            tempInput.value = link;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-            
-            button.textContent = "Готово!";
-            setTimeout(() => { button.textContent = "Копировать руну"; }, 1500);
-        }
+    toggleBtn.addEventListener('click', () => {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        toggleBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    async function copyLink(link, button) {
+        await navigator.clipboard.writeText(link);
+        const originalText = button.textContent;
+        button.textContent = "Скопировано!";
+        setTimeout(() => { button.textContent = originalText; }, 1500);
     }
 </script>
 
