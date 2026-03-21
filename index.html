@@ -685,8 +685,8 @@
                   color: var(--text-main);
                 "
               >
-                {# Просто вырезаем название, JS сам его декодирует #} {{
-                link.split('#')[1] if '#' in link else 'VPN Сервер' }}
+                {# Выводим текст после символа # #} {{ link.split('#')[1] if '#'
+                in link else 'VPN Сервер' }}
               </span>
               <span
                 style="
@@ -904,34 +904,34 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Функция для превращения кода 'de' в эмодзи 🇩🇪
-        const getFlag = (code) => {
-          return code
+        // Функция преобразования кода страны (de, nl) в эмодзи флага
+        const getFlagEmoji = (countryCode) => {
+          const codePoints = countryCode
             .toUpperCase()
-            .replace(/./g, (char) =>
-              String.fromCodePoint(char.charCodeAt(0) + 127397),
-            );
+            .split("")
+            .map((char) => 127397 + char.charCodeAt(0));
+          return String.fromCodePoint(...codePoints);
         };
 
         const serverTitles = document.querySelectorAll(".server-title");
 
         serverTitles.forEach((el) => {
           try {
-            // 1. Декодируем URL (убираем % символы)
-            let decodedText = decodeURIComponent(el.textContent.trim());
+            // Декодируем URL-символы (%F0%9F...) в нормальный текст
+            let rawText = decodeURIComponent(el.textContent.trim());
 
-            // 2. Ищем код страны в начале (например, nlНидерланды)
-            const countryMatch = decodedText.match(/^([a-z]{2})(.*)/i);
+            // Проверяем, начинается ли строка с двух маленьких букв кода страны (например, deГермания)
+            const match = rawText.match(/^([a-z]{2})(.*)/);
 
-            if (countryMatch) {
-              const code = countryMatch[1];
-              const rest = countryMatch[2];
-              el.innerHTML = `${getFlag(code)} ${rest.trim()}`;
+            if (match) {
+              const flag = getFlagEmoji(match[1]);
+              const name = match[2];
+              el.innerHTML = `${flag} ${name}`;
             } else {
-              el.textContent = decodedText;
+              el.textContent = rawText;
             }
           } catch (e) {
-            console.error("Ошибка обработки текста:", e);
+            console.error("Ошибка декодирования:", e);
           }
         });
       });
