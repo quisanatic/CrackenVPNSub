@@ -160,7 +160,7 @@
         <div class="stat-card">
             <span class="stat-label">Состояние</span>
             <strong class="stat-value {% if user.status == 'active' %}status-active{% else %}status-expired{% endif %}">
-                {% if user.status == 'active' %}На плаву{% else %}В бездне{% endif %}
+                {% if user.status == 'active' %}На плаву{% elif user.status == 'limited' %}Превышение предела трафика{% else %}В бездне{% endif %}
             </strong>
         </div>
         <div class="stat-card">
