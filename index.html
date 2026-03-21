@@ -378,6 +378,7 @@
         width: 1.2em;
         margin: 0 0.1em 0 0.1em;
         vertical-align: -0.2em;
+        display: inline-block;
       }
     </style>
   </head>
@@ -755,7 +756,10 @@
         </p>
       </div>
     </div>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
       // Инициализация интерфейса
@@ -923,21 +927,47 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        const titles = document.querySelectorAll(".server-title");
+        // 1. Сначала обрабатываем логику темы и прогресс-бара (ваш старый код)
+        const pg = document.getElementById("progress-circle");
+        if (pg) {
+          const p = parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
+          pg.style.setProperty(
+            "--dynamic-color",
+            `hsl(${Math.max(0, 120 - p * 1.2)}, 75%, 50%)`,
+          );
+        }
 
-        titles.forEach((el) => {
-          // 1. Сначала декодируем текст (на случай %F0%9F...)
-          try {
-            el.textContent = decodeURIComponent(el.textContent.trim());
-          } catch (e) {}
+        // 2. ФУНКЦИЯ ДЛЯ ФЛАГОВ
+        const parseFlags = () => {
+          if (typeof twemoji === "undefined") {
+            console.error("Twemoji не загрузился");
+            return;
+          }
 
-          // 2. Превращаем текстовые эмодзи в картинки (SVG)
-          twemoji.parse(el, {
-            folder: "svg",
-            ext: ".svg",
-            base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
+          const titles = document.querySelectorAll(".server-title");
+          titles.forEach((el) => {
+            try {
+              // Декодируем %F0%9F... в нормальные эмодзи
+              let text = el.textContent.trim();
+              if (text.includes("%")) {
+                text = decodeURIComponent(text);
+              }
+              el.textContent = text;
+
+              // Превращаем текстовые эмодзи в SVG картинки
+              twemoji.parse(el, {
+                folder: "svg",
+                ext: ".svg",
+                base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
+              });
+            } catch (e) {
+              console.error("Ошибка обработки флага:", e);
+            }
           });
-        });
+        };
+
+        // Запускаем обработку флагов
+        parseFlags();
       });
     </script>
   </body>
