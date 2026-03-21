@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <title>Cracken VPN | {{ user.username }}</title>
     <link
       rel="stylesheet"
@@ -39,8 +40,13 @@
       body {
         background-color: var(--bg-body);
         color: var(--text-main);
-        font-family: "Inter", -apple-system, sans-serif;
-        transition: background 0.3s, color 0.3s;
+        font-family:
+          "Inter",
+          -apple-system,
+          sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
         margin: 0;
         padding: 20px;
       }
@@ -271,15 +277,10 @@
     </style>
   </head>
   <body>
-    {# РАСЧЕТ ПРОЦЕНТА #} 
-    {% set used = user.used_traffic | default(0) %} 
-    {% set limit = user.data_limit | default(0) %} 
-    {% if limit and limit > 0 %} 
-        {% set percent = ((used / limit) * 100) | round %} 
-    {% else %} 
-        {% set percent = 0 %} 
-    {% endif %} 
-    {% set display_percent = percent if percent <= 100 else 100 %}
+    {# РАСЧЕТ ПРОЦЕНТА #} {% set used = user.used_traffic | default(0) %} {% set
+    limit = user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set
+    percent = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %}
+    {% endif %} {% set display_percent = percent if percent <= 100 else 100 %}
 
     <div class="container">
       <header class="header">
@@ -292,11 +293,7 @@
       <section class="user-grid">
         <div class="user-card profile">
           <div class="avatar-wrapper">
-            <img
-              src="https://github.com/quisanatic/CrackenVPNSub/blob/main/cracken.png?raw=true"
-              alt="Kraken"
-              class="avatar"
-            />
+            <img src="./favicon.ico" alt="Kraken" class="avatar" />
           </div>
           <div class="profile-info">
             <h3>{{ user.username }}</h3>
@@ -316,7 +313,8 @@
           <strong
             class="stat-value {% if user.status == 'active' and percent < 100 %}status-active{% else %}status-expired{% endif %}"
           >
-            {% if user.status == 'active' and percent < 100 %}На плаву{% else %}Трафик ушел на дно{% endif %}
+            {% if user.status == 'active' and percent < 100 %}На плаву{% else
+            %}Трафик ушел на дно{% endif %}
           </strong>
         </div>
         <div class="stat-card">
@@ -338,7 +336,10 @@
               <i class="fas fa-chevron-down arrow"></i>
             </div>
             <div class="os-content">
-              <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe" class="btn-dl">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                class="btn-dl"
+              >
                 <i class="fab fa-windows"></i> Скачать Happ (.exe)
               </a>
             </div>
@@ -349,7 +350,10 @@
               <i class="fas fa-chevron-down arrow"></i>
             </div>
             <div class="os-content">
-              <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.happproxy"
+                class="btn-dl"
+              >
                 <i class="fab fa-google-play"></i> Google Play
               </a>
             </div>
@@ -360,24 +364,39 @@
               <i class="fas fa-chevron-down arrow"></i>
             </div>
             <div class="os-content">
-              <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
                 <i class="fab fa-apple"></i> App Store
               </a>
             </div>
           </div>
         </div>
 
-        {# ЛОГИКА ОТОБРАЖЕНИЯ СОГЛАСНО ПУНКТУ 2 #}
-        {% if user.status == 'active' and percent < 100 %}
-          <h2 class="section-title">2. Установите связь</h2>
-          <a href="happ://add/{{ user.subscription_url }}" class="btn-main">📥 ВЦЕПИТЬСЯ В Happ</a>
-          <button class="btn-secondary" onclick="copyLink('{{ user.subscription_url }}', this)">Копировать руну</button>
-          
-          <a href="https://t.me/CrackenVPN_bot" class="footer-link">
-            <i class="fab fa-telegram-plane"></i> Управление в @CrackenVPN_bot
-          </a>
+        {# ЛОГИКА ОТОБРАЖЕНИЯ СОГЛАСНО ПУНКТУ 2 #} {% if user.status == 'active'
+        and percent < 100 %}
+        <h2 class="section-title">2. Установите связь</h2>
+        <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
+          >📥 ВЦЕПИТЬСЯ В Happ</a
+        >
+        <button
+          class="btn-secondary"
+          onclick="copyLink('{{ user.subscription_url }}', this)"
+        >
+          Копировать руну
+        </button>
+
+        <a href="https://t.me/CrackenVPN_bot" class="footer-link">
+          <i class="fab fa-telegram-plane"></i> Управление в @CrackenVPN_bot
+        </a>
         {% else %}
-          <a href="https://t.me/CrackenVPN_bot" class="btn-main" style="margin-top: 30px;">⚓️ Продлить в боте</a>
+        <a
+          href="https://t.me/CrackenVPN_bot"
+          class="btn-main"
+          style="margin-top: 30px"
+          >⚓️ Продлить в боте</a
+        >
         {% endif %}
       </main>
     </div>
@@ -386,11 +405,12 @@
       // Плавная прогрессия цвета
       function updateProgressColor() {
         const pg = document.getElementById("progress-circle");
-        const percent = parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
-        const hue = Math.max(0, 120 - (percent * 1.2)); // 120 (Green) to 0 (Red)
+        const percent =
+          parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
+        const hue = Math.max(0, 120 - percent * 1.2); // 120 (Green) to 0 (Red)
         pg.style.setProperty("--dynamic-color", `hsl(${hue}, 75%, 50%)`);
       }
-      
+
       updateProgressColor();
 
       const toggleBtn = document.getElementById("theme-toggle");
@@ -409,7 +429,10 @@
       });
 
       function updateIcon(theme) {
-        toggleBtn.innerHTML = theme === "dark" ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        toggleBtn.innerHTML =
+          theme === "dark"
+            ? '<i class="fas fa-moon"></i>'
+            : '<i class="fas fa-sun"></i>';
       }
 
       async function copyLink(link, button) {
@@ -417,8 +440,12 @@
           await navigator.clipboard.writeText(link);
           const oldText = button.textContent;
           button.textContent = "Свиток скопирован!";
-          setTimeout(() => { button.textContent = oldText; }, 1500);
-        } catch (err) { alert("Ошибка копирования"); }
+          setTimeout(() => {
+            button.textContent = oldText;
+          }, 1500);
+        } catch (err) {
+          alert("Ошибка копирования");
+        }
       }
     </script>
   </body>
