@@ -382,7 +382,6 @@
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
-          {% if user.limit and user.limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -397,7 +396,6 @@
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
         </div>
-        {% endif %}
 
         <div class="stat-card">
           <span class="stat-label">Состояние</span>
