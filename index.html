@@ -655,7 +655,10 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              {% for link in user.links %}
+              {% for link in user.links %} {# Извлекаем имя сервера (label) из
+              ссылки после знака # #} {% set server_label = link.split('#')[1]
+              if '#' in link else 'VPN Сервер' %}
+
               <div
                 style="
                   background: var(--bg-item);
@@ -669,34 +672,44 @@
                   style="
                     display: flex;
                     align-items: center;
-                    gap: 15px;
+                    gap: 16px;
                     padding: 16px;
                   "
                 >
                   <div
-                    class="server-flag"
                     style="
                       font-size: 32px;
                       line-height: 1;
                       display: flex;
                       align-items: center;
                       justify-content: center;
-                      min-width: 45px;
+                      min-width: 48px;
                     "
                   >
-                    SERVER_FLAG
+                    {% if 'Германия' in server_label or 'Germany' in
+                    server_label or 'DE' in server_label %} 🇩🇪 {% elif
+                    'Казахстан' in server_label or 'Kazakhstan' in server_label
+                    or 'KZ' in server_label %} 🇰🇿 {% elif 'Финляндия' in
+                    server_label or 'Finland' in server_label or 'FI' in
+                    server_label %} 🇫🇮 {% elif 'Нидерланды' in server_label or
+                    'Netherlands' in server_label or 'NL' in server_label %} 🇳🇱
+                    {% elif 'США' in server_label or 'USA' in server_label or
+                    'US' in server_label %} 🇺🇸 {% elif 'Турция' in server_label
+                    or 'Turkey' in server_label or 'TR' in server_label %} 🇹🇷 {%
+                    else %} 🌍 {% endif %}
                   </div>
 
-                  <div style="display: flex; flex-direction: column; gap: 2px">
+                  <div style="display: flex; flex-direction: column; gap: 4px">
                     <span
                       class="server-title"
                       style="
                         font-size: 16px;
                         font-weight: 700;
                         color: var(--text-main);
+                        line-height: 1.2;
                       "
                     >
-                      SERVER_NAME
+                      {{ server_label }}
                     </span>
                     <span
                       style="
@@ -704,6 +717,7 @@
                         color: var(--text-dim);
                         text-transform: uppercase;
                         letter-spacing: 0.8px;
+                        font-weight: 500;
                       "
                     >
                       Протокол VLESS + Reality
