@@ -380,6 +380,26 @@
         vertical-align: -0.2em;
         display: inline-block;
       }
+      /* Общие стили для заголовков секций внутри раскрывашек */
+      .os-header .section-title {
+        color: var(--text-main);
+        text-align: left;
+      }
+
+      /* Анимация вращения стрелочки */
+      .arrow {
+        transition: transform 0.3s ease;
+        color: var(--text-dim);
+      }
+
+      .os-item.open > .os-header .arrow {
+        transform: rotate(180deg);
+      }
+
+      /* Чтобы контент внутри не накладывался при сворачивании */
+      .os-content {
+        transition: all 0.3s ease;
+      }
     </style>
   </head>
 
@@ -570,177 +590,106 @@
       </section>
 
       <main>
-        <h2 class="section-title">1. Установка клиента</h2>
-        <div class="os-list">
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-windows"></i> Windows</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                class="btn-dl"
-              >
-                <i class="fab fa-windows"></i> Скачать Happ (.exe)
-              </a>
-            </div>
+        <div class="os-item" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">
+              1. Установка клиента
+            </h2>
+            <i class="fas fa-chevron-down arrow"></i>
           </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> macOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
+          <div class="os-content">
+            <div class="os-list">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
               >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                class="btn-dl"
-              >
-                <i class="fas fa-hard-drive"></i> Скачать .dmg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-linux"></i> Linux</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .deb
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .rpm
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-archive"></i> Скачать .pkg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-android"></i> Android</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://play.google.com/store/apps/details?id=com.happproxy"
-                class="btn-dl"
-              >
-                <i class="fab fa-google-play"></i> Google Play
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-download"></i> Скачать APK
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> iOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-              >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
+                <div class="os-header">
+                  <span><i class="fab fa-windows"></i> Windows</span
+                  ><i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a href="..." class="btn-dl">Скачать</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <h2 class="section-title">2. Локации</h2>
-        <div class="os-list">
-          {% for link in user.links %}
-          <div class="os-item" style="cursor: default; margin-bottom: 10px">
-            <div
-              class="os-header"
-              style="
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-                padding: 16px;
-              "
+
+        <div class="os-item" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">2. Локации</h2>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+          <div class="os-content">
+            <div class="os-list">
+              {% for link in user.links %}
+              <div class="os-item" style="cursor: default; margin-bottom: 10px">
+                <div
+                  class="os-header"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 4px;
+                    padding: 16px;
+                  "
+                >
+                  <span
+                    class="server-title"
+                    style="
+                      font-size: 16px;
+                      font-weight: 700;
+                      color: var(--text-main);
+                    "
+                  >
+                    {{ link.split('#')[1] if '#' in link else 'VPN Сервер' }}
+                  </span>
+                  <span
+                    style="
+                      font-size: 11px;
+                      color: var(--text-dim);
+                      text-transform: uppercase;
+                      letter-spacing: 0.8px;
+                    "
+                  >
+                    Протокол VLESS + Reality
+                  </span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="os-item open" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">3. Подключение</h2>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+          <div class="os-content" onclick="event.stopPropagation()">
+            <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
+              >Подключиться к Happ</a
             >
-              <span
-                class="server-title"
-                style="
-                  font-size: 16px;
-                  font-weight: 700;
-                  color: var(--text-main);
-                "
+            <div class="action-row">
+              <button
+                class="btn-secondary"
+                onclick="copyLink('{{ user.subscription_url }}', this)"
               >
-                {{ (link.split('#')[1] if '#' in link else 'VPN Сервер') | safe
-                }}
-              </span>
-              <span
-                style="
-                  font-size: 11px;
-                  color: var(--text-dim);
-                  text-transform: uppercase;
-                  letter-spacing: 0.8px;
-                "
+                Копировать ссылку
+              </button>
+              <button
+                class="btn-qr"
+                onclick="showQR('happ://add/{{ user.subscription_url }}')"
               >
-                Протокол VLESS + Reality
-              </span>
+                <i class="fas fa-qrcode"></i>
+              </button>
             </div>
           </div>
-          {% endfor %}
         </div>
 
-        <h2 class="section-title">3. Подключение</h2>
-        <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
-          >Подключиться к Happ</a
-        >
-        <div class="action-row">
-          <button
-            class="btn-secondary"
-            onclick="copyLink('{{ user.subscription_url }}', this)"
-          >
-            Копировать ссылку
-          </button>
-          <button
-            class="btn-qr"
-            onclick="showQR('happ://add/{{ user.subscription_url }}')"
-          >
-            <i class="fas fa-qrcode"></i>
-          </button>
-        </div>
         <a href="https://t.me/CrackenVPN_bot" class="footer-link"
           ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
         >
