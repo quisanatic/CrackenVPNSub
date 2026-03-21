@@ -497,7 +497,7 @@
             >
               <div>
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
-                  Старт
+                  Начало
                 </p>
                 <strong style="font-size: 13px"
                   >{{ user.created_at | datetime if user.created_at else '—'
@@ -509,7 +509,7 @@
               </div>
               <div style="text-align: right">
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
-                  Финиш
+                  Конец
                 </p>
                 <strong style="font-size: 13px; color: var(--accent)"
                   >{% if not user.expire %}Никогда{% else %}{{ user.expire |
