@@ -360,6 +360,25 @@
         text-decoration: none;
         font-size: 13px;
       }
+      @font-face {
+        font-family: "Twemoji Country Flags";
+        src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2")
+          format("woff2");
+      }
+
+      .server-title {
+        font-family:
+          "Twemoji Country Flags",
+          "Inter",
+          -apple-system,
+          sans-serif !important;
+      }
+      img.emoji {
+        height: 1.2em;
+        width: 1.2em;
+        margin: 0 0.1em 0 0.1em;
+        vertical-align: -0.2em;
+      }
     </style>
   </head>
 
@@ -904,16 +923,20 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".server-title").forEach((el) => {
+        const titles = document.querySelectorAll(".server-title");
+
+        titles.forEach((el) => {
+          // 1. Сначала декодируем текст (на случай %F0%9F...)
           try {
-            // Декодируем содержимое, если оно пришло в URL-формате
-            const content = el.textContent.trim();
-            if (content.includes("%")) {
-              el.textContent = decodeURIComponent(content);
-            }
-          } catch (e) {
-            console.error("Ошибка отображения флага:", e);
-          }
+            el.textContent = decodeURIComponent(el.textContent.trim());
+          } catch (e) {}
+
+          // 2. Превращаем текстовые эмодзи в картинки (SVG)
+          twemoji.parse(el, {
+            folder: "svg",
+            ext: ".svg",
+            base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
+          });
         });
       });
     </script>
