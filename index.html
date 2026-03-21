@@ -307,6 +307,9 @@
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
+          
+          {# СКРЫВАЕМ ПРОГРЕСС-БАР, ЕСЛИ ЛИМИТ НЕ ЗАДАН ИЛИ РАВЕН 0 #}
+          {% if limit and limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -314,6 +317,7 @@
           >
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
+          {% endif %}
         </div>
 
         <div class="stat-card">
