@@ -1,172 +1,903 @@
-<style>
-  /* Обновленные переменные для свечения */
-  :root[data-theme="dark"] {
-    --bg-body: #0b0d14;
-    --bg-card: #161a26;
-    --bg-item: #1c2230;
-    --text-main: #ffffff;
-    --text-dim: #717686;
-    --accent: #4d77ff;
-    --border: rgba(255, 255, 255, 0.05);
-    --pg-bg: #1c2230;
-    --pg-fill: #4d77ff;
-    --particle-color: rgba(255, 255, 255, 0.15);
-    --pulse-color: rgba(77, 119, 255, 0.8); /* Цвет импульса */
-  }
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
+      type="image/x-icon"
+    />
+    <title>Cracken VPN | {{ user.username }}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
 
-  :root[data-theme="light"] {
-    --bg-body: #f4f7fa;
-    --bg-card: #ffffff;
-    --bg-item: #f8f9fc;
-    --text-main: #1a1c23;
-    --text-dim: #676d7c;
-    --accent: #3b5bdb;
-    --border: rgba(0, 0, 0, 0.05);
-    --pg-bg: #e1e7f0;
-    --pg-fill: #4d77ff;
-    --particle-color: rgba(59, 91, 219, 0.2);
-    --pulse-color: rgba(59, 91, 219, 0.6);
-  }
-
-  #particle-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-  }
-</style>
-
-<script>
-  const canvas = document.getElementById("particle-canvas");
-  const ctx = canvas.getContext("2d");
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let particlesArray = [];
-  let pulsesArray = [];
-
-  function getVar(name) {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(name)
-      .trim();
-  }
-
-  class Particle {
-    constructor(x, y, dx, dy, size) {
-      this.x = x;
-      this.y = y;
-      this.dx = dx;
-      this.dy = dy;
-      this.size = size;
-    }
-
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = getVar("--particle-color");
-      ctx.fill();
-    }
-
-    update() {
-      if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
-      if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
-      this.x += this.dx;
-      this.y += this.dy;
-      this.draw();
-    }
-  }
-
-  class Pulse {
-    constructor(startPart, endPart) {
-      this.start = startPart;
-      this.end = endPart;
-      this.progress = 0;
-      this.speed = 0.005 + Math.random() * 0.01; // Скорость импульса
-    }
-
-    draw() {
-      const x = this.start.x + (this.end.x - this.start.x) * this.progress;
-      const y = this.start.y + (this.end.y - this.start.y) * this.progress;
-
-      ctx.beginPath();
-      ctx.arc(x, y, 1.5, 0, Math.PI * 2);
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = getVar("--accent");
-      ctx.fillStyle = getVar("--pulse-color");
-      ctx.fill();
-      ctx.shadowBlur = 0; // Сброс тени для оптимизации
-    }
-
-    update() {
-      this.progress += this.speed;
-      if (this.progress <= 1) {
-        this.draw();
-        return true;
+    <style>
+      :root[data-theme="dark"] {
+        --bg-body: #0b0d14;
+        --bg-card: #161a26;
+        --bg-item: #1c2230;
+        --text-main: #ffffff;
+        --text-dim: #717686;
+        --accent: #4d77ff;
+        --border: rgba(255, 255, 255, 0.05);
+        --pg-bg: #1c2230;
+        --pg-fill: #4d77ff;
+        /* Цвет частиц для темной темы */
+        --particle-color: rgba(255, 255, 255, 0.1);
       }
-      return false;
-    }
-  }
 
-  function init() {
-    particlesArray = [];
-    pulsesArray = [];
-    // Делаем частиц МЕНЬШЕ (например, всего 40-50 на экран)
-    const numberOfParticles = 45;
+      :root[data-theme="light"] {
+        --bg-body: #f4f7fa;
+        --bg-card: #ffffff;
+        --bg-item: #f8f9fc;
+        --text-main: #1a1c23;
+        --text-dim: #676d7c;
+        --accent: #3b5bdb;
+        --border: rgba(0, 0, 0, 0.05);
+        --pg-bg: #e1e7f0;
+        --pg-fill: #4d77ff;
+        /* Цвет частиц для светлой темы */
+        --particle-color: rgba(0, 0, 0, 0.05);
+      }
 
-    for (let i = 0; i < numberOfParticles; i++) {
-      let size = Math.random() * 2 + 1;
-      // Генерируем частицы ближе к центру (где основной контент)
-      let x = Math.random() * (canvas.width * 0.6) + canvas.width * 0.2;
-      let y = Math.random() * canvas.height;
-      let dx = Math.random() * 0.4 - 0.2;
-      let dy = Math.random() * 0.4 - 0.2;
-      particlesArray.push(new Particle(x, y, dx, dy, size));
-    }
-  }
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        font-family:
+          "Inter",
+          -apple-system,
+          sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        margin: 0;
+        padding: 20px;
+        /* Важно: относительное позиционирование для фона */
+        position: relative;
+        min-height: 100vh;
+      }
 
-  function animate() {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      /* Стили для холста с частицами */
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Помещаем фон позади контента */
+        pointer-events: none; /* Чтобы фон не мешал кликам */
+      }
 
-    // Рисуем связи
-    for (let a = 0; a < particlesArray.length; a++) {
-      for (let b = a + 1; b < particlesArray.length; b++) {
-        let distance =
-          (particlesArray[a].x - particlesArray[b].x) ** 2 +
-          (particlesArray[a].y - particlesArray[b].y) ** 2;
+      .container {
+        max-width: 480px;
+        margin: 0 auto;
+        /* Чтобы контент был поверх фона */
+        position: relative;
+        z-index: 1;
+      }
 
-        // Среднее расстояние для связей
-        if (distance < (canvas.width / 5) * (canvas.height / 5)) {
-          ctx.strokeStyle = getVar("--particle-color");
-          ctx.lineWidth = 0.5;
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .logo-text {
+        font-weight: 800;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .theme-btn {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .user-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .user-card.profile {
+        grid-column: span 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 20px;
+      }
+
+      .stat-card,
+      .user-card {
+        background: var(--bg-card);
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--border);
+      }
+
+      /* Profile Block Styling */
+      .profile-info-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .user-svg-large {
+        width: 28px;
+        height: 28px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .text-group {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+
+      .text-group h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+
+      .text-group p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: var(--text-dim);
+      }
+
+      .stat-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        margin-bottom: 2px;
+      }
+
+      .traffic-progress {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: conic-gradient(
+          var(--dynamic-color, var(--pg-fill)) calc(var(--pg-percent) * 1%),
+          var(--pg-bg) calc(var(--pg-percent) * 1%)
+        );
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .traffic-progress::after {
+        content: "";
+        position: absolute;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: var(--bg-card);
+      }
+
+      .pg-text {
+        position: relative;
+        z-index: 1;
+        font-weight: 800;
+        font-size: 13px;
+      }
+
+      .stat-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .stat-value {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 24px 0 12px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      .os-item {
+        background: var(--bg-card);
+        border-radius: 14px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .os-header {
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .os-content {
+        display: none;
+        padding: 0 16px 16px;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .os-item.open .os-content {
+        display: flex;
+      }
+
+      .os-item.open .arrow {
+        transform: rotate(180deg);
+        transition: 0.2s;
+      }
+
+      .btn-dl {
+        background: var(--bg-item);
+        color: var(--text-main);
+        text-decoration: none;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-main {
+        background: var(--accent);
+        color: white;
+        display: block;
+        text-align: center;
+        padding: 16px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .action-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn-secondary {
+        background: var(--bg-card);
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        flex-grow: 1;
+        padding: 14px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .btn-qr {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 80px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .status-active {
+        color: #2ecc71;
+      }
+
+      .status-expired {
+        color: #e74c3c;
+      }
+
+      .gold {
+        color: #f1c40f;
+      }
+
+      /* Modal QR */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background: var(--bg-card);
+        padding: 25px;
+        border-radius: 24px;
+        text-align: center;
+        position: relative;
+        max-width: 280px;
+      }
+
+      #qrcode {
+        background: #fff;
+        padding: 12px;
+        border-radius: 12px;
+        margin: 15px 0;
+        display: inline-block;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 12px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--text-dim);
+      }
+
+      .footer-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="particle-canvas"></canvas>
+
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
+    <div class="container">
+      <header class="header">
+        <div class="logo-text">🐙 Cracken VPN</div>
+        <button id="theme-toggle" class="theme-btn">
+          <i class="fas fa-moon"></i>
+        </button>
+      </header>
+
+      <section class="user-grid">
+        <div class="user-card profile">
+          <div class="profile-info-wrapper">
+            <svg
+              class="user-svg-large"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            <div class="text-group">
+              <h3>{{ user.username }}</h3>
+              <p>@{{ user.username }}</p>
+            </div>
+          </div>
+          {% if limit and limit > 0 %}
+          <div
+            id="progress-circle"
+            class="traffic-progress"
+            style="--pg-percent: {{ display_percent }};"
+          >
+            <span class="pg-text">{{ display_percent }}%</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            <svg
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            Статус
+          </span>
+          <strong
+            class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}"
+          >
+            {% if user.status == 'active' and (limit == 0 or percent < 100)
+            %}Активен{% else %}Истек{% endif %}
+          </strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            <svg
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+              ></path>
+            </svg>
+            Трафик
+          </span>
+          <strong class="stat-value">
+            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
+              style="font-size: 13px; color: var(--accent)"
+              >Неограниченный</span
+            >{% else %}{{ limit | bytesformat }}{% endif %}
+          </strong>
+        </div>
+
+        <div
+          class="user-card profile"
+          style="grid-column: span 2; margin-top: 4px"
+        >
+          <div style="width: 100%">
+            <span class="stat-label">
+              <svg
+                class="stat-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Срок действия
+            </span>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
+                margin-top: 10px;
+                gap: 10px;
+              "
+            >
+              <div style="text-align: left; min-width: 0">
+                <p style="font-size: 11px; color: var(--text-dim); margin: 0">
+                  Начало
+                </p>
+                <strong
+                  style="
+                    font-size: 13px;
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ user.created_at | datetime if user.created_at else '—' }}
+                </strong>
+              </div>
+
+              <div
+                style="
+                  color: var(--text-dim);
+                  display: flex;
+                  justify-content: center;
+                  width: 30px;
+                "
+              >
+                <i class="fas fa-long-arrow-alt-right"></i>
+              </div>
+
+              <div style="text-align: right; min-width: 0">
+                <p style="font-size: 11px; color: var(--text-dim); margin: 0">
+                  Конец
+                </p>
+                <strong
+                  style="
+                    font-size: 13px;
+                    color: var(--accent);
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {% if not user.expire %}Никогда{% else %}{{ user.expire |
+                  datetime }}{% endif %}
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main>
+        <h2 class="section-title">1. Установка клиента</h2>
+
+        <div class="os-list">
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-windows"></i> Windows</span>
+              <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                class="btn-dl"
+              >
+                <i class="fab fa-windows"></i> Скачать Happ (.exe)
+              </a>
+            </div>
+          </div>
+
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> macOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                class="btn-dl"
+              >
+                <i class="fas fa-hard-drive"></i> Скачать .dmg
+              </a>
+            </div>
+          </div>
+
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-linux"></i> Linux</span>
+              <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .deb
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .rpm
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-archive"></i> Скачать .pkg
+              </a>
+            </div>
+          </div>
+
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-android"></i> Android</span>
+              <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.happproxy"
+                class="btn-dl"
+              >
+                <i class="fab fa-google-play"></i> Google Play
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-download"></i> Скачать APK
+              </a>
+            </div>
+          </div>
+
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> iOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {% if user.status == 'active' and (limit == 0 or percent < 100) %}
+        <h2 class="section-title">2. Подключение</h2>
+        <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
+          >Подключиться к Happ</a
+        >
+        <div class="action-row">
+          <button
+            class="btn-secondary"
+            onclick="copyLink('{{ user.subscription_url }}', this)"
+          >
+            Копировать ссылку
+          </button>
+          <button
+            class="btn-qr"
+            onclick="showQR('happ://add/{{ user.subscription_url }}')"
+          >
+            <i class="fas fa-qrcode"></i>
+          </button>
+        </div>
+        <a href="https://t.me/CrackenVPN_bot" class="footer-link"
+          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
+        >
+        {% else %}
+        <a
+          href="https://t.me/CrackenVPN_bot"
+          class="btn-main"
+          style="margin-top: 30px"
+          >⚓️ Продлить подписку</a
+        >
+        {% endif %}
+      </main>
+    </div>
+
+    <div id="qrModal" class="modal-overlay" onclick="closeQR()">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeQR()">&times;</span>
+        <h3 style="margin: 0 0 10px; font-size: 16px">Твоя руна</h3>
+        <div id="qrcode"></div>
+        <p style="font-size: 12px; color: var(--text-dim)">
+          Наведи камеру для сканирования кода
+        </p>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const pg = document.getElementById("progress-circle");
+        if (pg) {
+          const p = parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
+          pg.style.setProperty(
+            "--dynamic-color",
+            `hsl(${Math.max(0, 120 - p * 1.2)}, 75%, 50%)`,
+          );
+        }
+
+        const html = document.documentElement;
+        const toggle = document.getElementById("theme-toggle");
+        const theme = localStorage.getItem("theme") || "dark";
+        html.setAttribute("data-theme", theme);
+        toggle.innerHTML =
+          theme === "dark"
+            ? '<i class="fas fa-moon"></i>'
+            : '<i class="fas fa-sun"></i>';
+
+        toggle.addEventListener("click", () => {
+          const cur = html.getAttribute("data-theme");
+          const next = cur === "dark" ? "light" : "dark";
+          html.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+          toggle.innerHTML =
+            next === "dark"
+              ? '<i class="fas fa-moon"></i>'
+              : '<i class="fas fa-sun"></i>';
+        });
+      });
+
+      async function copyLink(l, b) {
+        try {
+          await navigator.clipboard.writeText(l);
+          const old = b.textContent;
+          b.textContent = "Готово!";
+          setTimeout(() => (b.textContent = old), 1500);
+        } catch (e) {
+          alert("Ошибка");
+        }
+      }
+
+      function showQR(l) {
+        const c = document.getElementById("qrcode");
+        c.innerHTML = "";
+        new QRCode(c, {
+          text: l,
+          width: 180,
+          height: 180,
+          colorDark: "#0b0d14",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+        document.getElementById("qrModal").classList.add("active");
+      }
+      function closeQR() {
+        document.getElementById("qrModal").classList.remove("active");
+      }
+
+      // JavaScript для анимации частиц
+      const canvas = document.getElementById("particle-canvas");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particlesArray;
+
+      // Получаем цвет частиц из CSS переменной
+      function getParticleColor() {
+        return getComputedStyle(document.documentElement).getPropertyValue(
+          "--particle-color",
+        );
+      }
+
+      class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+          this.color = color;
+        }
+
+        draw() {
           ctx.beginPath();
-          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-          ctx.stroke();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = getParticleColor(); // Используем динамический цвет
+          ctx.fill();
+        }
 
-          // Шанс появления нового импульса («нейрона»)
-          if (Math.random() > 0.997 && pulsesArray.length < 20) {
-            pulsesArray.push(new Pulse(particlesArray[a], particlesArray[b]));
+        update() {
+          if (this.x > canvas.width || this.x < 0) {
+            this.directionX = -this.directionX;
+          }
+          if (this.y > canvas.height || this.y < 0) {
+            this.directionY = -this.directionY;
+          }
+
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          let size = Math.random() * 2 + 1; // Чуть больше размер для видимости
+          let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
+          let y =
+            Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
+          let directionX = Math.random() * 0.2 - 0.1; // Медленное движение
+          let directionY = Math.random() * 0.2 - 0.1;
+          let color = getParticleColor();
+
+          particlesArray.push(
+            new Particle(x, y, directionX, directionY, size, color),
+          );
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+        }
+        connect();
+      }
+
+      function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+          for (let b = a; b < particlesArray.length; b++) {
+            let distance =
+              (particlesArray[a].x - particlesArray[b].x) *
+                (particlesArray[a].x - particlesArray[b].x) +
+              (particlesArray[a].y - particlesArray[b].y) *
+                (particlesArray[a].y - particlesArray[b].y);
+            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+              opacityValue = 1 - distance / 15000;
+              ctx.strokeStyle = getParticleColor()
+                .replace(")", `, ${opacityValue})`)
+                .replace("rgb", "rgba"); // Добавляем прозрачность линиям
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+              ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+              ctx.stroke();
+            }
           }
         }
       }
-      particlesArray[a].update();
-    }
 
-    // Обновляем импульсы
-    pulsesArray = pulsesArray.filter((pulse) => pulse.update());
-  }
+      window.addEventListener("resize", function () {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        init();
+      });
 
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    init();
-  });
-
-  init();
-  animate();
-</script>
+      init();
+      animate();
+    </script>
+  </body>
+</html>
