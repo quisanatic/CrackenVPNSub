@@ -679,15 +679,14 @@
             >
               <span
                 class="server-title"
-                data-raw-link="{{ link }}"
                 style="
                   font-size: 16px;
                   font-weight: 700;
                   color: var(--text-main);
                 "
               >
-                {{ link.split('#')[1] | udecode if '#' in link else 'VPN Сервер'
-                }}
+                {# Выводим часть после # как есть, JS потом это декодирует #} {{
+                link.split('#')[1] if '#' in link else 'VPN Сервер' }}
               </span>
               <span
                 style="
@@ -905,7 +904,7 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Функция превращения 'de' -> 🇩🇪
+        // Функция превращения кода 'de' в эмодзи 🇩🇪
         const getFlag = (code) => {
           return code
             .toUpperCase()
@@ -917,17 +916,22 @@
         const serverTitles = document.querySelectorAll(".server-title");
 
         serverTitles.forEach((el) => {
-          let text = el.textContent.trim();
+          try {
+            // 1. Декодируем URL (заменяем %F0%9F... на символы)
+            let decodedText = decodeURIComponent(el.textContent.trim());
 
-          // Регулярное выражение: ищем 2 латинские буквы в начале строки
-          const countryMatch = text.match(/^([a-z]{2})(.*)/i);
+            // 2. Ищем код страны в начале (например, deГермания)
+            const countryMatch = decodedText.match(/^([a-z]{2})(.*)/i);
 
-          if (countryMatch) {
-            const code = countryMatch[1]; // например, 'de'
-            const rest = countryMatch[2]; // например, 'Германия'
-
-            // Собираем: Флаг + Пробел + Оставшийся текст
-            el.innerHTML = `${getFlag(code)} ${rest.trim()}`;
+            if (countryMatch) {
+              const code = countryMatch[1];
+              const rest = countryMatch[2];
+              el.innerHTML = `${getFlag(code)} ${rest.trim()}`;
+            } else {
+              el.textContent = decodedText;
+            }
+          } catch (e) {
+            console.error("Ошибка обработки ссылки:", e);
           }
         });
       });
