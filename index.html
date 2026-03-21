@@ -655,11 +655,12 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              {% for link in user.links %} {# Извлекаем имя сервера (label) из
-              ссылки после знака # #} {% set server_label = link.split('#')[1]
-              if '#' in link else 'VPN Сервер' %}
+              {% for link in user.links %} {# Извлекаем label из ссылки #} {%
+              set raw_label = link.split('#')[1] if '#' in link else 'VPN
+              Сервер' %}
 
               <div
+                class="location-card"
                 style="
                   background: var(--bg-item);
                   border-radius: 12px;
@@ -677,6 +678,7 @@
                   "
                 >
                   <div
+                    class="server-flag"
                     style="
                       font-size: 32px;
                       line-height: 1;
@@ -686,17 +688,7 @@
                       min-width: 48px;
                     "
                   >
-                    {% if 'Германия' in server_label or 'Germany' in
-                    server_label or 'DE' in server_label %} 🇩🇪 {% elif
-                    'Казахстан' in server_label or 'Kazakhstan' in server_label
-                    or 'KZ' in server_label %} 🇰🇿 {% elif 'Финляндия' in
-                    server_label or 'Finland' in server_label or 'FI' in
-                    server_label %} 🇫🇮 {% elif 'Нидерланды' in server_label or
-                    'Netherlands' in server_label or 'NL' in server_label %} 🇳🇱
-                    {% elif 'США' in server_label or 'USA' in server_label or
-                    'US' in server_label %} 🇺🇸 {% elif 'Турция' in server_label
-                    or 'Turkey' in server_label or 'TR' in server_label %} 🇹🇷 {%
-                    else %} 🌍 {% endif %}
+                    {{ raw_label }}
                   </div>
 
                   <div style="display: flex; flex-direction: column; gap: 4px">
@@ -709,7 +701,7 @@
                         line-height: 1.2;
                       "
                     >
-                      {{ server_label }}
+                      {{ raw_label }}
                     </span>
                     <span
                       style="
@@ -1076,7 +1068,7 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // 1. Сначала обрабатываем логику темы и прогресс-бара (ваш старый код)
+        // 1. Логика прогресс-бара
         const pg = document.getElementById("progress-circle");
         if (pg) {
           const p = parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
@@ -1086,36 +1078,51 @@
           );
         }
 
-        // 2. ФУНКЦИЯ ДЛЯ ФЛАГОВ
+        // 2. Улучшенная функция для флагов и названий
         const parseFlags = () => {
-          if (typeof twemoji === "undefined") {
-            console.error("Twemoji не загрузился");
-            return;
-          }
+          if (typeof twemoji === "undefined") return;
 
-          const titles = document.querySelectorAll(".server-flag");
-          titles.forEach((el) => {
+          // Сначала обрабатываем флаги
+          const flags = document.querySelectorAll(".server-flag");
+          flags.forEach((el) => {
             try {
-              // Декодируем %F0%9F... в нормальные эмодзи
               let text = el.textContent.trim();
-              if (text.includes("%")) {
-                text = decodeURIComponent(text);
-              }
-              el.textContent = text;
+              if (text.includes("%")) text = decodeURIComponent(text);
 
-              // Превращаем текстовые эмодзи в SVG картинки
+              // Оставляем только эмодзи для блока флага
+              // Регулярное выражение выцепляет только символы эмодзи
+              const emojiOnly = text.match(
+                /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g,
+              );
+              el.textContent = emojiOnly ? emojiOnly.join("") : "🌍";
+
               twemoji.parse(el, {
                 folder: "svg",
                 ext: ".svg",
                 base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
               });
             } catch (e) {
-              console.error("Ошибка обработки флага:", e);
+              console.error(e);
             }
+          });
+
+          // Затем обрабатываем названия (убираем из них эмодзи, оставляем текст)
+          const titles = document.querySelectorAll(".server-title");
+          titles.forEach((el) => {
+            let text = el.textContent.trim();
+            if (text.includes("%")) text = decodeURIComponent(text);
+
+            // Убираем эмодзи из названия, чтобы было чисто: "Германия #1"
+            const cleanText = text
+              .replace(
+                /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g,
+                "",
+              )
+              .trim();
+            el.textContent = cleanText || text;
           });
         };
 
-        // Запускаем обработку флагов
         parseFlags();
       });
     </script>
