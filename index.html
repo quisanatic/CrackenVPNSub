@@ -684,7 +684,7 @@
                       min-width: 45px;
                     "
                   >
-                    {{ link.split('#')[1] if '#' in link else 'Германия' }}
+                    SERVER_FLAG
                   </div>
 
                   <div style="display: flex; flex-direction: column; gap: 2px">
@@ -696,7 +696,7 @@
                         color: var(--text-main);
                       "
                     >
-                      {{ link.split('#')[1] if '#' in link else 'Германия' }}
+                      SERVER_NAME
                     </span>
                     <span
                       style="
@@ -1087,6 +1087,7 @@
               if (text.includes("%")) {
                 text = decodeURIComponent(text);
               }
+              el.textContent = text;
 
               // Превращаем текстовые эмодзи в SVG картинки
               twemoji.parse(el, {
