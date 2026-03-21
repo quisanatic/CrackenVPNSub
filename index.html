@@ -655,10 +655,7 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              {% for link in user.links %} {# Сохраняем название сервера в
-              переменную (например: "Германия #1") #} {% set server_name =
-              link.split('#')[1] if '#' in link else 'VPN Сервер' %}
-
+              {% for link in user.links %}
               <div
                 style="
                   background: var(--bg-item);
@@ -672,40 +669,34 @@
                   style="
                     display: flex;
                     align-items: center;
-                    gap: 16px;
+                    gap: 15px;
                     padding: 16px;
                   "
                 >
                   <div
+                    class="server-flag"
                     style="
                       font-size: 32px;
                       line-height: 1;
                       display: flex;
                       align-items: center;
                       justify-content: center;
-                      min-width: 48px;
+                      min-width: 45px;
                     "
                   >
-                    {% if 'Германия' in server_name or 'Germany' in server_name
-                    %} 🇩🇪 {% elif 'Финляндия' in server_name or 'Finland' in
-                    server_name %} 🇫🇮 {% elif 'Нидерланды' in server_name or
-                    'Netherlands' in server_name %} 🇳🇱 {% elif 'США' in
-                    server_name or 'USA' in server_name %} 🇺🇸 {% elif 'Турция'
-                    in server_name or 'Turkey' in server_name %} 🇹🇷 {% else %}
-                    🌍 {% endif %}
+                    🇩🇪
                   </div>
 
-                  <div style="display: flex; flex-direction: column; gap: 4px">
+                  <div style="display: flex; flex-direction: column; gap: 2px">
                     <span
                       class="server-title"
                       style="
                         font-size: 16px;
                         font-weight: 700;
                         color: var(--text-main);
-                        line-height: 1.2;
                       "
                     >
-                      {{ server_name }}
+                      {{ link.split('#')[1] if '#' in link else 'Германия' }}
                     </span>
                     <span
                       style="
@@ -713,7 +704,6 @@
                         color: var(--text-dim);
                         text-transform: uppercase;
                         letter-spacing: 0.8px;
-                        font-weight: 500;
                       "
                     >
                       Протокол VLESS + Reality
@@ -1089,7 +1079,7 @@
             return;
           }
 
-          const titles = document.querySelectorAll(".server-title");
+          const titles = document.querySelectorAll(".server-flag");
           titles.forEach((el) => {
             try {
               // Декодируем %F0%9F... в нормальные эмодзи
