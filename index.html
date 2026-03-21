@@ -25,8 +25,10 @@
         --border: rgba(255, 255, 255, 0.05);
         --pg-bg: #1c2230;
         --pg-fill: #4d77ff;
-        /* Цвет частиц для темной темы */
-        --particle-color: rgba(255, 255, 255, 0.1);
+        /* Параметры частиц */
+        --particle-color: rgba(255, 255, 255, 0.08);
+        --line-color: rgba(255, 255, 255, 0.05);
+        --pulse-color: rgba(77, 119, 255, 0.8);
       }
 
       :root[data-theme="light"] {
@@ -39,8 +41,10 @@
         --border: rgba(0, 0, 0, 0.05);
         --pg-bg: #e1e7f0;
         --pg-fill: #4d77ff;
-        /* Цвет частиц для светлой темы */
-        --particle-color: rgba(0, 0, 0, 0.05);
+        /* Параметры частиц */
+        --particle-color: rgba(59, 91, 219, 0.15);
+        --line-color: rgba(59, 91, 219, 0.08);
+        --pulse-color: rgba(59, 91, 219, 0.6);
       }
 
       body {
@@ -55,28 +59,27 @@
           color 0.3s;
         margin: 0;
         padding: 20px;
-        /* Важно: относительное позиционирование для фона */
         position: relative;
         min-height: 100vh;
+        overflow-x: hidden;
       }
 
-      /* Стили для холста с частицами */
+      /* Холст для нейронной сети */
       #particle-canvas {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: -1; /* Помещаем фон позади контента */
-        pointer-events: none; /* Чтобы фон не мешал кликам */
+        z-index: 0;
+        pointer-events: none;
       }
 
       .container {
         max-width: 480px;
         margin: 0 auto;
-        /* Чтобы контент был поверх фона */
         position: relative;
-        z-index: 1;
+        z-index: 1; /* Контент поверх фона */
       }
 
       .header {
@@ -104,6 +107,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(5px);
       }
 
       .user-grid {
@@ -111,6 +115,15 @@
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 24px;
+      }
+
+      .stat-card,
+      .user-card {
+        background: var(--bg-card);
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        backdrop-filter: blur(10px);
       }
 
       .user-card.profile {
@@ -122,15 +135,6 @@
         padding: 20px;
       }
 
-      .stat-card,
-      .user-card {
-        background: var(--bg-card);
-        border-radius: 18px;
-        padding: 16px;
-        border: 1px solid var(--border);
-      }
-
-      /* Profile Block Styling */
       .profile-info-wrapper {
         display: flex;
         align-items: center;
@@ -144,30 +148,16 @@
         flex-shrink: 0;
       }
 
-      .text-group {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.1;
-      }
-
       .text-group h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 800;
-        letter-spacing: 0.3px;
       }
 
       .text-group p {
         margin: 4px 0 0;
         font-size: 13px;
         color: var(--text-dim);
-      }
-
-      .stat-icon {
-        width: 18px;
-        height: 18px;
-        color: var(--accent);
-        margin-bottom: 2px;
       }
 
       .traffic-progress {
@@ -182,7 +172,6 @@
           var(--pg-bg) calc(var(--pg-percent) * 1%)
         );
         position: relative;
-        flex-shrink: 0;
       }
 
       .traffic-progress::after {
@@ -209,6 +198,12 @@
         color: var(--text-dim);
         text-transform: uppercase;
         margin-bottom: 8px;
+      }
+
+      .stat-icon {
+        width: 14px;
+        height: 14px;
+        color: var(--accent);
       }
 
       .stat-value {
@@ -240,7 +235,6 @@
         align-items: center;
         cursor: pointer;
         font-size: 14px;
-        font-weight: 600;
       }
 
       .os-content {
@@ -252,11 +246,6 @@
 
       .os-item.open .os-content {
         display: flex;
-      }
-
-      .os-item.open .arrow {
-        transform: rotate(180deg);
-        transition: 0.2s;
       }
 
       .btn-dl {
@@ -281,9 +270,7 @@
         text-decoration: none;
         font-weight: 700;
         margin-top: 15px;
-        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.3);
       }
 
       .action-row {
@@ -307,25 +294,19 @@
         background: var(--bg-card);
         border: 1px solid var(--border);
         color: var(--text-main);
-        width: 80px;
+        width: 60px;
         border-radius: 14px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
       }
 
       .status-active {
         color: #2ecc71;
       }
-
       .status-expired {
         color: #e74c3c;
-      }
-
-      .gold {
-        color: #f1c40f;
       }
 
       /* Modal QR */
@@ -341,13 +322,10 @@
         z-index: 1000;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s;
       }
 
       .modal-overlay.active {
         display: flex;
-        opacity: 1;
       }
 
       .modal-content {
@@ -355,7 +333,6 @@
         padding: 25px;
         border-radius: 24px;
         text-align: center;
-        position: relative;
         max-width: 280px;
       }
 
@@ -367,15 +344,6 @@
         display: inline-block;
       }
 
-      .modal-close {
-        position: absolute;
-        top: 12px;
-        right: 15px;
-        font-size: 20px;
-        cursor: pointer;
-        color: var(--text-dim);
-      }
-
       .footer-link {
         display: block;
         text-align: center;
@@ -383,7 +351,6 @@
         color: var(--accent);
         text-decoration: none;
         font-size: 13px;
-        font-weight: 500;
       }
     </style>
   </head>
@@ -395,6 +362,7 @@
     user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
     = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
     endif %} {% set display_percent = percent if percent <= 100 else 100 %}
+
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
@@ -443,7 +411,6 @@
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 stroke-linecap="round"
@@ -469,7 +436,6 @@
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 stroke-linecap="round"
@@ -481,213 +447,14 @@
             Трафик
           </span>
           <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
-              style="font-size: 13px; color: var(--accent)"
-              >Неограниченный</span
-            >{% else %}{{ limit | bytesformat }}{% endif %}
+            {{ used | bytesformat }} / {% if not limit or limit == 0 %}∞{% else
+            %}{{ limit | bytesformat }}{% endif %}
           </strong>
-        </div>
-
-        <div
-          class="user-card profile"
-          style="grid-column: span 2; margin-top: 4px"
-        >
-          <div style="width: 100%">
-            <span class="stat-label">
-              <svg
-                class="stat-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                ></path>
-              </svg>
-              Срок действия
-            </span>
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr auto 1fr;
-                align-items: center;
-                margin-top: 10px;
-                gap: 10px;
-              "
-            >
-              <div style="text-align: left; min-width: 0">
-                <p style="font-size: 11px; color: var(--text-dim); margin: 0">
-                  Начало
-                </p>
-                <strong
-                  style="
-                    font-size: 13px;
-                    display: block;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  "
-                >
-                  {{ user.created_at | datetime if user.created_at else '—' }}
-                </strong>
-              </div>
-
-              <div
-                style="
-                  color: var(--text-dim);
-                  display: flex;
-                  justify-content: center;
-                  width: 30px;
-                "
-              >
-                <i class="fas fa-long-arrow-alt-right"></i>
-              </div>
-
-              <div style="text-align: right; min-width: 0">
-                <p style="font-size: 11px; color: var(--text-dim); margin: 0">
-                  Конец
-                </p>
-                <strong
-                  style="
-                    font-size: 13px;
-                    color: var(--accent);
-                    display: block;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  "
-                >
-                  {% if not user.expire %}Никогда{% else %}{{ user.expire |
-                  datetime }}{% endif %}
-                </strong>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       <main>
-        <h2 class="section-title">1. Установка клиента</h2>
-
-        <div class="os-list">
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-windows"></i> Windows</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                class="btn-dl"
-              >
-                <i class="fab fa-windows"></i> Скачать Happ (.exe)
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> macOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-              >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                class="btn-dl"
-              >
-                <i class="fas fa-hard-drive"></i> Скачать .dmg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-linux"></i> Linux</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .deb
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .rpm
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-archive"></i> Скачать .pkg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-android"></i> Android</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://play.google.com/store/apps/details?id=com.happproxy"
-                class="btn-dl"
-              >
-                <i class="fab fa-google-play"></i> Google Play
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-download"></i> Скачать APK
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> iOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-              >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {% if user.status == 'active' and (limit == 0 or percent < 100) %}
-        <h2 class="section-title">2. Подключение</h2>
+        <h2 class="section-title">Подключение</h2>
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
           >Подключиться к Happ</a
         >
@@ -705,33 +472,69 @@
             <i class="fas fa-qrcode"></i>
           </button>
         </div>
+
+        <h2 class="section-title">Приложения</h2>
+        <div class="os-list">
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-windows"></i> Windows</span
+              ><i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                class="btn-dl"
+                >Скачать .exe</a
+              >
+            </div>
+          </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-android"></i> Android</span
+              ><i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.happproxy"
+                class="btn-dl"
+                >Google Play</a
+              >
+            </div>
+          </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> iOS / macOS</span
+              ><i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+                >App Store</a
+              >
+            </div>
+          </div>
+        </div>
+
         <a href="https://t.me/CrackenVPN_bot" class="footer-link"
-          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
+          ><i class="fab fa-telegram-plane"></i> Наш Telegram-бот</a
         >
-        {% else %}
-        <a
-          href="https://t.me/CrackenVPN_bot"
-          class="btn-main"
-          style="margin-top: 30px"
-          >⚓️ Продлить подписку</a
-        >
-        {% endif %}
       </main>
     </div>
 
     <div id="qrModal" class="modal-overlay" onclick="closeQR()">
       <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="modal-close" onclick="closeQR()">&times;</span>
         <h3 style="margin: 0 0 10px; font-size: 16px">Твоя руна</h3>
         <div id="qrcode"></div>
         <p style="font-size: 12px; color: var(--text-dim)">
-          Наведи камеру для сканирования кода
+          Наведи камеру на QR-код
         </p>
       </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+      // 1. Инициализация UI и Темы
       document.addEventListener("DOMContentLoaded", () => {
         const pg = document.getElementById("progress-circle");
         if (pg) {
@@ -746,20 +549,12 @@
         const toggle = document.getElementById("theme-toggle");
         const theme = localStorage.getItem("theme") || "dark";
         html.setAttribute("data-theme", theme);
-        toggle.innerHTML =
-          theme === "dark"
-            ? '<i class="fas fa-moon"></i>'
-            : '<i class="fas fa-sun"></i>';
 
         toggle.addEventListener("click", () => {
-          const cur = html.getAttribute("data-theme");
-          const next = cur === "dark" ? "light" : "dark";
+          const next =
+            html.getAttribute("data-theme") === "dark" ? "light" : "dark";
           html.setAttribute("data-theme", next);
           localStorage.setItem("theme", next);
-          toggle.innerHTML =
-            next === "dark"
-              ? '<i class="fas fa-moon"></i>'
-              : '<i class="fas fa-sun"></i>';
         });
       });
 
@@ -767,10 +562,10 @@
         try {
           await navigator.clipboard.writeText(l);
           const old = b.textContent;
-          b.textContent = "Готово!";
+          b.textContent = "Скопировано!";
           setTimeout(() => (b.textContent = old), 1500);
         } catch (e) {
-          alert("Ошибка");
+          alert("Ошибка при копировании");
         }
       }
 
@@ -781,9 +576,8 @@
           text: l,
           width: 180,
           height: 180,
-          colorDark: "#0b0d14",
+          colorDark: "#161a26",
           colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H,
         });
         document.getElementById("qrModal").classList.add("active");
       }
@@ -791,108 +585,119 @@
         document.getElementById("qrModal").classList.remove("active");
       }
 
-      // JavaScript для анимации частиц
+      // 2. Система нейронных частиц
       const canvas = document.getElementById("particle-canvas");
       const ctx = canvas.getContext("2d");
 
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      let particlesArray = [];
+      let pulsesArray = [];
 
-      let particlesArray;
+      function setCanvasSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      setCanvasSize();
 
-      // Получаем цвет частиц из CSS переменной
-      function getParticleColor() {
-        return getComputedStyle(document.documentElement).getPropertyValue(
-          "--particle-color",
-        );
+      function getVar(name) {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(name)
+          .trim();
       }
 
       class Particle {
-        constructor(x, y, directionX, directionY, size, color) {
-          this.x = x;
-          this.y = y;
-          this.directionX = directionX;
-          this.directionY = directionY;
-          this.size = size;
-          this.color = color;
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.dx = Math.random() * 0.5 - 0.25;
+          this.dy = Math.random() * 0.5 - 0.25;
+          this.size = Math.random() * 1.5 + 1;
         }
-
         draw() {
           ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-          ctx.fillStyle = getParticleColor(); // Используем динамический цвет
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = getVar("--particle-color");
           ctx.fill();
         }
-
         update() {
-          if (this.x > canvas.width || this.x < 0) {
-            this.directionX = -this.directionX;
-          }
-          if (this.y > canvas.height || this.y < 0) {
-            this.directionY = -this.directionY;
-          }
-
-          this.x += this.directionX;
-          this.y += this.directionY;
+          if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
+          this.x += this.dx;
+          this.y += this.dy;
           this.draw();
+        }
+      }
+
+      class Pulse {
+        constructor(start, end) {
+          this.start = start;
+          this.end = end;
+          this.progress = 0;
+          this.speed = 0.004 + Math.random() * 0.008;
+        }
+        update() {
+          this.progress += this.speed;
+          if (this.progress > 1) return false;
+
+          const x = this.start.x + (this.end.x - this.start.x) * this.progress;
+          const y = this.start.y + (this.end.y - this.start.y) * this.progress;
+
+          ctx.beginPath();
+          ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = getVar("--accent");
+          ctx.fillStyle = getVar("--pulse-color");
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          return true;
         }
       }
 
       function init() {
         particlesArray = [];
-        let numberOfParticles = (canvas.height * canvas.width) / 9000;
-        for (let i = 0; i < numberOfParticles; i++) {
-          let size = Math.random() * 2 + 1; // Чуть больше размер для видимости
-          let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
-          let y =
-            Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
-          let directionX = Math.random() * 0.2 - 0.1; // Медленное движение
-          let directionY = Math.random() * 0.2 - 0.1;
-          let color = getParticleColor();
-
-          particlesArray.push(
-            new Particle(x, y, directionX, directionY, size, color),
-          );
+        pulsesArray = [];
+        const count = 40; // Меньше частиц для минимализма
+        for (let i = 0; i < count; i++) {
+          particlesArray.push(new Particle());
         }
       }
 
       function animate() {
-        requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let i = 0; i < particlesArray.length; i++) {
           particlesArray[i].update();
-        }
-        connect();
-      }
 
-      function connect() {
-        let opacityValue = 1;
-        for (let a = 0; a < particlesArray.length; a++) {
-          for (let b = a; b < particlesArray.length; b++) {
-            let distance =
-              (particlesArray[a].x - particlesArray[b].x) *
-                (particlesArray[a].x - particlesArray[b].x) +
-              (particlesArray[a].y - particlesArray[b].y) *
-                (particlesArray[a].y - particlesArray[b].y);
-            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-              opacityValue = 1 - distance / 15000;
-              ctx.strokeStyle = getParticleColor()
-                .replace(")", `, ${opacityValue})`)
-                .replace("rgb", "rgba"); // Добавляем прозрачность линиям
-              ctx.lineWidth = 1;
+          for (let j = i + 1; j < particlesArray.length; j++) {
+            const dist = Math.hypot(
+              particlesArray[i].x - particlesArray[j].x,
+              particlesArray[i].y - particlesArray[j].y,
+            );
+
+            if (dist < 180) {
+              // Средняя дистанция связей
+              ctx.strokeStyle = getVar("--line-color");
+              ctx.lineWidth = 0.6;
               ctx.beginPath();
-              ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-              ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+              ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+              ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
               ctx.stroke();
+
+              // Шанс появления импульса
+              if (Math.random() > 0.998 && pulsesArray.length < 15) {
+                pulsesArray.push(
+                  new Pulse(particlesArray[i], particlesArray[j]),
+                );
+              }
             }
           }
         }
+
+        pulsesArray = pulsesArray.filter((p) => p.update());
+        requestAnimationFrame(animate);
       }
 
-      window.addEventListener("resize", function () {
-        canvas.width = innerWidth;
-        canvas.height = innerHeight;
+      window.addEventListener("resize", () => {
+        setCanvasSize();
         init();
       });
 
