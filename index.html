@@ -394,13 +394,30 @@
       }
 
       /* Анимация вращения стрелочки */
+      /* Анимация стрелки */
       .arrow {
         transition: transform 0.3s ease;
         color: var(--text-dim);
+        font-size: 12px;
       }
 
+      /* Поворот стрелки при открытии */
       .os-item.open > .os-header .arrow {
         transform: rotate(180deg);
+      }
+
+      /* Общий стиль для заголовков секций */
+      .main-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .main-section-header h2 {
+        margin: 0;
+        font-size: 13px;
+        text-transform: uppercase;
       }
 
       /* Чтобы контент внутри не накладывался при сворачивании */
@@ -619,7 +636,11 @@
           <div class="os-content">
             <div class="os-list">
               {% for link in user.links %}
-              <div class="os-item" style="cursor: default; margin-bottom: 10px">
+              <div
+                class="os-item"
+                style="cursor: default; margin-bottom: 10px"
+                onclick="event.stopPropagation()"
+              >
                 <div
                   class="os-header"
                   style="
@@ -656,6 +677,7 @@
             </div>
           </div>
         </div>
+
         <div class="os-item" onclick="this.classList.toggle('open')">
           <div class="os-header">
             <h2 class="stat-label">
@@ -678,7 +700,13 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              <div class="os-item" onclick="this.classList.toggle('open')">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
+              >
                 <div class="os-header">
                   <span><i class="fab fa-windows"></i> Windows</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -693,7 +721,13 @@
                 </div>
               </div>
 
-              <div class="os-item" onclick="this.classList.toggle('open')">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
+              >
                 <div class="os-header">
                   <span><i class="fab fa-apple"></i> macOS</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -702,25 +736,28 @@
                   <a
                     href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
                     class="btn-dl"
+                    ><i class="fab fa-apple"></i> App Store</a
                   >
-                    <i class="fab fa-apple"></i> App Store
-                  </a>
                   <a
                     href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
                     class="btn-dl"
+                    ><i class="fas fa-store"></i> Ru Store</a
                   >
-                    <i class="fas fa-store"></i> Ru Store
-                  </a>
                   <a
                     href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
                     class="btn-dl"
+                    ><i class="fas fa-hard-drive"></i> Скачать .dmg</a
                   >
-                    <i class="fas fa-hard-drive"></i> Скачать .dmg
-                  </a>
                 </div>
               </div>
 
-              <div class="os-item" onclick="this.classList.toggle('open')">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
+              >
                 <div class="os-header">
                   <span><i class="fab fa-linux"></i> Linux</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -729,25 +766,23 @@
                   <a
                     href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
                     class="btn-dl"
+                    ><i class="fas fa-box"></i> Скачать .deb</a
                   >
-                    <i class="fas fa-box"></i> Скачать .deb
-                  </a>
                   <a
                     href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
                     class="btn-dl"
+                    ><i class="fas fa-box"></i> Скачать .rpm</a
                   >
-                    <i class="fas fa-box"></i> Скачать .rpm
-                  </a>
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-file-archive"></i> Скачать .pkg
-                  </a>
                 </div>
               </div>
 
-              <div class="os-item" onclick="this.classList.toggle('open')">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
+              >
                 <div class="os-header">
                   <span><i class="fab fa-android"></i> Android</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -756,19 +791,23 @@
                   <a
                     href="https://play.google.com/store/apps/details?id=com.happproxy"
                     class="btn-dl"
+                    ><i class="fab fa-google-play"></i> Google Play</a
                   >
-                    <i class="fab fa-google-play"></i> Google Play
-                  </a>
                   <a
                     href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
                     class="btn-dl"
+                    ><i class="fas fa-file-download"></i> Скачать APK</a
                   >
-                    <i class="fas fa-file-download"></i> Скачать APK
-                  </a>
                 </div>
               </div>
 
-              <div class="os-item" onclick="this.classList.toggle('open')">
+              <div
+                class="os-item"
+                onclick="
+                  event.stopPropagation();
+                  this.classList.toggle('open');
+                "
+              >
                 <div class="os-header">
                   <span><i class="fab fa-apple"></i> iOS</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -777,20 +816,19 @@
                   <a
                     href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
                     class="btn-dl"
+                    ><i class="fab fa-apple"></i> App Store</a
                   >
-                    <i class="fab fa-apple"></i> App Store
-                  </a>
                   <a
                     href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
                     class="btn-dl"
+                    ><i class="fas fa-store"></i> Ru Store</a
                   >
-                    <i class="fas fa-store"></i> Ru Store
-                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="os-item open" onclick="this.classList.toggle('open')">
           <div class="os-header">
             <h2 class="stat-label">
