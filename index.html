@@ -379,6 +379,18 @@
             />
           </div>
           <div class="profile-info">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <title>User SVG Icon</title>
+              <path
+                fill="currentColor"
+                d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z"
+              />
+            </svg>
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
@@ -394,16 +406,43 @@
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">Состояние</span>
+          <span class="stat-label">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <title>User-check SVG Icon</title>
+              <path
+                fill="currentColor"
+                d="M8 12.052c1.995 0 3.5-1.505 3.5-3.5s-1.505-3.5-3.5-3.5s-3.5 1.505-3.5 3.5s1.505 3.5 3.5 3.5M9 13H7c-2.757 0-5 2.243-5 5v1h12v-1c0-2.757-2.243-5-5-5m11.294-4.708l-4.3 4.292l-1.292-1.292l-1.414 1.414l2.706 2.704l5.712-5.702z"
+              />
+            </svg>
+            Состояние</span
+          >
           <strong
             class="stat-value {% if user.status == 'active' and percent < 100 %}status-active{% else %}status-expired{% endif %}"
           >
-            {% if user.status == 'active' %}Активна{% else
-            %}Не активна{% endif %}
+            {% if user.status == 'active' %}Активна{% else %}Не активна{% endif
+            %}
           </strong>
         </div>
         <div class="stat-card">
-          <span class="stat-label">Поглощено</span>
+          <span class="stat-label">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <title>Chip SVG Icon</title>
+              <path
+                fill="currentColor"
+                d="M19 7a2 2 0 0 0-2-2h-1V2h-2v3h-4V2H8v3H7a2 2 0 0 0-2 2v1H2v2h3v4H2v2h3v1a2 2 0 0 0 2 2h1v3h2v-3h4v3h2v-3h1a2 2 0 0 0 2-2v-1h3v-2h-3v-4h3V8h-3zm-4 8H9V9h6z"
+              /></svg
+            >Трафик
+          </span>
           <strong class="stat-value">
             {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
               class="gold"
@@ -411,20 +450,44 @@
             >{% else %}{{ limit | bytesformat }}{% endif %}
           </strong>
         </div>
-        <div class="user-card profile" style="grid-column: span 2; margin-top: 4px;">
+        <div
+          class="user-card profile"
+          style="grid-column: span 2; margin-top: 4px"
+        >
           <div class="profile-info">
             <span class="stat-label">Период действия</span>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 8px;
+              "
+            >
               <div>
-                <p style="font-size: 11px; color: var(--text-dim);">Активация</p>
-                <strong class="stat-value" style="font-size: 13px;">{{ user.created_at | datetime if user.created_at else '—' }}</strong>
+                <p style="font-size: 11px; color: var(--text-dim)">Активация</p>
+                <strong class="stat-value" style="font-size: 13px"
+                  >{{ user.created_at | datetime if user.created_at else '—'
+                  }}</strong
+                >
               </div>
-              <div style="text-align: center; color: var(--text-dim); font-size: 14px;">
+              <div
+                style="
+                  text-align: center;
+                  color: var(--text-dim);
+                  font-size: 14px;
+                "
+              >
                 <i class="fas fa-arrow-right"></i>
               </div>
-              <div style="text-align: right;">
-                <p style="font-size: 11px; color: var(--text-dim);">Истекает</p>
-                <strong class="stat-value" style="font-size: 13px; color: var(--accent);">{% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}</strong>
+              <div style="text-align: right">
+                <p style="font-size: 11px; color: var(--text-dim)">Истекает</p>
+                <strong
+                  class="stat-value"
+                  style="font-size: 13px; color: var(--accent)"
+                  >{% if not user.expire %}Никогда{% else %}{{ user.expire |
+                  datetime }}{% endif %}</strong
+                >
               </div>
             </div>
           </div>
@@ -434,83 +497,116 @@
       <main class="action-box">
         <h2 class="section-title">1. Призовите Happ</h2>
         <div class="os-list">
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-windows"></i> Windows</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe" class="btn-dl">
-                        <i class="fab fa-windows"></i> Скачать Happ (.exe)
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-windows"></i> Windows</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                class="btn-dl"
+              >
+                <i class="fab fa-windows"></i> Скачать Happ (.exe)
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-apple"></i> macOS</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl">
-                        <i class="fas fa-hard-drive"></i> Скачать .dmg
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> macOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                class="btn-dl"
+              >
+                <i class="fas fa-hard-drive"></i> Скачать .dmg
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-linux"></i> Linux</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb" class="btn-dl">
-                        <i class="fas fa-box"></i> Скачать .deb
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm" class="btn-dl">
-                        <i class="fas fa-box"></i> Скачать .rpm
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst" class="btn-dl">
-                        <i class="fas fa-file-archive"></i> Скачать .pkg
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-linux"></i> Linux</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .deb
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .rpm
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-archive"></i> Скачать .pkg
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-android"></i> Android</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl">
-                        <i class="fab fa-google-play"></i> Google Play
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl">
-                        <i class="fas fa-file-download"></i> Скачать APK
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-android"></i> Android</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.happproxy"
+                class="btn-dl"
+              >
+                <i class="fab fa-google-play"></i> Google Play
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-download"></i> Скачать APK
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-apple"></i> iOS</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> iOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+            </div>
+          </div>
         </div>
 
         {% if user.status == 'active' and percent < 100 %}
