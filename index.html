@@ -424,7 +424,7 @@
               </div>
               <div style="text-align: right;">
                 <p style="font-size: 11px; color: var(--text-dim);">Истекает</p>
-                <strong class="stat-value" style="font-size: 13px; color: var(--accent);">{{ user.expire | datetime }}</strong>
+                <strong class="stat-value" style="font-size: 13px; color: var(--accent);">{% if not user.data_limit %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}</strong>
               </div>
             </div>
           </div>
