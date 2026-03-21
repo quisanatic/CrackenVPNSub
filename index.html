@@ -340,6 +340,29 @@
         cursor: pointer;
         color: var(--text-dim);
       }
+
+      .modal-overlay {
+        transition: opacity 0.3s ease;
+        display: none; /* по умолчанию скрыто */
+      }
+
+      /* Анимация контента */
+      .modal-content {
+        transform: translateY(20px);
+        animation: slideUp 0.3s forwards ease-out;
+      }
+
+      @keyframes slideUp {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      #qrcode img {
+        border-radius: 8px; /* Скругляем края самого QR-кода */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
     </style>
   </head>
   <body>
@@ -369,9 +392,9 @@
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
-          
-          {# СКРЫВАЕМ ПРОГРЕСС-БАР, ЕСЛИ ЛИМИТ НЕ ЗАДАН ИЛИ РАВЕН 0 #}
-          {% if limit and limit > 0 %}
+
+          {# СКРЫВАЕМ ПРОГРЕСС-БАР, ЕСЛИ ЛИМИТ НЕ ЗАДАН ИЛИ РАВЕН 0 #} {% if
+          limit and limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -404,83 +427,116 @@
       <main class="action-box">
         <h2 class="section-title">1. Призовите Happ</h2>
         <div class="os-list">
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-windows"></i> Windows</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe" class="btn-dl">
-                        <i class="fab fa-windows"></i> Скачать Happ (.exe)
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-windows"></i> Windows</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                class="btn-dl"
+              >
+                <i class="fab fa-windows"></i> Скачать Happ (.exe)
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-apple"></i> macOS</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl">
-                        <i class="fas fa-hard-drive"></i> Скачать .dmg
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> macOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                class="btn-dl"
+              >
+                <i class="fas fa-hard-drive"></i> Скачать .dmg
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-linux"></i> Linux</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb" class="btn-dl">
-                        <i class="fas fa-box"></i> Скачать .deb
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm" class="btn-dl">
-                        <i class="fas fa-box"></i> Скачать .rpm
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst" class="btn-dl">
-                        <i class="fas fa-file-archive"></i> Скачать .pkg
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-linux"></i> Linux</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .deb
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
+                class="btn-dl"
+              >
+                <i class="fas fa-box"></i> Скачать .rpm
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-archive"></i> Скачать .pkg
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-android"></i> Android</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl">
-                        <i class="fab fa-google-play"></i> Google Play
-                    </a>
-                    <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl">
-                        <i class="fas fa-file-download"></i> Скачать APK
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-android"></i> Android</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.happproxy"
+                class="btn-dl"
+              >
+                <i class="fab fa-google-play"></i> Google Play
+              </a>
+              <a
+                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
+                class="btn-dl"
+              >
+                <i class="fas fa-file-download"></i> Скачать APK
+              </a>
+            </div>
+          </div>
 
-            <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header">
-                    <span><i class="fab fa-apple"></i> iOS</span>
-                    <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                        <i class="fab fa-apple"></i> App Store
-                    </a>
-                    <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                        <i class="fas fa-store"></i> Ru Store
-                    </a>
-                </div>
+          <div class="os-item" onclick="this.classList.toggle('open')">
+            <div class="os-header">
+              <span><i class="fab fa-apple"></i> iOS</span>
+              <i class="fas fa-chevron-down arrow"></i>
             </div>
+            <div class="os-content">
+              <a
+                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                class="btn-dl"
+              >
+                <i class="fab fa-apple"></i> App Store
+              </a>
+              <a
+                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                class="btn-dl"
+              >
+                <i class="fas fa-store"></i> Ru Store
+              </a>
+            </div>
+          </div>
         </div>
 
         {# ЛОГИКА ОТОБРАЖЕНИЯ СОГЛАСНО ПУНКТУ 2 #} {% if user.status == 'active'
@@ -585,27 +641,45 @@
         const modal = document.getElementById("qrModal");
         const qrContainer = document.getElementById("qrcode");
 
-        // Очищаем старый код если был
+        // Полная очистка перед генерацией
         qrContainer.innerHTML = "";
 
-        // Генерируем новый
-        new QRCode(qrContainer, {
-          text: link,
-          width: 200,
-          height: 200,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H,
-        });
+        // Генерируем QR
+        // Используем тайм-аут в 10мс, чтобы браузер успел отрисовать модалку
+        // до тяжелой операции генерации (улучшает плавность)
+        setTimeout(() => {
+          new QRCode(qrContainer, {
+            text: link,
+            width: 220, // Немного увеличил для солидности
+            height: 220,
+            colorDark: "#0b0d14", // Цвет под темную тему Cracken
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+          });
+
+          // Центрируем картинку внутри блока, если библиотека выдаст смещение
+          const img = qrContainer.querySelector("img");
+          if (img) img.style.margin = "0 auto";
+        }, 10);
 
         modal.style.display = "flex";
+        // Добавляем класс для анимации (если пропишешь в CSS)
+        modal.classList.add("fade-in");
       }
 
       function closeQR() {
-        document.getElementById("qrModal").style.display = "none";
+        const modal = document.getElementById("qrModal");
+        modal.style.display = "none";
       }
 
-      // Закрытие по ESC
+      // Закрытие по клику на область вокруг модалки
+      window.onclick = function (event) {
+        const modal = document.getElementById("qrModal");
+        if (event.target == modal) {
+          closeQR();
+        }
+      };
+
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeQR();
       });
