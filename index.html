@@ -188,7 +188,6 @@
         margin: 24px 0 12px;
         color: var(--text-dim);
         text-transform: uppercase;
-        /* Выравнивание по центру согласно пункту 1 */
         text-align: center;
       }
 
@@ -247,16 +246,92 @@
         box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
       }
 
+      /* Row for Copy and QR */
+      .action-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
       .btn-secondary {
         background: var(--bg-card);
         color: var(--text-main);
         border: 1px solid var(--border);
-        width: 100%;
+        flex-grow: 1; /* Кнопка копирования занимает оставшееся место */
         padding: 14px;
         border-radius: 14px;
         cursor: pointer;
-        margin-top: 10px;
         font-weight: 600;
+      }
+
+      .btn-qr {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 80px; /* Фиксированная ширина как просил */
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      /* Modal for QR */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background: var(--bg-card);
+        padding: 25px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        text-align: center;
+        position: relative;
+        max-width: 280px;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+      }
+      .modal-overlay.active .modal-content {
+        transform: translateY(0);
+      }
+
+      #qrcode {
+        background: #fff;
+        padding: 12px;
+        border-radius: 12px;
+        display: inline-block;
+        margin: 15px 0;
+      }
+      #qrcode img {
+        display: block;
+        margin: 0 auto;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 12px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--text-dim);
       }
 
       .status-active {
@@ -278,98 +353,13 @@
         font-size: 13px;
         font-weight: 500;
       }
-
-      /* Кнопка QR и контейнер для кнопок */
-      .action-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .btn-qr {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        width: 80px;
-        border-radius: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-
-      /* Модальное окно */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .modal-content {
-        background: var(--bg-card);
-        padding: 30px;
-        border-radius: 24px;
-        border: 1px solid var(--border);
-        text-align: center;
-        position: relative;
-        max-width: 90%;
-      }
-
-      #qrcode {
-        padding: 15px;
-        background: white; /* Белый фон для лучшей читаемости кода */
-        border-radius: 12px;
-        display: inline-block;
-        margin-bottom: 15px;
-      }
-
-      .modal-close {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-dim);
-      }
-
-      .modal-overlay {
-        transition: opacity 0.3s ease;
-        display: none; /* по умолчанию скрыто */
-      }
-
-      /* Анимация контента */
-      .modal-content {
-        transform: translateY(20px);
-        animation: slideUp 0.3s forwards ease-out;
-      }
-
-      @keyframes slideUp {
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      #qrcode img {
-        border-radius: 8px; /* Скругляем края самого QR-кода */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
     </style>
   </head>
   <body>
-    {# РАСЧЕТ ПРОЦЕНТА #} {% set used = user.used_traffic | default(0) %} {% set
-    limit = user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set
-    percent = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %}
-    {% endif %} {% set display_percent = percent if percent <= 100 else 100 %}
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
 
     <div class="container">
       <header class="header">
@@ -392,9 +382,6 @@
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
-
-          {# СКРЫВАЕМ ПРОГРЕСС-БАР, ЕСЛИ ЛИМИТ НЕ ЗАДАН ИЛИ РАВЕН 0 #} {% if
-          limit and limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -402,7 +389,6 @@
           >
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
-          {% endif %}
         </div>
 
         <div class="stat-card">
@@ -411,15 +397,16 @@
             class="stat-value {% if user.status == 'active' and percent < 100 %}status-active{% else %}status-expired{% endif %}"
           >
             {% if user.status == 'active' and percent < 100 %}На плаву{% else
-            %}Достигнут лимит трафика{% endif %}
+            %}Трафик ушел на дно{% endif %}
           </strong>
         </div>
         <div class="stat-card">
           <span class="stat-label">Поглощено</span>
           <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}
-            <span class="gold">∞</span> {% else %} {{ limit | bytesformat }} {%
-            endif %}
+            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
+              class="gold"
+              >∞</span
+            >{% else %}{{ limit | bytesformat }}{% endif %}
           </strong>
         </div>
       </section>
@@ -441,61 +428,6 @@
               </a>
             </div>
           </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> macOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-              >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                class="btn-dl"
-              >
-                <i class="fas fa-hard-drive"></i> Скачать .dmg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-linux"></i> Linux</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .deb
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .rpm
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-archive"></i> Скачать .pkg
-              </a>
-            </div>
-          </div>
-
           <div class="os-item" onclick="this.classList.toggle('open')">
             <div class="os-header">
               <span><i class="fab fa-android"></i> Android</span>
@@ -508,18 +440,11 @@
               >
                 <i class="fab fa-google-play"></i> Google Play
               </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-download"></i> Скачать APK
-              </a>
             </div>
           </div>
-
           <div class="os-item" onclick="this.classList.toggle('open')">
             <div class="os-header">
-              <span><i class="fab fa-apple"></i> iOS</span>
+              <span><i class="fab fa-apple"></i> iOS / macOS</span>
               <i class="fas fa-chevron-down arrow"></i>
             </div>
             <div class="os-content">
@@ -529,26 +454,19 @@
               >
                 <i class="fab fa-apple"></i> App Store
               </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
             </div>
           </div>
         </div>
 
-        {# ЛОГИКА ОТОБРАЖЕНИЯ СОГЛАСНО ПУНКТУ 2 #} {% if user.status == 'active'
-        and percent < 100 %}
+        {% if user.status == 'active' and percent < 100 %}
         <h2 class="section-title">2. Установите связь</h2>
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
           >📥 ВЦЕПИТЬСЯ В Happ</a
         >
+
         <div class="action-row">
           <button
             class="btn-secondary"
-            style="margin-top: 0"
             onclick="copyLink('{{ user.subscription_url }}', this)"
           >
             Копировать руну
@@ -559,19 +477,6 @@
           >
             <i class="fas fa-qrcode"></i>
           </button>
-        </div>
-
-        <div id="qrModal" class="modal-overlay" onclick="closeQR()">
-          <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="modal-close" onclick="closeQR()">&times;</span>
-            <h3 style="margin-top: 0">Сканируй руну</h3>
-            <div id="qrcode"></div>
-            <p
-              style="font-size: 12px; color: var(--text-dim); margin-bottom: 0"
-            >
-              Наведи камеру Happ на этот код
-            </p>
-          </div>
         </div>
 
         <a href="https://t.me/CrackenVPN_bot" class="footer-link">
@@ -588,45 +493,64 @@
       </main>
     </div>
 
+    <div id="qrModal" class="modal-overlay" onclick="closeQR()">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="modal-close" onclick="closeQR()">&times;</span>
+        <h3 style="margin-top: 0; font-size: 16px">Сканируй руну</h3>
+        <div id="qrcode"></div>
+        <p style="font-size: 12px; color: var(--text-dim); margin: 0">
+          Открой камеру в Happ и наведи на код
+        </p>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script>
-      // Плавная прогрессия цвета
+      // 1. Ждем загрузки DOM для работы с элементами
+      document.addEventListener("DOMContentLoaded", () => {
+        updateProgressColor();
+
+        // Настройка темы
+        const toggleBtn = document.getElementById("theme-toggle");
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem("theme") || "dark";
+
+        html.setAttribute("data-theme", savedTheme);
+        updateIcon(savedTheme);
+
+        toggleBtn.addEventListener("click", () => {
+          const currentTheme = html.getAttribute("data-theme");
+          const newTheme = currentTheme === "dark" ? "light" : "dark";
+          html.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+          updateIcon(newTheme);
+        });
+      });
+
       function updateProgressColor() {
         const pg = document.getElementById("progress-circle");
+        if (!pg) return;
         const percent =
           parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
-        const hue = Math.max(0, 120 - percent * 1.2); // 120 (Green) to 0 (Red)
+        const hue = Math.max(0, 120 - percent * 1.2);
         pg.style.setProperty("--dynamic-color", `hsl(${hue}, 75%, 50%)`);
       }
 
-      updateProgressColor();
-
-      const toggleBtn = document.getElementById("theme-toggle");
-      const html = document.documentElement;
-
-      const savedTheme = localStorage.getItem("theme") || "dark";
-      html.setAttribute("data-theme", savedTheme);
-      updateIcon(savedTheme);
-
-      toggleBtn.addEventListener("click", () => {
-        const currentTheme = html.getAttribute("data-theme");
-        const newTheme = currentTheme === "dark" ? "light" : "dark";
-        html.setAttribute("data-theme", newTheme);
-        localStorage.setItem("theme", newTheme);
-        updateIcon(newTheme);
-      });
-
       function updateIcon(theme) {
-        toggleBtn.innerHTML =
+        const btn = document.getElementById("theme-toggle");
+        btn.innerHTML =
           theme === "dark"
             ? '<i class="fas fa-moon"></i>'
             : '<i class="fas fa-sun"></i>';
       }
 
+      // 2. Копирование
       async function copyLink(link, button) {
         try {
           await navigator.clipboard.writeText(link);
           const oldText = button.textContent;
-          button.textContent = "Свиток скопирован!";
+          button.textContent = "Скопировано!";
           setTimeout(() => {
             button.textContent = oldText;
           }, 1500);
@@ -635,50 +559,28 @@
         }
       }
 
-      let qrInstance = null;
-
+      // 3. QR Логика
       function showQR(link) {
         const modal = document.getElementById("qrModal");
         const qrContainer = document.getElementById("qrcode");
+        if (!modal || !qrContainer) return;
 
-        // Полная очистка перед генерацией
         qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+          text: link,
+          width: 180,
+          height: 180,
+          colorDark: "#0b0d14",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
 
-        // Генерируем QR
-        // Используем тайм-аут в 10мс, чтобы браузер успел отрисовать модалку
-        // до тяжелой операции генерации (улучшает плавность)
-        setTimeout(() => {
-          new QRCode(qrContainer, {
-            text: link,
-            width: 220, // Немного увеличил для солидности
-            height: 220,
-            colorDark: "#0b0d14", // Цвет под темную тему Cracken
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H,
-          });
-
-          // Центрируем картинку внутри блока, если библиотека выдаст смещение
-          const img = qrContainer.querySelector("img");
-          if (img) img.style.margin = "0 auto";
-        }, 10);
-
-        modal.style.display = "flex";
-        // Добавляем класс для анимации (если пропишешь в CSS)
-        modal.classList.add("fade-in");
+        modal.classList.add("active");
       }
 
       function closeQR() {
-        const modal = document.getElementById("qrModal");
-        modal.style.display = "none";
+        document.getElementById("qrModal").classList.remove("active");
       }
-
-      // Закрытие по клику на область вокруг модалки
-      window.onclick = function (event) {
-        const modal = document.getElementById("qrModal");
-        if (event.target == modal) {
-          closeQR();
-        }
-      };
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeQR();
