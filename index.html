@@ -13,7 +13,7 @@
             --bg-item: #1c2230;
             --text-main: #ffffff;
             --text-dim: #717686;
-            --accent: #4d77ff; /* Ваш синий #4D77FF */
+            --accent: #4d77ff;
             --border: rgba(255, 255, 255, 0.05);
             --pg-bg: #1c2230;
             --pg-fill: #717686;
@@ -76,7 +76,7 @@
         .profile-info h3 { margin: 0; font-size: 16px; }
         .profile-info p { margin: 2px 0 0; font-size: 13px; color: var(--text-dim); }
 
-        /* Progress Bar */
+        /* Circle Progress */
         .traffic-progress {
             width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             background: conic-gradient(
@@ -126,9 +126,14 @@
 </head>
 <body>
 
+{# РАСЧЕТ ПРОЦЕНТА С ЗАЩИТОЙ #}
 {% set used = user.used_traffic | default(0) %}
 {% set limit = user.data_limit | default(0) %}
-{% set percent = ((used / limit) * 100) | round if limit > 0 else 0 %}
+{% if limit and limit > 0 %}
+    {% set percent = ((used / limit) * 100) | round %}
+{% else %}
+    {% set percent = 0 %}
+{% endif %}
 {% set display_percent = percent if percent <= 100 else 100 %}
 
 <div class="container">
@@ -165,7 +170,7 @@
             <span class="stat-label">Поглощено</span>
             <strong class="stat-value">
                 {{ used | bytesformat }} / 
-                {% if not limit %} <span class="gold">∞</span> {% else %} {{ limit | bytesformat }} {% endif %}
+                {% if not limit or limit == 0 %} <span class="gold">∞</span> {% else %} {{ limit | bytesformat }} {% endif %}
             </strong>
         </div>
     </section>
@@ -180,23 +185,15 @@
                 </div>
             </div>
             <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header"><span><i class="fab fa-apple"></i> macOS</span> <i class="fas fa-chevron-down arrow"></i></div>
-                <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"><i class="fab fa-apple"></i> App Store</a>
-                    <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl"><i class="fas fa-hard-drive"></i> Скачать .dmg</a>
-                </div>
-            </div>
-            <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header"><span><i class="fab fa-android"></i> Android</span> <i class="fas fa-chevron-down arrow"></i></div>
                 <div class="os-content">
                     <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl"><i class="fab fa-google-play"></i> Google Play</a>
-                    <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl"><i class="fas fa-file-download"></i> Скачать APK</a>
                 </div>
             </div>
             <div class="os-item" onclick="this.classList.toggle('open')">
-                <div class="os-header"><span><i class="fab fa-apple"></i> iOS</span> <i class="fas fa-chevron-down arrow"></i></div>
+                <div class="os-header"><span><i class="fab fa-apple"></i> iOS / macOS</span> <i class="fas fa-chevron-down arrow"></i></div>
                 <div class="os-content">
-                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"><i class="fab fa-apple"></i> App Store (Global)</a>
+                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"><i class="fab fa-apple"></i> App Store</a>
                 </div>
             </div>
         </div>
@@ -212,7 +209,6 @@
 </div>
 
 <script>
-    // Тема
     const toggleBtn = document.getElementById('theme-toggle');
     const html = document.documentElement;
 
@@ -232,7 +228,6 @@
         toggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     }
 
-    // Копирование
     async function copyLink(link, button) {
         try {
             await navigator.clipboard.writeText(link);
