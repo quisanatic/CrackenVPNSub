@@ -489,32 +489,33 @@
             </span>
             <div
               style="
-                display: flex;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
                 align-items: center;
                 margin-top: 10px;
+                gap: 10px;
               "
             >
-              <div>
+              <div style="text-align: left; min-width: 0;">
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
                   Начало
                 </p>
-                <strong style="font-size: 13px"
-                  >{{ user.created_at | datetime if user.created_at else '—'
-                  }}</strong
-                >
+                <strong style="font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {{ user.created_at | datetime if user.created_at else '—' }}
+                </strong>
               </div>
-              <div style="color: var(--text-dim)">
+
+              <div style="color: var(--text-dim); display: flex; justify-content: center; width: 30px;">
                 <i class="fas fa-long-arrow-alt-right"></i>
               </div>
-              <div style="text-align: right">
+
+              <div style="text-align: right; min-width: 0;">
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
                   Конец
                 </p>
-                <strong style="font-size: 13px; color: var(--accent)"
-                  >{% if not user.expire %}Никогда{% else %}{{ user.expire |
-                  datetime }}{% endif %}</strong
-                >
+                <strong style="font-size: 13px; color: var(--accent); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}
+                </strong>
               </div>
             </div>
           </div>
