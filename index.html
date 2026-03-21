@@ -368,10 +368,10 @@
   </head>
 
   <body>
-    {% set used = user.used_traffic or 0 %} {% set limit = user.data_limit or 0
-    %} {% if limit > 0 %} {% set percent = (used / limit * 100) | round | int %}
-    {% if percent > 100 %}{% set percent = 100 %}{% endif %} {% else %} {% set
-    percent = 0 %} {% endif %}
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
@@ -402,6 +402,7 @@
               <p>@{{ user.username }}</p>
             </div>
           </div>
+          {% if limit and limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -409,6 +410,7 @@
           >
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
+          {% endif %}
         </div>
 
         <div class="stat-card">
@@ -487,32 +489,33 @@
             </span>
             <div
               style="
-                display: flex;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
                 align-items: center;
                 margin-top: 10px;
+                gap: 10px;
               "
             >
-              <div>
+              <div style="text-align: left; min-width: 0;">
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
                   Начало
                 </p>
-                <strong style="font-size: 13px"
-                  >{{ user.created_at | datetime if user.created_at else '—'
-                  }}</strong
-                >
+                <strong style="font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {{ user.created_at | datetime if user.created_at else '—' }}
+                </strong>
               </div>
-              <div style="color: var(--text-dim)">
+
+              <div style="color: var(--text-dim); display: flex; justify-content: center; width: 30px;">
                 <i class="fas fa-long-arrow-alt-right"></i>
               </div>
-              <div style="text-align: right">
+
+              <div style="text-align: right; min-width: 0;">
                 <p style="font-size: 11px; color: var(--text-dim); margin: 0">
                   Конец
                 </p>
-                <strong style="font-size: 13px; color: var(--accent)"
-                  >{% if not user.expire %}Никогда{% else %}{{ user.expire |
-                  datetime }}{% endif %}</strong
-                >
+                <strong style="font-size: 13px; color: var(--accent); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}
+                </strong>
               </div>
             </div>
           </div>
@@ -655,7 +658,7 @@
           </button>
         </div>
         <a href="https://t.me/CrackenVPN_bot" class="footer-link"
-          ><i class="fab fa-telegram-plane"></i> Бот управления</a
+          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
         >
         {% else %}
         <a
