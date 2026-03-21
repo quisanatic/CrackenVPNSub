@@ -1,689 +1,800 @@
 <!doctype html>
 <html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
+      type="image/x-icon"
+    />
+    <title>Cracken VPN | {{ user.username }}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
-    type="image/x-icon" />
-  <title>Cracken VPN | {{ user.username }}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+      :root[data-theme="dark"] {
+        --bg-body: #0b0d14;
+        --bg-card: #161a26;
+        --bg-item: #1c2230;
+        --text-main: #ffffff;
+        --text-dim: #717686;
+        --accent: #4d77ff;
+        --border: rgba(255, 255, 255, 0.05);
+        --pg-bg: #1c2230;
+        --pg-fill: #4d77ff;
+        /* Цвета анимации для темной темы */
+        --net-color: rgba(120, 120, 120, 0.2);
+        /* Серый цвет сети */
+        --pulse-color: rgba(200, 200, 200, 0.8);
+        /* Цвет импульса данных */
+      }
 
-  <style>
-    :root[data-theme="dark"] {
-      --bg-body: #0b0d14;
-      --bg-card: #161a26;
-      --bg-item: #1c2230;
-      --text-main: #ffffff;
-      --text-dim: #717686;
-      --accent: #4d77ff;
-      --border: rgba(255, 255, 255, 0.05);
-      --pg-bg: #1c2230;
-      --pg-fill: #4d77ff;
-      /* Цвета анимации для темной темы */
-      --net-color: rgba(120, 120, 120, 0.2);
-      /* Серый цвет сети */
-      --pulse-color: rgba(200, 200, 200, 0.8);
-      /* Цвет импульса данных */
-    }
+      :root[data-theme="light"] {
+        --bg-body: #f4f7fa;
+        --bg-card: #ffffff;
+        --bg-item: #f8f9fc;
+        --text-main: #1a1c23;
+        --text-dim: #676d7c;
+        --accent: #3b5bdb;
+        --border: rgba(0, 0, 0, 0.05);
+        --pg-bg: #e1e7f0;
+        --pg-fill: #4d77ff;
+        /* Цвета анимации для светлой темы */
+        --net-color: rgba(100, 100, 100, 0.15);
+        --pulse-color: rgba(77, 119, 255, 0.6);
+      }
 
-    :root[data-theme="light"] {
-      --bg-body: #f4f7fa;
-      --bg-card: #ffffff;
-      --bg-item: #f8f9fc;
-      --text-main: #1a1c23;
-      --text-dim: #676d7c;
-      --accent: #3b5bdb;
-      --border: rgba(0, 0, 0, 0.05);
-      --pg-bg: #e1e7f0;
-      --pg-fill: #4d77ff;
-      /* Цвета анимации для светлой темы */
-      --net-color: rgba(100, 100, 100, 0.15);
-      --pulse-color: rgba(77, 119, 255, 0.6);
-    }
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        font-family:
+          "Inter",
+          -apple-system,
+          sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        margin: 0;
+        padding: 20px;
+        position: relative;
+        min-height: 100vh;
+      }
 
-    body {
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      font-family:
-        "Inter",
-        -apple-system,
-        sans-serif;
-      transition:
-        background 0.3s,
-        color 0.3s;
-      margin: 0;
-      padding: 20px;
-      position: relative;
-      min-height: 100vh;
-    }
+      /* Холст для фона */
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
 
-    /* Холст для фона */
-    #particle-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
+      .container {
+        max-width: 480px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
 
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
+      .logo-text {
+        font-weight: 800;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-    .logo-text {
-      font-weight: 800;
-      font-size: 18px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+      .theme-btn {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .theme-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+      .user-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
 
-    .user-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
+      .user-card.profile {
+        grid-column: span 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 20px;
+      }
 
-    .user-card.profile {
-      grid-column: span 2;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 20px;
-    }
+      .stat-card,
+      .user-card {
+        background: var(--bg-card);
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        backdrop-filter: blur(8px);
+        /* Легкое размытие для читаемости */
+      }
 
-    .stat-card,
-    .user-card {
-      background: var(--bg-card);
-      border-radius: 18px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(8px);
-      /* Легкое размытие для читаемости */
-    }
+      .profile-info-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
 
-    .profile-info-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+      .user-svg-large {
+        width: 28px;
+        height: 28px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
 
-    .user-svg-large {
-      width: 28px;
-      height: 28px;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
+      .text-group {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
 
-    .text-group {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.1;
-    }
+      .text-group h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
 
-    .text-group h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-    }
+      .text-group p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: var(--text-dim);
+      }
 
-    .text-group p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--text-dim);
-    }
+      .stat-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        margin-bottom: 2px;
+      }
 
-    .stat-icon {
-      width: 18px;
-      height: 18px;
-      color: var(--accent);
-      margin-bottom: 2px;
-    }
+      .traffic-progress {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: conic-gradient(
+          var(--dynamic-color, var(--pg-fill)) calc(var(--pg-percent) * 1%),
+          var(--pg-bg) calc(var(--pg-percent) * 1%)
+        );
+        position: relative;
+        flex-shrink: 0;
+      }
 
-    .traffic-progress {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: conic-gradient(var(--dynamic-color, var(--pg-fill)) calc(var(--pg-percent) * 1%),
-          var(--pg-bg) calc(var(--pg-percent) * 1%));
-      position: relative;
-      flex-shrink: 0;
-    }
+      .traffic-progress::after {
+        content: "";
+        position: absolute;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: var(--bg-card);
+      }
 
-    .traffic-progress::after {
-      content: "";
-      position: absolute;
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: var(--bg-card);
-    }
+      .pg-text {
+        position: relative;
+        z-index: 1;
+        font-weight: 800;
+        font-size: 13px;
+      }
 
-    .pg-text {
-      position: relative;
-      z-index: 1;
-      font-weight: 800;
-      font-size: 13px;
-    }
+      .stat-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
 
-    .stat-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
+      .stat-value {
+        font-size: 15px;
+        font-weight: 700;
+      }
 
-    .stat-value {
-      font-size: 15px;
-      font-weight: 700;
-    }
+      .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 24px 0 12px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        text-align: center;
+      }
 
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      margin: 24px 0 12px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      text-align: center;
-    }
+      .os-item {
+        background: var(--bg-card);
+        border-radius: 14px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
 
-    .os-item {
-      background: var(--bg-card);
-      border-radius: 14px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
+      .os-header {
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+      }
 
-    .os-header {
-      padding: 14px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-    }
+      .os-content {
+        display: none;
+        padding: 0 16px 16px;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-    .os-content {
-      display: none;
-      padding: 0 16px 16px;
-      flex-direction: column;
-      gap: 8px;
-    }
+      .os-item.open .os-content {
+        display: flex;
+      }
 
-    .os-item.open .os-content {
-      display: flex;
-    }
+      .btn-dl {
+        background: var(--bg-item);
+        color: var(--text-main);
+        text-decoration: none;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-    .btn-dl {
-      background: var(--bg-item);
-      color: var(--text-main);
-      text-decoration: none;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+      .btn-main {
+        background: var(--accent);
+        color: white;
+        display: block;
+        text-align: center;
+        padding: 16px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
 
-    .btn-main {
-      background: var(--accent);
-      color: white;
-      display: block;
-      text-align: center;
-      padding: 16px;
-      border-radius: 14px;
-      text-decoration: none;
-      font-weight: 700;
-      margin-top: 15px;
-      box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+      .action-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-    .action-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+      .btn-secondary {
+        background: var(--bg-card);
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        flex-grow: 1;
+        padding: 14px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 600;
+      }
 
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      flex-grow: 1;
-      padding: 14px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
+      .btn-qr {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        width: 80px;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
 
-    .btn-qr {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      width: 80px;
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
+      .status-active {
+        color: #2ecc71;
+      }
 
-    .status-active {
-      color: #2ecc71;
-    }
+      .status-expired {
+        color: #e74c3c;
+      }
 
-    .status-expired {
-      color: #e74c3c;
-    }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
+      .modal-overlay.active {
+        display: flex;
+      }
 
-    .modal-overlay.active {
-      display: flex;
-    }
+      .modal-content {
+        background: var(--bg-card);
+        padding: 25px;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 280px;
+      }
 
-    .modal-content {
-      background: var(--bg-card);
-      padding: 25px;
-      border-radius: 24px;
-      text-align: center;
-      max-width: 280px;
-    }
+      #qrcode {
+        background: #fff;
+        padding: 12px;
+        border-radius: 12px;
+        margin: 15px 0;
+        display: inline-block;
+      }
 
-    #qrcode {
-      background: #fff;
-      padding: 12px;
-      border-radius: 12px;
-      margin: 15px 0;
-      display: inline-block;
-    }
+      .footer-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 13px;
+      }
 
-    .footer-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 13px;
-    }
+      @font-face {
+        font-family: "Twemoji Country Flags";
+        src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2")
+          format("woff2");
+      }
 
-    @font-face {
-      font-family: "Twemoji Country Flags";
-      src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2") format("woff2");
-    }
+      .server-title {
+        font-family:
+          "Twemoji Country Flags",
+          "Inter",
+          -apple-system,
+          sans-serif !important;
+      }
 
-    .server-title {
-      font-family:
-        "Twemoji Country Flags",
-        "Inter",
-        -apple-system,
-        sans-serif !important;
-    }
+      img.emoji {
+        height: 1.2em;
+        width: 1.2em;
+        margin: 0 0.1em 0 0.1em;
+        vertical-align: -0.2em;
+        display: inline-block;
+      }
 
-    img.emoji {
-      height: 1.2em;
-      width: 1.2em;
-      margin: 0 0.1em 0 0.1em;
-      vertical-align: -0.2em;
-      display: inline-block;
-    }
+      /* Общие стили для заголовков секций внутри раскрывашек */
+      .os-header .section-title {
+        color: var(--text-main);
+        text-align: left;
+      }
 
-    /* Общие стили для заголовков секций внутри раскрывашек */
-    .os-header .section-title {
-      color: var(--text-main);
-      text-align: left;
-    }
+      /* Анимация вращения стрелочки */
+      .arrow {
+        transition: transform 0.3s ease;
+        color: var(--text-dim);
+      }
 
-    /* Анимация вращения стрелочки */
-    .arrow {
-      transition: transform 0.3s ease;
-      color: var(--text-dim);
-    }
+      .os-item.open > .os-header .arrow {
+        transform: rotate(180deg);
+      }
 
-    .os-item.open>.os-header .arrow {
-      transform: rotate(180deg);
-    }
+      /* Чтобы контент внутри не накладывался при сворачивании */
+      .os-content {
+        transition: all 0.3s ease;
+      }
+    </style>
+  </head>
 
-    /* Чтобы контент внутри не накладывался при сворачивании */
-    .os-content {
-      transition: all 0.3s ease;
-    }
-  </style>
-</head>
+  <body>
+    <canvas id="particle-canvas"></canvas>
 
-<body>
-  <canvas id="particle-canvas"></canvas>
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
+    <div class="container">
+      <header class="header">
+        <div class="logo-text">🐙 Cracken VPN</div>
+        <button id="theme-toggle" class="theme-btn">
+          <i class="fas fa-moon"></i>
+        </button>
+      </header>
 
-  {% set used = user.used_traffic | default(0) %} {% set limit =
-  user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
-  = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
-  endif %} {% set display_percent = percent if percent <= 100 else 100 %} <div class="container">
-    <header class="header">
-      <div class="logo-text">🐙 Cracken VPN</div>
-      <button id="theme-toggle" class="theme-btn">
-        <i class="fas fa-moon"></i>
-      </button>
-    </header>
-
-    <section class="user-grid">
-      <div class="user-card profile">
-        <div class="profile-info-wrapper">
-          <svg class="user-svg-large" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
-          <div class="text-group">
-            <h3>{{ user.username }}</h3>
-            <p>@{{ user.username }}</p>
-          </div>
-        </div>
-        {% if limit and limit > 0 %}
-        <div id="progress-circle" class="traffic-progress" style="--pg-percent: {{ display_percent }};">
-          <span class="pg-text">{{ display_percent }}%</span>
-        </div>
-        {% endif %}
-      </div>
-
-      <div class="stat-card">
-        <span class="stat-label">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-            </path>
-          </svg>
-          Статус
-        </span>
-        <strong
-          class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}">
-          {% if user.status == 'active' and (limit == 0 or percent < 100) %}Активен{% else %}Истек{% endif %} </strong>
-      </div>
-
-      <div class="stat-card">
-        <span class="stat-label">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-          </svg>
-          Трафик
-        </span>
-        <strong class="stat-value">
-          {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
-            style="font-size: 13px; color: var(--accent)">Неограниченный</span>{% else %}{{ limit | bytesformat }}{%
-          endif %}
-        </strong>
-      </div>
-      <div class="user-card profile" style="grid-column: span 2; margin-top: 4px">
-        <div style="width: 100%">
-          <span class="stat-label">
-            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      <section class="user-grid">
+        <div class="user-card profile">
+          <div class="profile-info-wrapper">
+            <svg
+              class="user-svg-large"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
             </svg>
-            Срок действия
+            <div class="text-group">
+              <h3>{{ user.username }}</h3>
+              <p>@{{ user.username }}</p>
+            </div>
+          </div>
+          {% if limit and limit > 0 %}
+          <div
+            id="progress-circle"
+            class="traffic-progress"
+            style="--pg-percent: {{ display_percent }};"
+          >
+            <span class="pg-text">{{ display_percent }}%</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            <svg
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            Статус
           </span>
-          <div style="
+          <strong
+            class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}"
+          >
+            {% if user.status == 'active' and (limit == 0 or percent < 100)
+            %}Активен{% else %}Истек{% endif %}
+          </strong>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label">
+            <svg
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+              ></path>
+            </svg>
+            Трафик
+          </span>
+          <strong class="stat-value">
+            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
+              style="font-size: 13px; color: var(--accent)"
+              >Неограниченный</span
+            >{% else %}{{ limit | bytesformat }}{% endif %}
+          </strong>
+        </div>
+        <div
+          class="user-card profile"
+          style="grid-column: span 2; margin-top: 4px"
+        >
+          <div style="width: 100%">
+            <span class="stat-label">
+              <svg
+                class="stat-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Срок действия
+            </span>
+            <div
+              style="
                 display: grid;
                 grid-template-columns: 1fr auto 1fr;
                 align-items: center;
                 margin-top: 10px;
                 gap: 10px;
-              ">
-            <div style="text-align: left; min-width: 0">
-              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
-                Начало
-              </p>
-              <strong style="
+              "
+            >
+              <div style="text-align: left; min-width: 0">
+                <p
+                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
+                >
+                  Начало
+                </p>
+                <strong
+                  style="
                     font-size: 13px;
                     display: block;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                  ">
-                {{ user.created_at | datetime if user.created_at else '—' }}
-              </strong>
-            </div>
+                  "
+                >
+                  {{ user.created_at | datetime if user.created_at else '—' }}
+                </strong>
+              </div>
 
-            <div style="
+              <div
+                style="
                   color: var(--text-dim);
                   display: flex;
                   justify-content: center;
                   width: 30px;
-                ">
-              <i class="fas fa-long-arrow-alt-right"></i>
-            </div>
+                "
+              >
+                <i class="fas fa-long-arrow-alt-right"></i>
+              </div>
 
-            <div style="text-align: right; min-width: 0">
-              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
-                Конец
-              </p>
-              <strong style="
+              <div style="text-align: right; min-width: 0">
+                <p
+                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
+                >
+                  Конец
+                </p>
+                <strong
+                  style="
                     font-size: 13px;
                     color: var(--accent);
                     display: block;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                  ">
-                {% if not user.expire %}Никогда{% else %}{{ user.expire |
-                datetime }}{% endif %}
-              </strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <main>
-      <div class="os-item" onclick="this.classList.toggle('open')">
-        <div class="os-header">
-          <h2 class="section-title" style="margin: 0">
-            1. Установка клиента
-          </h2>
-          <i class="fas fa-chevron-down arrow"></i>
-        </div>
-        <div class="os-content">
-          <div class="os-list">
-            <div class="os-item" onclick="this.classList.toggle('open')">
-              <div class="os-header">
-                <span><i class="fab fa-windows"></i> Windows</span>
-                <i class="fas fa-chevron-down arrow"></i>
-              </div>
-              <div class="os-content">
-                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                  class="btn-dl">
-                  <i class="fab fa-windows"></i> Скачать Happ (.exe)
-                </a>
-              </div>
-            </div>
-
-            <div class="os-item" onclick="this.classList.toggle('open')">
-              <div class="os-header">
-                <span><i class="fab fa-apple"></i> macOS</span>
-                <i class="fas fa-chevron-down arrow"></i>
-              </div>
-              <div class="os-content">
-                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                  <i class="fab fa-apple"></i> App Store
-                </a>
-                <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                  <i class="fas fa-store"></i> Ru Store
-                </a>
-                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                  class="btn-dl">
-                  <i class="fas fa-hard-drive"></i> Скачать .dmg
-                </a>
-              </div>
-            </div>
-
-            <div class="os-item" onclick="this.classList.toggle('open')">
-              <div class="os-header">
-                <span><i class="fab fa-linux"></i> Linux</span>
-                <i class="fas fa-chevron-down arrow"></i>
-              </div>
-              <div class="os-content">
-                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                  class="btn-dl">
-                  <i class="fas fa-box"></i> Скачать .deb
-                </a>
-                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                  class="btn-dl">
-                  <i class="fas fa-box"></i> Скачать .rpm
-                </a>
-                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                  class="btn-dl">
-                  <i class="fas fa-file-archive"></i> Скачать .pkg
-                </a>
-              </div>
-            </div>
-
-            <div class="os-item" onclick="this.classList.toggle('open')">
-              <div class="os-header">
-                <span><i class="fab fa-android"></i> Android</span>
-                <i class="fas fa-chevron-down arrow"></i>
-              </div>
-              <div class="os-content">
-                <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl">
-                  <i class="fab fa-google-play"></i> Google Play
-                </a>
-                <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl">
-                  <i class="fas fa-file-download"></i> Скачать APK
-                </a>
-              </div>
-            </div>
-
-            <div class="os-item" onclick="this.classList.toggle('open')">
-              <div class="os-header">
-                <span><i class="fab fa-apple"></i> iOS</span>
-                <i class="fas fa-chevron-down arrow"></i>
-              </div>
-              <div class="os-content">
-                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl">
-                  <i class="fab fa-apple"></i> App Store
-                </a>
-                <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl">
-                  <i class="fas fa-store"></i> Ru Store
-                </a>
+                  "
+                >
+                  {% if not user.expire %}Никогда{% else %}{{ user.expire |
+                  datetime }}{% endif %}
+                </strong>
               </div>
             </div>
           </div>
-
         </div>
-      </div>
-      </div>
+      </section>
 
-      <div class="os-item" onclick="this.classList.toggle('open')">
-        <div class="os-header">
-          <h2 class="section-title" style="margin: 0">2. Локации</h2>
-          <i class="fas fa-chevron-down arrow"></i>
+      <main>
+        <div class="os-item" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">
+              1. Установка клиента
+            </h2>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+          <div class="os-content">
+            <div class="os-list">
+              <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                  <span><i class="fab fa-windows"></i> Windows</span>
+                  <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                    class="btn-dl"
+                  >
+                    <i class="fab fa-windows"></i> Скачать Happ (.exe)
+                  </a>
+                </div>
+              </div>
+
+              <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                  <span><i class="fab fa-apple"></i> macOS</span>
+                  <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a
+                    href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                    class="btn-dl"
+                  >
+                    <i class="fab fa-apple"></i> App Store
+                  </a>
+                  <a
+                    href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-store"></i> Ru Store
+                  </a>
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-hard-drive"></i> Скачать .dmg
+                  </a>
+                </div>
+              </div>
+
+              <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                  <span><i class="fab fa-linux"></i> Linux</span>
+                  <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-box"></i> Скачать .deb
+                  </a>
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-box"></i> Скачать .rpm
+                  </a>
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-file-archive"></i> Скачать .pkg
+                  </a>
+                </div>
+              </div>
+
+              <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                  <span><i class="fab fa-android"></i> Android</span>
+                  <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.happproxy"
+                    class="btn-dl"
+                  >
+                    <i class="fab fa-google-play"></i> Google Play
+                  </a>
+                  <a
+                    href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-file-download"></i> Скачать APK
+                  </a>
+                </div>
+              </div>
+
+              <div class="os-item" onclick="this.classList.toggle('open')">
+                <div class="os-header">
+                  <span><i class="fab fa-apple"></i> iOS</span>
+                  <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="os-content">
+                  <a
+                    href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                    class="btn-dl"
+                  >
+                    <i class="fab fa-apple"></i> App Store
+                  </a>
+                  <a
+                    href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                    class="btn-dl"
+                  >
+                    <i class="fas fa-store"></i> Ru Store
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="os-content">
-          <div class="os-list">
-            {% for link in user.links %}
-            <div class="os-item" style="cursor: default; margin-bottom: 10px">
-              <div class="os-header" style="
+
+        <div class="os-item" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">2. Локации</h2>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+          <div class="os-content">
+            <div class="os-list">
+              {% for link in user.links %}
+              <div class="os-item" style="cursor: default; margin-bottom: 10px">
+                <div
+                  class="os-header"
+                  style="
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
                     gap: 4px;
                     padding: 16px;
-                  ">
-                <span class="server-title" style="
+                  "
+                >
+                  <span
+                    class="server-title"
+                    style="
                       font-size: 16px;
                       font-weight: 700;
                       color: var(--text-main);
-                    ">
-                  {{ link.split('#')[1] if '#' in link else 'VPN Сервер' }}
-                </span>
-                <span style="
+                    "
+                  >
+                    {{ link.split('#')[1] if '#' in link else 'VPN Сервер' }}
+                  </span>
+                  <span
+                    style="
                       font-size: 11px;
                       color: var(--text-dim);
                       text-transform: uppercase;
                       letter-spacing: 0.8px;
-                    ">
-                  Протокол VLESS + Reality
-                </span>
+                    "
+                  >
+                    Протокол VLESS + Reality
+                  </span>
+                </div>
               </div>
+              {% endfor %}
             </div>
-            {% endfor %}
           </div>
         </div>
-      </div>
 
-      <div class="os-item open" onclick="this.classList.toggle('open')">
-        <div class="os-header">
-          <h2 class="section-title" style="margin: 0">3. Подключение</h2>
-          <i class="fas fa-chevron-down arrow"></i>
-        </div>
-        <div class="os-content" onclick="event.stopPropagation()">
-          <a href="happ://add/{{ user.subscription_url }}" class="btn-main">Подключиться к Happ</a>
-          <div class="action-row">
-            <button class="btn-secondary" onclick="copyLink('{{ user.subscription_url }}', this)">
-              Копировать ссылку
-            </button>
-            <button class="btn-qr" onclick="showQR('happ://add/{{ user.subscription_url }}')">
-              <i class="fas fa-qrcode"></i>
-            </button>
+        <div class="os-item open" onclick="this.classList.toggle('open')">
+          <div class="os-header">
+            <h2 class="section-title" style="margin: 0">3. Подключение</h2>
+            <i class="fas fa-chevron-down arrow"></i>
+          </div>
+          <div class="os-content" onclick="event.stopPropagation()">
+            <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
+              >Подключиться к Happ</a
+            >
+            <div class="action-row">
+              <button
+                class="btn-secondary"
+                onclick="copyLink('{{ user.subscription_url }}', this)"
+              >
+                Копировать ссылку
+              </button>
+              <button
+                class="btn-qr"
+                onclick="showQR('happ://add/{{ user.subscription_url }}')"
+              >
+                <i class="fas fa-qrcode"></i>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <a href="https://t.me/CrackenVPN_bot" class="footer-link"><i class="fab fa-telegram-plane"></i> Telegram-бот</a>
-    </main>
+        <a href="https://t.me/CrackenVPN_bot" class="footer-link"
+          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
+        >
+      </main>
     </div>
 
     <div id="qrModal" class="modal-overlay" onclick="closeQR()">
@@ -695,7 +806,10 @@
         </p>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
       // Инициализация интерфейса
@@ -906,6 +1020,5 @@
         parseFlags();
       });
     </script>
-</body>
-
+  </body>
 </html>
