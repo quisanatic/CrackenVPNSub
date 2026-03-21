@@ -368,10 +368,10 @@
   </head>
 
   <body>
-    {% set used = user.used_traffic or 0 %} {% set limit = user.data_limit or 0
-    %} {% if limit > 0 %} {% set percent = (used / limit * 100) | round | int %}
-    {% if percent > 100 %}{% set percent = 100 %}{% endif %} {% else %} {% set
-    percent = 0 %} {% endif %}
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
@@ -402,6 +402,7 @@
               <p>@{{ user.username }}</p>
             </div>
           </div>
+          {% if limit and limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
@@ -409,6 +410,7 @@
           >
             <span class="pg-text">{{ display_percent }}%</span>
           </div>
+          {% endif %}
         </div>
 
         <div class="stat-card">
