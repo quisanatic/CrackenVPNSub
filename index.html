@@ -457,8 +457,10 @@
             Трафик
           </span>
           <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}∞{% else
-            %}{{ limit | bytesformat }}{% endif %}
+            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
+              style="font-size: 13px; color: var(--accent)"
+              >Неограниченный</span
+            >{% else %}{{ limit | bytesformat }}{% endif %}
           </strong>
         </div>
         <div
@@ -521,7 +523,13 @@
               </div>
 
               <div style="text-align: right; min-width: 0">
-                <p style="font-size: 11px; color: var(--text-dim); margin: 0">
+                <p
+                  style="
+                    font-size: 11px;
+                    color: var(--text-dim);
+                    margin: 10px 0;
+                  "
+                >
                   Конец
                 </p>
                 <strong
