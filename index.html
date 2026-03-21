@@ -664,69 +664,45 @@
           </div>
         </div>
         <h2 class="section-title">2. Локации</h2>
-        <ul style="list-style: none; padding: 0; margin: 0">
+        <div class="os-list">
           {% for link in user.links %}
-          <li
-            class="os-item server-card"
-            style="display: block; margin-bottom: 12px"
-          >
+          <div class="os-item" style="cursor: default; margin-bottom: 10px">
             <div
               class="os-header"
               style="
-                cursor: default;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 4px;
+                padding: 16px;
               "
             >
               <span
                 class="server-title"
                 data-raw-link="{{ link }}"
-                style="font-size: 15px; font-weight: 700"
+                style="
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: var(--text-main);
+                "
               >
-                <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                {{ link.split('#')[1] | udecode if '#' in link else 'VPN Сервер'
+                }}
               </span>
-
               <span
                 style="
                   font-size: 11px;
                   color: var(--text-dim);
                   text-transform: uppercase;
-                  letter-spacing: 0.5px;
+                  letter-spacing: 0.8px;
                 "
               >
                 Протокол VLESS + Reality
               </span>
             </div>
-
-            <div
-              class="os-content"
-              style="
-                display: flex;
-                padding: 12px;
-                gap: 8px;
-                background: var(--bg-item);
-              "
-            >
-              <button
-                class="btn-secondary"
-                style="padding: 8px 12px; font-size: 12px"
-                onclick="copyLink('{{ link }}', this)"
-              >
-                <i class="fas fa-copy"></i> Копировать
-              </button>
-              <button
-                class="btn-qr"
-                style="width: 40px; height: 34px; border-radius: 10px"
-                onclick="showQR('{{ link }}')"
-              >
-                <i class="fas fa-qrcode"></i>
-              </button>
-            </div>
-          </li>
+          </div>
           {% endfor %}
-        </ul>
+        </div>
 
         <h2 class="section-title">3. Подключение</h2>
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
@@ -929,24 +905,29 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
+        // Функция превращения 'de' -> 🇩🇪
+        const getFlag = (code) => {
+          return code
+            .toUpperCase()
+            .replace(/./g, (char) =>
+              String.fromCodePoint(char.charCodeAt(0) + 127397),
+            );
+        };
+
         const serverTitles = document.querySelectorAll(".server-title");
 
         serverTitles.forEach((el) => {
-          const rawLink = el.getAttribute("data-raw-link");
-          try {
-            // Извлекаем часть после #
-            const hashIndex = rawLink.indexOf("#");
-            if (hashIndex !== -1) {
-              let label = decodeURIComponent(rawLink.substring(hashIndex + 1));
+          let text = el.textContent.trim();
 
-              // Обработка кода страны (если в ссылке есть DE, NL и т.д.)
-              // Если в ссылке уже есть эмодзи-флаг, она выведется как есть
-              el.textContent = label;
-            } else {
-              el.textContent = "Основной сервер";
-            }
-          } catch (e) {
-            el.textContent = "VPN Сервер";
+          // Регулярное выражение: ищем 2 латинские буквы в начале строки
+          const countryMatch = text.match(/^([a-z]{2})(.*)/i);
+
+          if (countryMatch) {
+            const code = countryMatch[1]; // например, 'de'
+            const rest = countryMatch[2]; // например, 'Германия'
+
+            // Собираем: Флаг + Пробел + Оставшийся текст
+            el.innerHTML = `${getFlag(code)} ${rest.trim()}`;
           }
         });
       });
