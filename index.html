@@ -683,7 +683,7 @@
                       min-width: 45px;
                     "
                   >
-                    🇩🇪
+                    {{ link.split('#')[1] if '#' in link else 'Германия' }}
                   </div>
 
                   <div style="display: flex; flex-direction: column; gap: 2px">
