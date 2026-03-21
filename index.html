@@ -663,8 +663,20 @@
             </div>
           </div>
         </div>
+        <h2 class="section-title">2. Локации</h2>
+        <div class="stat-card" id="location-card">
+          <span class="stat-label">
+            <i class="fas fa-globe-europe stat-icon"></i> Локация
+          </span>
+          <div id="location-display">
+            <strong class="stat-value" id="server-label">Загрузка...</strong>
+            <p style="font-size: 11px; color: var(--text-dim); margin: 4px 0 0">
+              VLESS + Reality
+            </p>
+          </div>
+        </div>
 
-        <h2 class="section-title">2. Подключение</h2>
+        <h2 class="section-title">3. Подключение</h2>
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
           >Подключиться к Happ</a
         >
@@ -863,6 +875,49 @@
 
       init();
       animate();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Получаем ссылку из шаблона
+        const subUrl = "{{ user.links }}";
+
+        // 2. Функция для преобразования кода страны в эмодзи флаг
+        function getFlagEmoji(countryCode) {
+          if (!countryCode || countryCode.length !== 2) return "🌐";
+          const codePoints = countryCode
+            .toUpperCase()
+            .split("")
+            .map((char) => 127397 + char.charCodeAt(0));
+          return String.fromCodePoint(...codePoints);
+        }
+
+        // 3. Парсинг ссылки
+        try {
+          const urlParts = subUrl.split("#");
+          if (urlParts.length > 1) {
+            let label = decodeURIComponent(urlParts[1]);
+
+            // Извлекаем код страны (первые 2 латинские буквы, например NL или DE)
+            // Если в label уже есть флаг или это просто текст "Германия",
+            // мы просто отобразим его.
+            const countryMatch = label.match(/[A-Z]{2}/i);
+
+            if (countryMatch) {
+              const code = countryMatch[0].toUpperCase();
+              const flag = getFlagEmoji(code);
+              const cleanLabel = label.replace(countryMatch[0], "").trim();
+              document.getElementById("server-label").innerHTML =
+                `${flag} ${cleanLabel || code}`;
+            } else {
+              // Если кодов нет, выводим как есть (например, если там уже 🇩🇪Германия)
+              document.getElementById("server-label").textContent = label;
+            }
+          }
+        } catch (e) {
+          document.getElementById("server-label").textContent = "Сервер";
+        }
+
+        // ... ваш остальной код (progress-circle, theme-toggle и т.д.) ...
+      });
     </script>
   </body>
 </html>
