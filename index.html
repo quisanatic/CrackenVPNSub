@@ -220,7 +220,7 @@
     </style>
   </head>
   <body>
-    { if user.admin.is_sudo} Hello SUDO User { endif }
+    {% if user.admin.is_sudo% } Hello SUDO User {% endif %}
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
