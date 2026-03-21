@@ -424,6 +424,26 @@
       .os-content {
         transition: all 0.3s ease;
       }
+
+      .os-item .fa-chevron-down {
+        transition: transform 0.3s;
+      }
+      .os-item.open .fa-chevron-down {
+        transform: rotate(180deg);
+      }
+
+      /* Скрываем контент по умолчанию */
+      .os-content {
+        display: none;
+        padding: 0 16px 16px;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Показываем, когда у родителя есть класс .open */
+      .os-item.open .os-content {
+        display: flex;
+      }
     </style>
   </head>
 
@@ -700,13 +720,7 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              <div
-                class="os-item"
-                onclick="
-                  event.stopPropagation();
-                  this.classList.toggle('open');
-                "
-              >
+              <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header">
                   <span><i class="fab fa-windows"></i> Windows</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -721,13 +735,7 @@
                 </div>
               </div>
 
-              <div
-                class="os-item"
-                onclick="
-                  event.stopPropagation();
-                  this.classList.toggle('open');
-                "
-              >
+              <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header">
                   <span><i class="fab fa-apple"></i> macOS</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -751,13 +759,7 @@
                 </div>
               </div>
 
-              <div
-                class="os-item"
-                onclick="
-                  event.stopPropagation();
-                  this.classList.toggle('open');
-                "
-              >
+              <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header">
                   <span><i class="fab fa-linux"></i> Linux</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -776,13 +778,7 @@
                 </div>
               </div>
 
-              <div
-                class="os-item"
-                onclick="
-                  event.stopPropagation();
-                  this.classList.toggle('open');
-                "
-              >
+              <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header">
                   <span><i class="fab fa-android"></i> Android</span>
                   <i class="fas fa-chevron-down arrow"></i>
@@ -801,13 +797,7 @@
                 </div>
               </div>
 
-              <div
-                class="os-item"
-                onclick="
-                  event.stopPropagation();
-                  this.classList.toggle('open');
-                "
-              >
+              <div class="os-item" onclick="this.classList.toggle('open')">
                 <div class="os-header">
                   <span><i class="fab fa-apple"></i> iOS</span>
                   <i class="fas fa-chevron-down arrow"></i>
