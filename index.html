@@ -60,7 +60,6 @@
         margin: 0 auto;
       }
 
-      /* Header */
       .header {
         display: flex;
         justify-content: space-between;
@@ -87,7 +86,6 @@
         justify-content: center;
       }
 
-      /* User Grid */
       .user-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -118,6 +116,7 @@
         border-radius: 14px;
         overflow: hidden;
         border: 1px solid var(--border);
+        flex-shrink: 0;
       }
       .avatar {
         width: 100%;
@@ -127,18 +126,33 @@
 
       .profile-info {
         flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
       .profile-info h3 {
         margin: 0;
         font-size: 16px;
       }
       .profile-info p {
-        margin: 2px 0 0;
+        margin: 0;
         font-size: 13px;
         color: var(--text-dim);
       }
 
-      /* Circle Progress */
+      /* SVG Icon Styles */
+      .stat-icon {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
       .traffic-progress {
         width: 60px;
         height: 60px;
@@ -152,6 +166,7 @@
         );
         position: relative;
         transition: background 0.3s;
+        flex-shrink: 0;
       }
       .traffic-progress::after {
         content: "";
@@ -170,18 +185,19 @@
       }
 
       .stat-label {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-size: 11px;
         color: var(--text-dim);
         text-transform: uppercase;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
       .stat-value {
         font-size: 15px;
         font-weight: 700;
       }
 
-      /* Actions */
       .section-title {
         font-size: 14px;
         font-weight: 700;
@@ -246,18 +262,16 @@
         box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
       }
 
-      /* Row for Copy and QR */
       .action-row {
         display: flex;
         gap: 10px;
         margin-top: 10px;
       }
-
       .btn-secondary {
         background: var(--bg-card);
         color: var(--text-main);
         border: 1px solid var(--border);
-        flex-grow: 1; /* Кнопка копирования занимает оставшееся место */
+        flex-grow: 1;
         padding: 14px;
         border-radius: 14px;
         cursor: pointer;
@@ -268,7 +282,7 @@
         background: var(--bg-card);
         border: 1px solid var(--border);
         color: var(--text-main);
-        width: 80px; /* Фиксированная ширина как просил */
+        width: 80px;
         border-radius: 14px;
         cursor: pointer;
         display: flex;
@@ -277,7 +291,6 @@
         font-size: 18px;
       }
 
-      /* Modal for QR */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -379,19 +392,23 @@
             />
           </div>
           <div class="profile-info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <title>User SVG Icon</title>
-              <path
-                fill="currentColor"
-                d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z"
-              />
-            </svg>
-            <h3>{{ user.username }}</h3>
+            <div class="profile-header">
+              <svg
+                class="stat-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+              <h3>{{ user.username }}</h3>
+            </div>
             <p>@{{ user.username }}</p>
           </div>
           {% if limit and limit > 0 %}
@@ -408,40 +425,46 @@
         <div class="stat-card">
           <span class="stat-label">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <title>User-check SVG Icon</title>
               <path
-                fill="currentColor"
-                d="M8 12.052c1.995 0 3.5-1.505 3.5-3.5s-1.505-3.5-3.5-3.5s-3.5 1.505-3.5 3.5s1.505 3.5 3.5 3.5M9 13H7c-2.757 0-5 2.243-5 5v1h12v-1c0-2.757-2.243-5-5-5m11.294-4.708l-4.3 4.292l-1.292-1.292l-1.414 1.414l2.706 2.704l5.712-5.702z"
-              />
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
             </svg>
-            Состояние</span
-          >
+            Состояние
+          </span>
           <strong
-            class="stat-value {% if user.status == 'active' and percent < 100 %}status-active{% else %}status-expired{% endif %}"
+            class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}"
           >
-            {% if user.status == 'active' %}Активна{% else %}Не активна{% endif
-            %}
+            {% if user.status == 'active' and (limit == 0 or percent < 100) %}На
+            плаву{% else %}На дне{% endif %}
           </strong>
         </div>
+
         <div class="stat-card">
           <span class="stat-label">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              class="stat-icon"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <title>Chip SVG Icon</title>
               <path
-                fill="currentColor"
-                d="M19 7a2 2 0 0 0-2-2h-1V2h-2v3h-4V2H8v3H7a2 2 0 0 0-2 2v1H2v2h3v4H2v2h3v1a2 2 0 0 0 2 2h1v3h2v-3h4v3h2v-3h1a2 2 0 0 0 2-2v-1h3v-2h-3v-4h3V8h-3zm-4 8H9V9h6z"
-              /></svg
-            >Трафик
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+              ></path>
+            </svg>
+            Трафик
           </span>
           <strong class="stat-value">
             {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
@@ -450,12 +473,29 @@
             >{% else %}{{ limit | bytesformat }}{% endif %}
           </strong>
         </div>
+
         <div
           class="user-card profile"
           style="grid-column: span 2; margin-top: 4px"
         >
           <div class="profile-info">
-            <span class="stat-label">Период действия</span>
+            <span class="stat-label">
+              <svg
+                class="stat-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Период действия
+            </span>
             <div
               style="
                 display: flex;
@@ -471,13 +511,7 @@
                   }}</strong
                 >
               </div>
-              <div
-                style="
-                  text-align: center;
-                  color: var(--text-dim);
-                  font-size: 14px;
-                "
-              >
+              <div style="color: var(--text-dim); font-size: 14px">
                 <i class="fas fa-arrow-right"></i>
               </div>
               <div style="text-align: right">
@@ -485,9 +519,10 @@
                 <strong
                   class="stat-value"
                   style="font-size: 13px; color: var(--accent)"
-                  >{% if not user.expire %}Никогда{% else %}{{ user.expire |
-                  datetime }}{% endif %}</strong
                 >
+                  {% if not user.expire %}Бессрочно{% else %}{{ user.expire |
+                  datetime }}{% endif %}
+                </strong>
               </div>
             </div>
           </div>
@@ -511,61 +546,6 @@
               </a>
             </div>
           </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-apple"></i> macOS</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                class="btn-dl"
-              >
-                <i class="fab fa-apple"></i> App Store
-              </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                class="btn-dl"
-              >
-                <i class="fas fa-hard-drive"></i> Скачать .dmg
-              </a>
-            </div>
-          </div>
-
-          <div class="os-item" onclick="this.classList.toggle('open')">
-            <div class="os-header">
-              <span><i class="fab fa-linux"></i> Linux</span>
-              <i class="fas fa-chevron-down arrow"></i>
-            </div>
-            <div class="os-content">
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .deb
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                class="btn-dl"
-              >
-                <i class="fas fa-box"></i> Скачать .rpm
-              </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-archive"></i> Скачать .pkg
-              </a>
-            </div>
-          </div>
-
           <div class="os-item" onclick="this.classList.toggle('open')">
             <div class="os-header">
               <span><i class="fab fa-android"></i> Android</span>
@@ -578,18 +558,11 @@
               >
                 <i class="fab fa-google-play"></i> Google Play
               </a>
-              <a
-                href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
-                class="btn-dl"
-              >
-                <i class="fas fa-file-download"></i> Скачать APK
-              </a>
             </div>
           </div>
-
           <div class="os-item" onclick="this.classList.toggle('open')">
             <div class="os-header">
-              <span><i class="fab fa-apple"></i> iOS</span>
+              <span><i class="fab fa-apple"></i> iOS / macOS</span>
               <i class="fas fa-chevron-down arrow"></i>
             </div>
             <div class="os-content">
@@ -599,20 +572,14 @@
               >
                 <i class="fab fa-apple"></i> App Store
               </a>
-              <a
-                href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                class="btn-dl"
-              >
-                <i class="fas fa-store"></i> Ru Store
-              </a>
             </div>
           </div>
         </div>
 
-        {% if user.status == 'active' and percent < 100 %}
+        {% if user.status == 'active' and (limit == 0 or percent < 100) %}
         <h2 class="section-title">2. Установите связь</h2>
         <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
-          >📥 Подключить в Happ</a
+          >📥 ВЦЕПИТЬСЯ В Happ</a
         >
 
         <div class="action-row">
@@ -629,10 +596,9 @@
             <i class="fas fa-qrcode"></i>
           </button>
         </div>
-
-        <a href="https://t.me/CrackenVPN_bot" class="footer-link">
-          <i class="fab fa-telegram-plane"></i> Управление в @CrackenVPN_bot
-        </a>
+        <a href="https://t.me/CrackenVPN_bot" class="footer-link"
+          ><i class="fab fa-telegram-plane"></i> Управление в @CrackenVPN_bot</a
+        >
         {% else %}
         <a
           href="https://t.me/CrackenVPN_bot"
@@ -656,17 +622,12 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
     <script>
-      // 1. Ждем загрузки DOM для работы с элементами
       document.addEventListener("DOMContentLoaded", () => {
         updateProgressColor();
-
-        // Настройка темы
         const toggleBtn = document.getElementById("theme-toggle");
         const html = document.documentElement;
         const savedTheme = localStorage.getItem("theme") || "dark";
-
         html.setAttribute("data-theme", savedTheme);
         updateIcon(savedTheme);
 
@@ -696,7 +657,6 @@
             : '<i class="fas fa-sun"></i>';
       }
 
-      // 2. Копирование
       async function copyLink(link, button) {
         try {
           await navigator.clipboard.writeText(link);
@@ -710,12 +670,9 @@
         }
       }
 
-      // 3. QR Логика
       function showQR(link) {
         const modal = document.getElementById("qrModal");
         const qrContainer = document.getElementById("qrcode");
-        if (!modal || !qrContainer) return;
-
         qrContainer.innerHTML = "";
         new QRCode(qrContainer, {
           text: link,
@@ -725,14 +682,12 @@
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H,
         });
-
         modal.classList.add("active");
       }
 
       function closeQR() {
         document.getElementById("qrModal").classList.remove("active");
       }
-
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeQR();
       });
