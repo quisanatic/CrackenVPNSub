@@ -685,8 +685,8 @@
                   color: var(--text-main);
                 "
               >
-                {# Выводим текст после символа # #} {{ link.split('#')[1] if '#'
-                in link else 'VPN Сервер' }}
+                {# Берем текст после знака # и выводим как есть #} {{
+                link.split('#')[1] if '#' in link else 'VPN Сервер' }}
               </span>
               <span
                 style="
@@ -904,34 +904,17 @@
       animate();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Функция преобразования кода страны (de, nl) в эмодзи флага
-        const getFlagEmoji = (countryCode) => {
-          const codePoints = countryCode
-            .toUpperCase()
-            .split("")
-            .map((char) => 127397 + char.charCodeAt(0));
-          return String.fromCodePoint(...codePoints);
-        };
-
+        // Находим все заголовки серверов
         const serverTitles = document.querySelectorAll(".server-title");
 
         serverTitles.forEach((el) => {
           try {
-            // Декодируем URL-символы (%F0%9F...) в нормальный текст
-            let rawText = decodeURIComponent(el.textContent.trim());
-
-            // Проверяем, начинается ли строка с двух маленьких букв кода страны (например, deГермания)
-            const match = rawText.match(/^([a-z]{2})(.*)/);
-
-            if (match) {
-              const flag = getFlagEmoji(match[1]);
-              const name = match[2];
-              el.innerHTML = `${flag} ${name}`;
-            } else {
-              el.textContent = rawText;
-            }
+            // decodeURIComponent — это стандартная функция, которая
+            // превращает %F0%9F%87%A9%F0%9F%87%AA в 🇩🇪
+            const rawText = el.textContent.trim();
+            el.textContent = decodeURIComponent(rawText);
           } catch (e) {
-            console.error("Ошибка декодирования:", e);
+            console.error("Ошибка при чтении флага:", e);
           }
         });
       });
