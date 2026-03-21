@@ -417,7 +417,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
               <div>
                 <p style="font-size: 11px; color: var(--text-dim);">Активация</p>
-                <strong class="stat-value" style="font-size: 13px;">{{ user.created_at }}</strong>
+                <strong class="stat-value" style="font-size: 13px;">{{ user.created_at | datetime(format="%d.%m.%Y %H:%M") if user.created_at else '—' }}</strong>
               </div>
               <div style="text-align: center; color: var(--text-dim); font-size: 14px;">
                 <i class="fas fa-arrow-right"></i>
