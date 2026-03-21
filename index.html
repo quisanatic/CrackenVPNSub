@@ -382,7 +382,7 @@
             <h3>{{ user.username }}</h3>
             <p>@{{ user.username }}</p>
           </div>
-          {% if limit and limit > 0 %}
+          {% if user.limit and user.limit > 0 %}
           <div
             id="progress-circle"
             class="traffic-progress"
