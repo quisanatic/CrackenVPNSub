@@ -307,7 +307,7 @@
         <div class="instr-title">2. Установите связь</div>
         
             
-            <a href="happ://add/{{ user.subscription_url }}#🐙КракенVPN" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
+            <a href="happ://add/{{ user.subscription_url }}" class="btn-happ">📥 ВЦЕПИТЬСЯ В Happ</a>
             
             <div class="secondary-actions">
                 <button id="vpn-link" class="btn-sec" onclick="copyLink('{{ user.subscription_url }}', this)">Копировать руну</button>
@@ -337,6 +337,23 @@
     </div>
 
 </div>
+
+<script>
+      function copyLink(link, button) {
+        const tempInput = document.createElement("input");
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        const originalText = button.textContent;
+        button.textContent = "Скопировано!";
+        button.style.color = "#4d77ff";
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.color = "#94a3b8";
+        }, 1500);
+      }
+    </script>
 
 </body>
 </html>
