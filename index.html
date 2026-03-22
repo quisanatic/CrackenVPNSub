@@ -11,7 +11,7 @@
     <title>Cracken VPN | {{ user.username }}</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      href="/templates/subscription/CrackenVPNSub/style.css"
     />
     <link rel="stylesheet" href="https://raw.githubusercontent.com/quisanatic/CrackenVPNSub/main/style.css" />
   </head>
@@ -19,14 +19,10 @@
   <body>
     <canvas id="particle-canvas"></canvas>
 
-    {% set used = user.used_traffic | default(0) %} 
-    {% set limit = user.data_limit | default(0) %} 
-    {% if limit and limit > 0 %} 
-      {% set percent = ((used / limit) * 100) | round %} 
-    {% else %} 
-      {% set percent = 0 %} 
-    {% endif %} 
-    {% set display_percent = percent if percent <= 100 else 100 %}
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
 
     <div class="container">
       <header class="header">
@@ -230,8 +226,8 @@
           </div>
           <div class="os-content">
             <div class="os-list">
-              {% for link in user.links %} 
-              {% set raw_label = link.split('#')[1] if '#' in link else 'VPN Сервер' %}
+              {% for link in user.links %} {% set raw_label = link.split('#')[1]
+              if '#' in link else 'VPN Сервер' %}
 
               <div
                 class="location-card"
@@ -319,11 +315,25 @@
           <div class="os-content">
             <div class="os-list">
               <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
+                <div
+                  class="os-header"
+                  onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  "
+                >
                   <span><i class="fab fa-windows"></i> Windows</span>
                   <i class="fas fa-chevron-down arrow"></i>
                 </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
+                <div
+                  class="os-content"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  "
+                >
                   <a
                     href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
                     class="btn-dl"
@@ -334,44 +344,96 @@
               </div>
 
               <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
+                <div
+                  class="os-header"
+                  onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  "
+                >
                   <span><i class="fab fa-apple"></i> iOS</span>
                   <i class="fas fa-chevron-down arrow"></i>
                 </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"
+                <div
+                  class="os-content"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  "
+                >
+                  <a
+                    href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
+                    class="btn-dl"
                     ><i class="fab fa-apple"></i> App Store</a
                   >
-                  <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl"
+                  <a
+                    href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
+                    class="btn-dl"
                     ><i class="fas fa-store"></i> Ru Store</a
                   >
-                  <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl"
+                  <a
+                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                    class="btn-dl"
                     ><i class="fas fa-hard-drive"></i> Скачать .dmg (Для Mac)</a
                   >
                 </div>
               </div>
 
               <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
+                <div
+                  class="os-header"
+                  onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  "
+                >
                   <span><i class="fab fa-android"></i> Android</span>
                   <i class="fas fa-chevron-down arrow"></i>
                 </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl"
+                <div
+                  class="os-content"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  "
+                >
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.happproxy"
+                    class="btn-dl"
                     ><i class="fab fa-google-play"></i> Google Play</a
                   >
-                  <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl"
+                  <a
+                    href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
+                    class="btn-dl"
                     ><i class="fas fa-file-download"></i> Скачать APK</a
                   >
                 </div>
               </div>
 
               <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
+                <div
+                  class="os-header"
+                  onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  "
+                >
                   <span><i class="fab fa-linux"></i> Linux</span>
                   <i class="fas fa-chevron-down arrow"></i>
                 </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
+                <div
+                  class="os-content"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  "
+                >
                   <a
                     href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
                     class="btn-dl"
@@ -463,8 +525,12 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
+
     <!-- Подключение локального скрипта -->
+<<<<<<< HEAD
     <script src="https://raw.githubusercontent.com/quisanatic/CrackenVPNSub/main/script.js"></script>
+=======
+    <script src="/templates/subscription/CrackenVPNSub/script.js"></script>
+>>>>>>> 3370f47c3750fabe4729ae193f33e631eea49b6e
   </body>
 </html>
