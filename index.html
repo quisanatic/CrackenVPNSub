@@ -845,10 +845,17 @@
                 gap: 10px;
               ">
             <div style="text-align: left; min-width: 0">
-              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">Начало</p>
-              <strong id="start-date" data-unix="{{ user.created_at }}"
-                style="font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                —
+              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
+                Начало
+              </p>
+              <strong style="
+                    font-size: 13px;
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  ">
+                {{ user.created_at.strftime('%d-%m-%Y %H:%M:%S') if user.created_at else '—' }}
               </strong>
             </div>
 
