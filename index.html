@@ -1128,11 +1128,17 @@
         });
 
         // 3. Расчет оставшегося времени (Unix Timestamp)
-        const expireTimestamp = parseInt("{{ user.expire | default(0) }}");
-        const remainingEl = document.getElementById("time-remaining");
-        const remainingWrapper = document.getElementById("time-remaining-wrapper");
+        // 4. Автообновляемый расчет оставшегося времени (Локально)
+        function updateSubscriptionTimer() {
+          const expireTimestamp = parseInt("{{ user.expire | default(0) }}");
+          const remainingEl = document.getElementById("time-remaining");
+          const remainingWrapper = document.getElementById("time-remaining-wrapper");
 
-        if (remainingEl && expireTimestamp > 0) {
+          if (!remainingEl || expireTimestamp <= 0) {
+            if (remainingWrapper) remainingWrapper.style.display = "none";
+            return;
+          }
+
           const expireDate = new Date(expireTimestamp * 1000);
           const now = new Date();
           const diffTime = expireDate - now; // Разница в мс
@@ -1142,32 +1148,35 @@
             const diffDays = Math.floor(diffHoursTotal / 24);
 
             if (diffDays >= 1) {
-              // 1. Если больше одного дня — показываем только дни
+              // Более 1 дня
               remainingEl.textContent = `${diffDays} дн.`;
               if (remainingWrapper) remainingWrapper.style.color = "#2ecc71"; // Зеленый
             }
             else if (diffHoursTotal < 12) {
-              // 2. Если менее 12 часов — показываем "Ч ч. М мин."
+              // Менее 12 часов — показываем часы и минуты
               const hours = Math.floor(diffHoursTotal);
               const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
               remainingEl.textContent = `${hours} ч. ${minutes} мин.`;
-              if (remainingWrapper) remainingWrapper.style.color = "#f39c12"; // Оранжевый/Желтый
+              if (remainingWrapper) remainingWrapper.style.color = "#f39c12"; // Оранжевый
             }
             else {
-              // 3. Если от 12 до 24 часов — показываем просто часы (округление вверх)
+              // От 12 до 24 часов
               const hoursOnly = Math.ceil(diffHoursTotal);
               remainingEl.textContent = `${hoursOnly} час.`;
               if (remainingWrapper) remainingWrapper.style.color = "#f1c40f"; // Желтый
             }
           } else {
-            // Подписка истекла
+            // Время истекло
             remainingEl.textContent = "Истекла";
             if (remainingWrapper) remainingWrapper.style.color = "#e74c3c"; // Красный
           }
-        } else if (remainingWrapper) {
-          // Если подписки нет (бесконечная)
-          remainingWrapper.style.display = "none";
         }
+
+        // Запускаем расчет сразу при загрузке
+        updateSubscriptionTimer();
+
+        // Устанавливаем интервал обновления каждые 1 секунд (1000 мс)
+        setInterval(updateSubscriptionTimer, 1000);
 
         // 4.1 Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
         function formatDate(unix) {
