@@ -1134,33 +1134,35 @@
         });
 
         // 4. Расчет оставшегося времени (Unix Timestamp)
-        // Добавляем | default(0), чтобы избежать ошибок, если данных нет
         const expireTimestamp = parseInt("{{ user.expire | default(0) }}");
         const remainingEl = document.getElementById("time-remaining");
+        const remainingWrapper = document.getElementById("time-remaining-wrapper");
 
         if (remainingEl && expireTimestamp > 0) {
-          // В Unix секунды, в JS нужны миллисекунды
           const expireDate = new Date(expireTimestamp * 1000);
           const now = new Date();
+          const diffTime = expireDate - now; // Разница в миллисекундах
 
-          const diffTime = expireDate - now;
-          // Округляем вверх до целых дней
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          if (diffTime > 0) {
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-          if (diffDays > 0) {
-            remainingEl.textContent = `Осталось: ${diffDays} дн.`;
-            remainingEl.style.color = "#2ecc71"; // Зеленый
-          } else if (diffTime > 0) {
-            // Если время еще не вышло, но дней уже 0 (осталось несколько часов)
-            remainingEl.textContent = "Истекает сегодня";
-            remainingEl.style.color = "#f1c40f"; // Желтый
+            if (diffDays >= 1) {
+              // Если осталось 1 день и более
+              remainingEl.textContent = `${diffDays} дн.`;
+              if (remainingWrapper) remainingWrapper.style.color = "#2ecc71"; // Зеленый
+            } else {
+              // Если осталось меньше 24 часов
+              const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+              remainingEl.textContent = `${diffHours} час.`;
+              if (remainingWrapper) remainingWrapper.style.color = "#f1c40f"; // Желтый
+            }
           } else {
+            // Подписка истекла
             remainingEl.textContent = "Истекла";
-            remainingEl.style.color = "#e74c3c"; // Красный
+            if (remainingWrapper) remainingWrapper.style.color = "#e74c3c"; // Красный
           }
-        } else if (remainingEl) {
-          // Если expire равен 0 или None
-          remainingEl.textContent = "";
+        } else if (remainingWrapper) {
+          remainingWrapper.style.display = "none";
         }
 
         // 3. Обработка флагов (Twemoji)
