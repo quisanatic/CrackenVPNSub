@@ -1635,31 +1635,27 @@
           for (let i = 0; i < 90; i++) particlesArray.push(new Particle());
         }
 
-        function animate() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            for (let j = i + 1; j < particlesArray.length; j++) {
-              const dx = particlesArray[i].x - particlesArray[j].x;
-              const dy = particlesArray[i].y - particlesArray[j].y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist < 180) {
-                ctx.strokeStyle = getVar("--net-color");
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                ctx.stroke();
-                if (Math.random() > 0.9985 && pulsesArray.length < 20) {
-                  pulsesArray.push(
-                    new Pulse(particlesArray[i], particlesArray[j]),
-                  );
-                }
-              }
-            }
+        function init() {
+          particlesArray = [];
+
+          // Адаптивное количество частиц
+          // Если экран меньше 768px (телефон), создаем 40 точек, иначе 100
+          let numberOfParticles = window.innerWidth < 768 ? 40 : 100;
+
+          for (let i = 0; i < numberOfParticles; i++) {
+            let size = Math.random() * 2 + 1;
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * canvas.height;
+            let directionX = Math.random() * 0.4 - 0.2;
+            let directionY = Math.random() * 0.4 - 0.2;
+            let color = getComputedStyle(
+              document.documentElement,
+            ).getPropertyValue("--net-color");
+
+            particlesArray.push(
+              new Particle(x, y, directionX, directionY, size, color),
+            );
           }
-          pulsesArray = pulsesArray.filter((p) => p.update());
-          requestAnimationFrame(animate);
         }
 
         init();
