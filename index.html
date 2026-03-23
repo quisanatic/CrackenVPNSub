@@ -527,38 +527,25 @@
     }
 
     .policy-item {
-      background: var(--bg-item);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      margin-bottom: 10px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
     }
 
     .policy-item:last-child {
       border-bottom: none;
     }
 
-    /* Стиль для светлой темы: делаем границы чуть заметнее */
-    :root[data-theme="light"] .policy-item {
-      background: rgba(255, 255, 255, 0.5);
-      border-color: rgba(0, 0, 0, 0.05);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-    }
-
-    .policy-item:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-    }
-
     .policy-header {
-      padding: 16px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-weight: 600;
-      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      background: var(--bg-card);
+      transition: background 0.2s;
     }
 
     .policy-header:hover {
@@ -1295,7 +1282,7 @@
             }
           } else {
             // Время истекло
-            window.Location.reload(); // Перезагружаем страницу, чтобы обновить статус
+            window.location.reload(); // Перезагружаем страницу, чтобы обновить статус
             remainingEl.textContent = "Истекла";
             if (remainingWrapper) {
               remainingWrapper.style.color = "#e74c3c"; // Красный
@@ -1762,4 +1749,4 @@
     </div>
 </body>
 
-</html>1
+</html>
