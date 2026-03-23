@@ -1135,19 +1135,28 @@
         if (remainingEl && expireTimestamp > 0) {
           const expireDate = new Date(expireTimestamp * 1000);
           const now = new Date();
-          const diffTime = expireDate - now; // Разница в миллисекундах
+          const diffTime = expireDate - now; // Разница в мс
 
           if (diffTime > 0) {
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const diffHoursTotal = diffTime / (1000 * 60 * 60);
+            const diffDays = Math.floor(diffHoursTotal / 24);
 
             if (diffDays >= 1) {
-              // Если осталось 1 день и более
+              // 1. Если больше одного дня — показываем только дни
               remainingEl.textContent = `${diffDays} дн.`;
               if (remainingWrapper) remainingWrapper.style.color = "#2ecc71"; // Зеленый
-            } else {
-              // Если осталось меньше 24 часов
-              const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-              remainingEl.textContent = `${diffHours} час.`;
+            }
+            else if (diffHoursTotal < 12) {
+              // 2. Если менее 12 часов — показываем "Ч ч. М мин."
+              const hours = Math.floor(diffHoursTotal);
+              const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+              remainingEl.textContent = `${hours} ч. ${minutes} мин.`;
+              if (remainingWrapper) remainingWrapper.style.color = "#f39c12"; // Оранжевый/Желтый
+            }
+            else {
+              // 3. Если от 12 до 24 часов — показываем просто часы (округление вверх)
+              const hoursOnly = Math.ceil(diffHoursTotal);
+              remainingEl.textContent = `${hoursOnly} час.`;
               if (remainingWrapper) remainingWrapper.style.color = "#f1c40f"; // Желтый
             }
           } else {
@@ -1156,10 +1165,11 @@
             if (remainingWrapper) remainingWrapper.style.color = "#e74c3c"; // Красный
           }
         } else if (remainingWrapper) {
+          // Если подписки нет (бесконечная)
           remainingWrapper.style.display = "none";
         }
 
-        // 4. Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
+        // 4.1 Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
         function formatDate(unix) {
           if (!unix || unix == 0) return "—";
           const date = new Date(unix * 1000);
@@ -1171,14 +1181,14 @@
           return `${day}-${month}-${year} ${hours}:${minutes}`;
         }
 
-        // Форматируем дату начала
+        // 4.2 Форматируем дату начала
         const startEl = document.getElementById('start-date');
         if (startEl) {
           const startUnix = parseInt(startEl.getAttribute('data-unix'));
           startEl.textContent = formatDate(startUnix);
         }
 
-        // Форматируем дату конца
+        // 4.3 Форматируем дату конца
         const expireElFormatted = document.getElementById('expire-date-formatted');
         const rawExpire = "{{ user.expire }}"; // Получаем значение из шаблона
 
