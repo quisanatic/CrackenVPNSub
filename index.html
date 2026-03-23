@@ -841,13 +841,9 @@
           Статус
         </span>
         <strong
-          class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) and (not user.expire or user.expire > now.timestamp()) %}status-active{% else %}status-expired{% endif %}">
-          {% if user.status == 'active' and (limit == 0 or percent < 100) and (not user.expire or user.expire > now().timestamp()) %}
-            Активна
-            {% else %}
-            Деактивирована
-            {% endif %}
-        </strong>
+          class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}">
+          {% if user.status == 'active' and (limit == 0 or percent < 100) %}Активна{% else %}Деактивирована{% endif %}
+            </strong>
       </div>
 
       <div class="stat-card">
