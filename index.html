@@ -1121,25 +1121,34 @@
           localStorage.setItem("theme", next);
         });
 
-        // 4. Расчет оставшегося времени
-        const expireStr = "{{ user.expire }}"; // Получаем дату из шаблона
+        // 4. Расчет оставшегося времени (Unix Timestamp)
+        // Добавляем | default(0), чтобы избежать ошибок, если данных нет
+        const expireTimestamp = parseInt("{{ user.expire | default(0) }}");
         const remainingEl = document.getElementById("time-remaining");
 
-        if (expireStr && expireStr !== "None" && remainingEl) {
-          const expireDate = new Date(expireStr);
+        if (remainingEl && expireTimestamp > 0) {
+          // В Unix секунды, в JS нужны миллисекунды
+          const expireDate = new Date(expireTimestamp * 1000);
           const now = new Date();
+
           const diffTime = expireDate - now;
+          // Округляем вверх до целых дней
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          remainingEl.textContent = `Осталось: ${diffDays} дн.`;
-          // if (diffTime > 0) {
-          //   remainingEl.textContent = `Осталось: ${diffDays} дн.`;
-          // } else if (diffDays === 0) {
-          //   remainingEl.textContent = "Истекает сегодня";
-          //   remainingEl.style.color = "#f1c40f";
-          // } else {
-          //   remainingEl.textContent = "Истекла";
-          //   remainingEl.style.color = "#e74c3c";
-          // }
+
+          if (diffDays > 0) {
+            remainingEl.textContent = `Осталось: ${diffDays} дн.`;
+            remainingEl.style.color = "#2ecc71"; // Зеленый
+          } else if (diffTime > 0) {
+            // Если время еще не вышло, но дней уже 0 (осталось несколько часов)
+            remainingEl.textContent = "Истекает сегодня";
+            remainingEl.style.color = "#f1c40f"; // Желтый
+          } else {
+            remainingEl.textContent = "Истекла";
+            remainingEl.style.color = "#e74c3c"; // Красный
+          }
+        } else if (remainingEl) {
+          // Если expire равен 0 или None
+          remainingEl.textContent = "";
         }
 
         // 3. Обработка флагов (Twemoji)
