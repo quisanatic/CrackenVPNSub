@@ -737,6 +737,26 @@
       transition: all 0.3s ease;
     }
 
+    #time-remaining {
+      font-variant-numeric: tabular-nums;
+      /* Делает ширину цифр одинаковой */
+      transition: color 0.3s ease;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
     /* Для Firefox */
     * {
       scrollbar-width: thin;
@@ -1127,8 +1147,7 @@
           localStorage.setItem("theme", next);
         });
 
-        // 3. Расчет оставшегося времени (Unix Timestamp)
-        // 4. Автообновляемый расчет оставшегося времени (Локально)
+        // 3. Автообновляемый расчет оставшегося времени (Локально)
         function updateSubscriptionTimer() {
           const expireTimestamp = parseInt("{{ user.expire | default(0) }}");
           const remainingEl = document.getElementById("time-remaining");
@@ -1144,38 +1163,56 @@
           const diffTime = expireDate - now; // Разница в мс
 
           if (diffTime > 0) {
-            const diffHoursTotal = diffTime / (1000 * 60 * 60);
+            const diffSecondsTotal = Math.floor(diffTime / 1000);
+            const diffMinutesTotal = Math.floor(diffSecondsTotal / 60);
+            const diffHoursTotal = Math.floor(diffMinutesTotal / 60);
             const diffDays = Math.floor(diffHoursTotal / 24);
 
             if (diffDays >= 1) {
-              // Более 1 дня
+              // 1. Более 1 дня — показываем только дни
               remainingEl.textContent = `${diffDays} дн.`;
               if (remainingWrapper) remainingWrapper.style.color = "#2ecc71"; // Зеленый
             }
-            else if (diffHoursTotal < 12) {
-              // Менее 12 часов — показываем часы и минуты
-              const hours = Math.floor(diffHoursTotal);
-              const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-              remainingEl.textContent = `${hours} ч. ${minutes} мин.`;
+            else if (diffHoursTotal >= 12) {
+              // 2. От 12 до 24 часов — показываем только часы
+              remainingEl.textContent = `${diffHoursTotal + 1} час.`;
+              if (remainingWrapper) remainingWrapper.style.color = "#f1c40f"; // Желтый
+            }
+            else if (diffHoursTotal >= 1) {
+              // 3. От 1 до 12 часов — показываем часы и минуты
+              const mins = diffMinutesTotal % 60;
+              remainingEl.textContent = `${diffHoursTotal} ч. ${mins} мин.`;
               if (remainingWrapper) remainingWrapper.style.color = "#f39c12"; // Оранжевый
             }
             else {
-              // От 12 до 24 часов
-              const hoursOnly = Math.ceil(diffHoursTotal);
-              remainingEl.textContent = `${hoursOnly} час.`;
-              if (remainingWrapper) remainingWrapper.style.color = "#f1c40f"; // Желтый
+              // 4. Меньше часа — показываем минуты и секунды
+              const mins = diffMinutesTotal % 60;
+              const secs = diffSecondsTotal % 60;
+              // Используем padStart для красивого вывода 05:09
+              const displayMins = String(mins).padStart(2, '0');
+              const displaySecs = String(secs).padStart(2, '0');
+
+              remainingEl.textContent = `${displayMins}:${displaySecs}`;
+              if (remainingWrapper) {
+                remainingWrapper.style.color = "#e67e22"; // Более насыщенный оранжевый
+                // Добавляем легкую пульсацию, когда осталось мало времени
+                remainingWrapper.style.animation = "pulse 1s infinite";
+              }
             }
           } else {
             // Время истекло
             remainingEl.textContent = "Истекла";
-            if (remainingWrapper) remainingWrapper.style.color = "#e74c3c"; // Красный
+            if (remainingWrapper) {
+              remainingWrapper.style.color = "#e74c3c"; // Красный
+              remainingWrapper.style.animation = "none";
+            }
           }
         }
 
-        // Запускаем расчет сразу при загрузке
+        // Запускаем расчет сразу
         updateSubscriptionTimer();
 
-        // Устанавливаем интервал обновления каждые 1 секунд (1000 мс)
+        // Устанавливаем интервал обновления 1 секунда для живого отсчета секунд
         setInterval(updateSubscriptionTimer, 1000);
 
         // 4.1 Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
