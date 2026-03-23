@@ -815,14 +815,28 @@
 
       <div class="user-card profile" style="grid-column: span 2; margin-top: 4px">
         <div style="width: 100%">
-          <span class="stat-label">
-            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            Срок действия
-          </span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="stat-label" style="margin-bottom: 0;">
+              <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Срок действия
+            </span>
+
+            {% if user.expire %}
+            <div id="time-remaining-wrapper" style="display: flex; align-items: center; gap: 4px; color: #2ecc71;">
+              <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span id="time-remaining" style="font-size: 11px; font-weight: 700; text-transform: uppercase;"></span>
+            </div>
+            {% endif %}
+          </div>
+
           <div style="
                 display: grid;
                 grid-template-columns: 1fr auto 1fr;
@@ -868,9 +882,6 @@
                   ">
                 {% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}
               </strong>
-              {% if user.expire %}
-              <p id="time-remaining" style="font-size: 10px; color: #2ecc71; margin: 2px 0 0 0; font-weight: 600;"></p>
-              {% endif %}
             </div>
           </div>
         </div>
