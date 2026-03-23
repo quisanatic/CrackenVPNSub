@@ -738,9 +738,16 @@
       transition: all 0.3s ease;
     }
 
+    /* Убираем стандартные фоны, чтобы работало стекло */
     .os-header,
     .policy-header {
       background: transparent !important;
+    }
+
+    .os-content,
+    .policy-content {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-top: 1px solid var(--border);
     }
 
     /* Для Firefox */
