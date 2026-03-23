@@ -1130,16 +1130,16 @@
           const now = new Date();
           const diffTime = expireDate - now;
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (diffTime > 0) {
-            remainingEl.textContent = `Осталось: ${diffDays} дн.`;
-          } else if (diffDays === 0) {
-            remainingEl.textContent = "Истекает сегодня";
-            remainingEl.style.color = "#f1c40f";
-          } else {
-            remainingEl.textContent = "Истекла";
-            remainingEl.style.color = "#e74c3c";
-          }
+          remainingEl.textContent = `Осталось: ${diffDays} дн.`;
+          // if (diffTime > 0) {
+          //   remainingEl.textContent = `Осталось: ${diffDays} дн.`;
+          // } else if (diffDays === 0) {
+          //   remainingEl.textContent = "Истекает сегодня";
+          //   remainingEl.style.color = "#f1c40f";
+          // } else {
+          //   remainingEl.textContent = "Истекла";
+          //   remainingEl.style.color = "#e74c3c";
+          // }
         }
 
         // 3. Обработка флагов (Twemoji)
