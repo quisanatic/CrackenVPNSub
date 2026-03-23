@@ -1,1323 +1,1180 @@
 <!doctype html>
 <html lang="ru" data-theme="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="shortcut icon"
-      href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
-      type="image/x-icon"
-    />
-    <title>Cracken Network | {{ user.username }}</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-    <style>
-      :root[data-theme="dark"] {
-        --bg-body: #0b0d14;
-        --bg-card: #161a2617;
-        --bg-item: #1c2230;
-        --text-main: #ffffff;
-        --text-dim: #717686;
-        --accent: #4d77ff;
-        --border: rgba(255, 255, 255, 0.05);
-        --pg-bg: #1c2230;
-        --pg-fill: #4d77ff;
-        /* Цвета анимации для темной темы */
-        --net-color: rgba(255, 255, 255, 0.05);
-        --pulse-color: #2ecc71;
-      }
-
-      :root[data-theme="light"] {
-        --bg-body: #f4f7fa;
-        --bg-card: #ffffff30;
-        --bg-item: #f8f9fc;
-        --text-main: #1a1c23;
-        --text-dim: #676d7c;
-        --accent: #3b5bdb;
-        --border: rgba(0, 0, 0, 0.05);
-        --pg-bg: #e1e7f0;
-        --pg-fill: #4d77ff;
-        --net-color: rgba(0, 0, 0, 0.3);
-        --pulse-color: #2ecc71;
-      }
-
-      body {
-        background-color: var(--bg-body);
-        color: var(--text-main);
-        font-family:
-          "Inter",
-          -apple-system,
-          sans-serif;
-        transition:
-          background 0.3s,
-          color 0.3s;
-        margin: 0;
-        padding: 20px;
-        position: relative;
-        min-height: 100vh;
-      }
-
-      #particle-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        pointer-events: none;
-      }
-
-      .container {
-        max-width: 480px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-      }
-
-      .logo-text {
-        font-weight: 800;
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .theme-btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .user-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 24px;
-      }
-
-      .user-card.profile {
-        grid-column: span 2;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 20px;
-      }
-
-      .stat-card,
-      .user-card {
-        background: var(--bg-card);
-        border-radius: 18px;
-        padding: 16px;
-        border: 1px solid var(--border);
-        backdrop-filter: blur(8px);
-      }
-
-      .profile-info-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .user-svg-large {
-        width: 28px;
-        height: 28px;
-        color: var(--accent);
-        flex-shrink: 0;
-      }
-
-      .text-group {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.1;
-      }
-
-      .text-group h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 800;
-      }
-
-      .stat-icon {
-        width: 18px;
-        height: 18px;
-        color: var(--accent);
-        margin-bottom: 2px;
-      }
-
-      .traffic-progress {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: conic-gradient(
-          var(--dynamic-color, var(--pg-fill)) calc(var(--pg-percent) * 1%),
-          var(--pg-bg) calc(var(--pg-percent) * 1%)
-        );
-        position: relative;
-        flex-shrink: 0;
-      }
-
-      .traffic-progress::after {
-        content: "";
-        position: absolute;
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
-        background: var(--bg-card);
-      }
-
-      .pg-text {
-        position: relative;
-        z-index: 1;
-        font-weight: 800;
-        font-size: 13px;
-      }
-
-      .stat-label {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 11px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-
-      .stat-value {
-        font-size: 15px;
-        font-weight: 700;
-      }
-
-      .os-item {
-        background: var(--bg-card);
-        border-radius: 14px;
-        margin-bottom: 8px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-        backdrop-filter: blur(8px);
-      }
-
-      .os-header {
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .os-content {
-        display: none;
-        padding: 0 16px 16px;
-        flex-direction: column;
-        gap: 8px;
-        transition: all 0.3s ease;
-      }
-
-      .os-item.open .os-content {
-        display: flex;
-      }
-
-      .btn-dl {
-        background: var(--bg-item);
-        color: var(--text-main);
-        text-decoration: none;
-        padding: 10px;
-        border-radius: 10px;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .btn-main {
-        background: var(--accent);
-        color: white;
-        display: block;
-        text-align: center;
-        padding: 16px;
-        border-radius: 14px;
-        text-decoration: none;
-        font-weight: 700;
-        margin-top: 15px;
-        box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .action-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .btn-secondary {
-        background: var(--bg-card);
-        color: var(--text-main);
-        border: 1px solid var(--border);
-        flex-grow: 1;
-        padding: 14px;
-        border-radius: 14px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      .btn-qr {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        width: 80px;
-        border-radius: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-      }
-
-      .status-active {
-        color: #2ecc71;
-      }
-
-      .status-expired {
-        color: #e74c3c;
-      }
-
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .modal-overlay.active {
-        display: flex;
-      }
-
-      .modal-content {
-        background: var(--bg-card);
-        padding: 25px;
-        border-radius: 24px;
-        text-align: center;
-        max-width: 280px;
-      }
-
-      #qrcode {
-        background: #fff;
-        padding: 12px;
-        border-radius: 12px;
-        margin: 15px 0;
-        display: inline-block;
-      }
-
-      .footer-link {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: var(--accent);
-        text-decoration: none;
-        font-size: 13px;
-      }
-
-      .arrow {
-        transition: transform 0.3s ease;
-      }
-
-      .os-item.open > .os-header .arrow {
-        transform: rotate(180deg);
-      }
-
-      .device-item {
-        background: var(--bg-card);
-        border-radius: 14px;
-        margin-bottom: 8px;
-        border: 1px solid var(--border);
-        overflow: hidden;
-      }
-
-      .device-item .os-content {
-        display: none !important;
-      }
-
-      .device-item.open .os-content {
-        display: flex !important;
-      }
-
-      .device-item.open > .os-header .arrow {
-        transform: rotate(180deg);
-      }
-
-      .device-item .os-header {
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .device-item .os-content {
-        display: none;
-        padding: 0 16px 16px;
-        flex-direction: column;
-        gap: 8px;
-        transition: all 0.3s ease;
-      }
-
-      .location-card {
-        background: var(--bg-item);
-        border-radius: 12px;
-        margin-bottom: 10px;
-        border: 1px solid var(--border);
-      }
-
-      @font-face {
-        font-family: "Twemoji Country Flags";
-        src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2")
-          format("woff2");
-      }
-
-      .server-title {
-        font-family:
-          "Twemoji Country Flags",
-          "Inter",
-          -apple-system,
-          sans-serif !important;
-      }
-
-      img.emoji {
-        height: 1.2em;
-        width: 1.2em;
-        margin: 0 0.1em 0 0.1em;
-        vertical-align: -0.2em;
-        display: inline-block;
-      }
-
-      /* Общие стили для заголовков секций внутри раскрывашек */
-      .os-header .section-title {
-        color: var(--text-main);
-        text-align: left;
-      }
 
-      /* Анимация стрелки */
-      .arrow {
-        transition: transform 0.3s ease;
-        color: var(--text-dim);
-        font-size: 12px;
-      }
-
-      /* Поворот стрелки при открытии */
-      .os-item.open > .os-header .arrow {
-        transform: rotate(180deg);
-      }
-
-      /* Общий стиль для заголовков секций */
-      .main-section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-
-      .main-section-header h2 {
-        margin: 0;
-        font-size: 13px;
-        text-transform: uppercase;
-      }
-
-      .section-title {
-        font-size: 13px;
-        font-weight: 700;
-        margin: 24px 0 12px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        text-align: center;
-      }
-
-      .text-group p {
-        margin: 4px 0 0;
-        font-size: 13px;
-        color: var(--text-dim);
-      }
-
-      .policy-btn,
-      .theme-btn {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        border-radius: 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-      }
-
-      .policy-btn {
-        gap: 8px;
-        padding: 0 16px;
-        height: 40px;
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      .policy-btn i,
-      .theme-btn i {
-        font-size: 16px;
-      }
-
-      .policy-btn:hover,
-      .theme-btn:hover {
-        background: var(--bg-item);
-        border-color: var(--accent);
-      }
-
-      /* Панель с политиками */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-8px);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .policy-item {
-        background: var(--bg-card);
-        border-bottom: 1px solid var(--border);
-        overflow: hidden;
-      }
-
-      .policy-item:last-child {
-        border-bottom: none;
-      }
-
-      .policy-header {
-        padding: 16px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 15px;
-        background: var(--bg-card);
-        transition: background 0.2s;
-      }
-
-      .policy-header:hover {
-        background: var(--bg-item);
-      }
-
-      .policy-header span {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .policy-header i:first-child {
-        color: var(--accent);
-        font-size: 18px;
-      }
-
-      .policy-content {
-        display: none;
-        padding: 0 20px 20px 20px;
-        background: var(--bg-card);
-        line-height: 1.5;
-        font-size: 13px;
-        color: var(--text-main);
-        border-top: 1px solid var(--border);
-      }
-
-      .policy-item.open .policy-content {
-        display: block;
-      }
-
-      .policy-item.open .arrow {
-        transform: rotate(180deg);
-      }
-
-      .policy-content p {
-        margin: 12px 0;
-      }
-
-      .policy-content h4 {
-        margin: 16px 0 8px;
-        font-size: 14px;
-        color: var(--accent);
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-      }
-
-      .header-buttons {
-        display: flex;
-        gap: 8px;
-        /* небольшой отступ между кнопками */
-      }
-
-      .header-buttons {
-        display: flex;
-        gap: 8px;
-      }
-
-      /* Модальное окно политик */
-      .policy-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(8px);
-        z-index: 2000;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .policy-modal.active {
-        display: flex;
-      }
-
-      .policy-modal-content {
-        background: var(--bg-card);
-        border-radius: 24px;
-        width: 90%;
-        max-width: 500px;
-        max-height: 85vh;
-        overflow-y: auto;
-        padding: 20px;
-        position: relative;
-        border: 1px solid var(--border);
-        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
-      }
-
-      .policy-modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 12px;
-        margin-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .policy-modal-header h2 {
-        margin: 0;
-        font-size: 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .close-modal {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-dim);
-        transition: color 0.2s;
-      }
-
-      .close-modal:hover {
-        color: var(--accent);
-      }
-
-      /* Стили для политик внутри модалки (аналогичны ранее созданным) */
-      .policy-item {
-        background: var(--bg-card);
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        margin-bottom: 12px;
-        overflow: hidden;
-      }
-
-      .policy-header {
-        padding: 16px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 15px;
-        background: var(--bg-item);
-        transition: background 0.2s;
-      }
-
-      .policy-header:hover {
-        background: var(--bg-card);
-      }
-
-      .policy-header span {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .policy-header i:first-child {
-        color: var(--accent);
-        font-size: 18px;
-      }
-
-      .policy-content {
-        display: none;
-        padding: 16px 18px;
-        border-top: 1px solid var(--border);
-        line-height: 1.5;
-        font-size: 13px;
-        color: var(--text-main);
-      }
-
-      .policy-item.open .policy-content {
-        display: block;
-      }
-
-      .policy-item.open .arrow {
-        transform: rotate(180deg);
-      }
-
-      .policy-content p {
-        margin: 12px 0;
-      }
-
-      .policy-content h4 {
-        margin: 16px 0 8px;
-        font-size: 14px;
-        color: var(--accent);
-      }
-
-      /* Кастомный скроллбар для всего сайта */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: var(--bg-item);
-        border-radius: 10px;
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: var(--accent);
-        border-radius: 10px;
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--accent);
-        opacity: 0.8;
-      }
-
-      .os-item:hover,
-      .stat-card:hover,
-      .user-card:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-        transition: all 0.3s ease;
-      }
-
-      #time-remaining {
-        font-variant-numeric: tabular-nums;
-        /* Делает ширину цифр одинаковой */
-        transition: color 0.3s ease;
-      }
-
-      @keyframes pulse {
-        0% {
-          opacity: 1;
-        }
-
-        50% {
-          opacity: 0.7;
-        }
-
-        100% {
-          opacity: 1;
-        }
-      }
-
-      /* Для Firefox */
-      * {
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) var(--bg-item);
-      }
-    </style>
-  </head>
-
-  <body>
-    <canvas id="particle-canvas"></canvas>
-
-    {% set used = user.used_traffic | default(0) %} {% set limit =
-    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
-    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
-    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
-    <div class="container">
-      <header class="header">
-        <div class="logo-text">🐙 Cracken Network</div>
-        <div class="header-buttons">
-          <button id="policies-toggle" class="policy-btn">
-            <i class="fas fa-info-circle"></i> Политики
-          </button>
-          <button id="theme-toggle" class="theme-btn">
-            <i class="fas fa-moon"></i>
-          </button>
-        </div>
-      </header>
-
-      <section class="user-grid">
-        <div class="user-card profile">
-          <div class="profile-info-wrapper">
-            <svg
-              class="user-svg-large"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2.5"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              ></path>
-            </svg>
-            <div class="text-group">
-              <h3>{{ user.username }}</h3>
-              <p>@{{ user.username }}</p>
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="https://github.com/quisanatic/CrackenVPNSub/blob/main/favicon.png?raw=true"
+    type="image/x-icon" />
+  <title>Cracken Network | {{ user.username }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    :root[data-theme="dark"] {
+      --bg-body: #0b0d14;
+      --bg-card: #161a2617;
+      --bg-item: #1c2230;
+      --text-main: #ffffff;
+      --text-dim: #717686;
+      --accent: #4d77ff;
+      --border: rgba(255, 255, 255, 0.05);
+      --pg-bg: #1c2230;
+      --pg-fill: #4d77ff;
+      /* Цвета анимации для темной темы */
+      --net-color: rgba(255, 255, 255, 0.05);
+      --pulse-color: #2ecc71;
+    }
+
+    :root[data-theme="light"] {
+      --bg-body: #f4f7fa;
+      --bg-card: #ffffff30;
+      --bg-item: #f8f9fc;
+      --text-main: #1a1c23;
+      --text-dim: #676d7c;
+      --accent: #3b5bdb;
+      --border: rgba(0, 0, 0, 0.05);
+      --pg-bg: #e1e7f0;
+      --pg-fill: #4d77ff;
+      --net-color: rgba(0, 0, 0, 0.3);
+      --pulse-color: #2ecc71;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      /* Запрещаем горизонтальный скролл */
+      scrollbar-gutter: stable;
+      /* Резервирует место под скролл, чтобы контент не дергался */
+    }
+
+    /* Скрываем скроллбар, если он не нужен (Chrome/Safari) */
+    body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family:
+        "Inter",
+        -apple-system,
+        sans-serif;
+      transition:
+        background 0.3s,
+        color 0.3s;
+      margin: 0;
+      padding: 20px;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .theme-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .user-card.profile {
+      grid-column: span 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .stat-card,
+    .user-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    .profile-info-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .user-svg-large {
+      width: 28px;
+      height: 28px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .text-group {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .text-group h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .stat-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .traffic-progress {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: conic-gradient(var(--dynamic-color, var(--pg-fill)) calc(var(--pg-percent) * 1%),
+          var(--pg-bg) calc(var(--pg-percent) * 1%));
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .traffic-progress::after {
+      content: "";
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--bg-card);
+    }
+
+    .pg-text {
+      position: relative;
+      z-index: 1;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .os-item {
+      background: var(--bg-card);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .os-header {
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .os-content {
+      display: none;
+      padding: 0 16px 16px;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .os-item.open .os-content {
+      display: flex;
+    }
+
+    .btn-dl {
+      background: var(--bg-item);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: white;
+      display: block;
+      text-align: center;
+      padding: 16px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      flex-grow: 1;
+      padding: 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-qr {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 80px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .status-active {
+      color: #2ecc71;
+    }
+
+    .status-expired {
+      color: #e74c3c;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 280px;
+    }
+
+    #qrcode {
+      background: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      display: inline-block;
+    }
+
+    .footer-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    .os-item.open>.os-header .arrow {
+      transform: rotate(180deg);
+    }
+
+    .device-item {
+      background: var(--bg-card);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .device-item .os-content {
+      display: none !important;
+    }
+
+    .device-item.open .os-content {
+      display: flex !important;
+    }
+
+    .device-item.open>.os-header .arrow {
+      transform: rotate(180deg);
+    }
+
+    .device-item .os-header {
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .device-item .os-content {
+      display: none;
+      padding: 0 16px 16px;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .location-card {
+      background: var(--bg-item);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+    }
+
+    @font-face {
+      font-family: "Twemoji Country Flags";
+      src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2") format("woff2");
+    }
+
+    .server-title {
+      font-family:
+        "Twemoji Country Flags",
+        "Inter",
+        -apple-system,
+        sans-serif !important;
+    }
+
+    img.emoji {
+      height: 1.2em;
+      width: 1.2em;
+      margin: 0 0.1em 0 0.1em;
+      vertical-align: -0.2em;
+      display: inline-block;
+    }
+
+    /* Общие стили для заголовков секций внутри раскрывашек */
+    .os-header .section-title {
+      color: var(--text-main);
+      text-align: left;
+    }
+
+    /* Анимация стрелки */
+    .arrow {
+      transition: transform 0.3s ease;
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+
+    /* Поворот стрелки при открытии */
+    .os-item.open>.os-header .arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Общий стиль для заголовков секций */
+    .main-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .main-section-header h2 {
+      margin: 0;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .text-group p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .policy-btn,
+    .theme-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .policy-btn {
+      gap: 8px;
+      padding: 0 16px;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .policy-btn i,
+    .theme-btn i {
+      font-size: 16px;
+    }
+
+    .policy-btn:hover,
+    .theme-btn:hover {
+      background: var(--bg-item);
+      border-color: var(--accent);
+    }
+
+    /* Панель с политиками */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .policy-item {
+      background: var(--bg-item);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .policy-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Стиль для светлой темы: делаем границы чуть заметнее */
+    :root[data-theme="light"] .policy-item {
+      background: rgba(255, 255, 255, 0.5);
+      border-color: rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    }
+
+    .policy-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .policy-header {
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .policy-header:hover {
+      background: var(--bg-item);
+    }
+
+    .policy-header span {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .policy-header i:first-child {
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .policy-content {
+      display: none;
+      padding: 0 20px 20px 20px;
+      background: var(--bg-card);
+      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text-main);
+      border-top: 1px solid var(--border);
+    }
+
+    .policy-item.open .policy-content {
+      display: block;
+    }
+
+    .policy-item.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .policy-content p {
+      margin: 12px 0;
+    }
+
+    .policy-content h4 {
+      margin: 16px 0 8px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+      /* небольшой отступ между кнопками */
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Модальное окно политик */
+    .policy-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .policy-modal.active {
+      display: flex;
+    }
+
+    .policy-modal-content {
+      background: var(--bg-card);
+      border-radius: 24px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .policy-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .policy-modal-header h2 {
+      margin: 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+      color: var(--accent);
+    }
+
+    /* Стили для политик внутри модалки (аналогичны ранее созданным) */
+    .policy-item {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .policy-header {
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      background: var(--bg-item);
+      transition: background 0.2s;
+    }
+
+    .policy-header:hover {
+      background: var(--bg-card);
+    }
+
+    .policy-header span {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .policy-header i:first-child {
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .policy-content {
+      display: none;
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .policy-item.open .policy-content {
+      display: block;
+    }
+
+    .policy-item.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .policy-content p {
+      margin: 12px 0;
+    }
+
+    .policy-content h4 {
+      margin: 16px 0 8px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    /* Кастомный скроллбар для всего сайта */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-item);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+      opacity: 0.8;
+    }
+
+    .os-item:hover,
+    .stat-card:hover,
+    .user-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+
+    #time-remaining {
+      font-variant-numeric: tabular-nums;
+      /* Делает ширину цифр одинаковой */
+      transition: color 0.3s ease;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Для Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) var(--bg-item);
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  {% set used = user.used_traffic | default(0) %} {% set limit =
+  user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+  = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+  endif %} {% set display_percent = percent if percent <= 100 else 100 %} <div class="container">
+    <header class="header">
+      <div class="logo-text">🐙 Cracken Network</div>
+      <div class="header-buttons">
+        <button id="policies-toggle" class="policy-btn">
+          <i class="fas fa-info-circle"></i> Политики
+        </button>
+        <button id="theme-toggle" class="theme-btn">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <section class="user-grid">
+      <div class="user-card profile">
+        <div class="profile-info-wrapper">
+          <svg class="user-svg-large" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <div class="text-group">
+            <h3>{{ user.username }}</h3>
+            <p>@{{ user.username }}</p>
           </div>
-          {% if limit and limit > 0 %}
-          <div
-            id="progress-circle"
-            class="traffic-progress"
-            style="--pg-percent: {{ display_percent }};"
-          >
-            <span class="pg-text">{{ display_percent }}%</span>
-          </div>
-          {% endif %}
         </div>
-
-        <div class="stat-card">
-          <span class="stat-label">
-            <svg
-              class="stat-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              ></path>
-            </svg>
-            Статус
-          </span>
-          <strong
-            class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}"
-          >
-            {% if user.status == 'active' and (limit == 0 or percent < 100)
-            %}Активна{% else %}Деактивирована{% endif %}
-          </strong>
+        {% if limit and limit > 0 %}
+        <div id="progress-circle" class="traffic-progress" style="--pg-percent: {{ display_percent }};">
+          <span class="pg-text">{{ display_percent }}%</span>
         </div>
+        {% endif %}
+      </div>
 
-        <div class="stat-card">
-          <span class="stat-label">
-            <svg
-              class="stat-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-              ></path>
-            </svg>
-            Трафик
-          </span>
-          <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
-              style="font-size: 13px; color: var(--accent)"
-              >Неограниченный</span
-            >{% else %}{{ limit | bytesformat }}{% endif %}
-          </strong>
-        </div>
+      <div class="stat-card">
+        <span class="stat-label">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+            </path>
+          </svg>
+          Статус
+        </span>
+        <strong
+          class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}">
+          {% if user.status == 'active' and (limit == 0 or percent < 100) %}Активна{% else %}Деактивирована{% endif %}
+            </strong>
+      </div>
 
-        <div
-          class="user-card profile"
-          style="grid-column: span 2; margin-top: 4px"
-        >
-          <div style="width: 100%">
-            <div
-              style="
+      <div class="stat-card">
+        <span class="stat-label">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+          </svg>
+          Трафик
+        </span>
+        <strong class="stat-value">
+          {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
+            style="font-size: 13px; color: var(--accent)">Неограниченный</span>{% else %}{{ limit | bytesformat }}{%
+          endif %}
+        </strong>
+      </div>
+
+      <div class="user-card profile" style="grid-column: span 2; margin-top: 4px">
+        <div style="width: 100%">
+          <div style="
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 8px;
-              "
-            >
-              <span class="stat-label" style="margin-bottom: 0">
-                <svg
-                  class="stat-icon"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-                Срок действия
-              </span>
+              ">
+            <span class="stat-label" style="margin-bottom: 0">
+              <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Срок действия
+            </span>
 
-              {% if user.expire %}
-              <div
-                id="time-remaining-wrapper"
-                style="
+            {% if user.expire %}
+            <div id="time-remaining-wrapper" style="
                   display: flex;
                   align-items: center;
                   gap: 4px;
                   color: #2ecc71;
-                "
-              >
-                <svg
-                  style="width: 14px; height: 14px"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2.5"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-                <span
-                  id="time-remaining"
-                  style="
+                ">
+              <svg style="width: 14px; height: 14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span id="time-remaining" style="
                     font-size: 11px;
                     font-weight: 700;
                     text-transform: uppercase;
-                  "
-                ></span>
-              </div>
-              {% endif %}
+                  "></span>
             </div>
+            {% endif %}
+          </div>
 
-            <div
-              style="
+          <div style="
                 display: grid;
                 grid-template-columns: 1fr auto 1fr;
                 align-items: center;
                 margin-top: 10px;
                 gap: 10px;
-              "
-            >
-              <div style="text-align: left; min-width: 0">
-                <p
-                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
-                >
-                  Начало
-                </p>
-                <strong
-                  style="
+              ">
+            <div style="text-align: left; min-width: 0">
+              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
+                Начало
+              </p>
+              <strong style="
                     font-size: 13px;
                     display: block;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                  "
-                >
-                  {{ user.created_at.strftime('%d-%m-%Y %H:%M') if
-                  user.created_at else '—' }}
-                </strong>
-              </div>
+                  ">
+                {{ user.created_at.strftime('%d-%m-%Y %H:%M') if
+                user.created_at else '—' }}
+              </strong>
+            </div>
 
-              <div
-                style="
+            <div style="
                   color: var(--text-dim);
                   display: flex;
                   justify-content: center;
                   width: 30px;
-                "
-              >
-                <i class="fas fa-long-arrow-alt-right"></i>
-              </div>
+                ">
+              <i class="fas fa-long-arrow-alt-right"></i>
+            </div>
 
-              <div style="text-align: right; min-width: 0">
-                <p
-                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
-                >
-                  Конец
-                </p>
-                <strong
-                  id="expire-date-formatted"
-                  style="
+            <div style="text-align: right; min-width: 0">
+              <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
+                Конец
+              </p>
+              <strong id="expire-date-formatted" style="
                     font-size: 13px;
                     color: var(--accent);
                     display: block;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                  "
-                >
-                  {% if not user.expire %}Никогда{% else %}—{% endif %}
-                </strong>
-              </div>
+                  ">
+                {% if not user.expire %}Никогда{% else %}—{% endif %}
+              </strong>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <main>
-        <div class="os-item" onclick="this.classList.toggle('open')">
-          <div class="os-header">
-            <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6"
-                />
-              </svg>
-              1. Локации
-            </h2>
-            <i class="fas fa-chevron-down arrow"></i>
-          </div>
-          <div class="os-content">
-            <div class="os-list">
-              {% for link in user.links %} {% set raw_label = link.split('#')[1]
-              if '#' in link else 'VPN Сервер' %}
+    <main>
+      <div class="os-item" onclick="this.classList.toggle('open')">
+        <div class="os-header">
+          <h2 class="stat-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+              class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6" />
+            </svg>
+            1. Локации
+          </h2>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+        <div class="os-content">
+          <div class="os-list">
+            {% for link in user.links %} {% set raw_label = link.split('#')[1]
+            if '#' in link else 'VPN Сервер' %}
 
-              <div
-                class="location-card"
-                style="
+            <div class="location-card" style="
                   background: var(--bg-item);
                   border-radius: 12px;
                   margin-bottom: 10px;
                   border: 1px solid var(--border);
-                "
-                onclick="event.stopPropagation()"
-              >
-                <div
-                  style="
+                " onclick="event.stopPropagation()">
+              <div style="
                     display: flex;
                     align-items: center;
                     gap: 16px;
                     padding: 16px;
-                  "
-                >
-                  <div
-                    class="server-flag"
-                    style="
+                  ">
+                <div class="server-flag" style="
                       font-size: 32px;
                       line-height: 1;
                       display: flex;
                       align-items: center;
                       justify-content: center;
                       min-width: 48px;
-                    "
-                  >
-                    {{ raw_label }}
-                  </div>
+                    ">
+                  {{ raw_label }}
+                </div>
 
-                  <div style="display: flex; flex-direction: column; gap: 4px">
-                    <span
-                      class="server-title"
-                      style="
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <span class="server-title" style="
                         font-size: 16px;
                         font-weight: 700;
                         color: var(--text-main);
                         line-height: 1.2;
-                      "
-                    >
-                      {{ raw_label }}
-                    </span>
-                    <span
-                      style="
+                      ">
+                    {{ raw_label }}
+                  </span>
+                  <span style="
                         font-size: 11px;
                         color: var(--text-dim);
                         text-transform: uppercase;
                         letter-spacing: 0.8px;
                         font-weight: 500;
-                      "
-                    >
-                      VLESS + Reality
-                    </span>
-                  </div>
+                      ">
+                    VLESS + Reality
+                  </span>
                 </div>
               </div>
-              {% endfor %}
             </div>
+            {% endfor %}
           </div>
         </div>
+      </div>
 
-        <div class="os-item" onclick="this.classList.toggle('open')">
-          <div class="os-header">
-            <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-brand-tabler"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M17 2a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h-10a5 5 0 0 1 -5 -5v-10a5 5 0 0 1 5 -5zm-1 12h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0 -2m-7.293 -5.707a1 1 0 0 0 -1.414 0l-.083 .094a1 1 0 0 0 .083 1.32l2.292 2.293l-2.292 2.293a1 1 0 0 0 1.414 1.414l3 -3a1 1 0 0 0 0 -1.414z"
-                />
-              </svg>
-              2. Установка клиента
-            </h2>
-            <i class="fas fa-chevron-down arrow"></i>
-          </div>
-          <div class="os-content">
-            <div class="os-list">
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div
-                  class="os-header"
-                  onclick="
+      <div class="os-item" onclick="this.classList.toggle('open')">
+        <div class="os-header">
+          <h2 class="stat-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+              class="icon icon-tabler icons-tabler-filled icon-tabler-brand-tabler">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M17 2a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h-10a5 5 0 0 1 -5 -5v-10a5 5 0 0 1 5 -5zm-1 12h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0 -2m-7.293 -5.707a1 1 0 0 0 -1.414 0l-.083 .094a1 1 0 0 0 .083 1.32l2.292 2.293l-2.292 2.293a1 1 0 0 0 1.414 1.414l3 -3a1 1 0 0 0 0 -1.414z" />
+            </svg>
+            2. Установка клиента
+          </h2>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+        <div class="os-content">
+          <div class="os-list">
+            <div class="device-item" onclick="event.stopPropagation()">
+              <div class="os-header" onclick="
                     event.stopPropagation();
                     this.parentElement.classList.toggle('open');
-                  "
-                >
-                  <span><i class="fab fa-windows"></i> Windows</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div
-                  class="os-content"
-                  style="
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                    padding: 0 16px 16px;
-                  "
-                >
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                    class="btn-dl"
-                  >
-                    <i class="fab fa-windows"></i> Скачать Happ (.exe)
-                  </a>
-                </div>
+                  ">
+                <span><i class="fab fa-windows"></i> Windows</span>
+                <i class="fas fa-chevron-down arrow"></i>
               </div>
-
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div
-                  class="os-header"
-                  onclick="
-                    event.stopPropagation();
-                    this.parentElement.classList.toggle('open');
-                  "
-                >
-                  <span><i class="fab fa-apple"></i> iOS</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div
-                  class="os-content"
-                  style="
+              <div class="os-content" style="
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
                     padding: 0 16px 16px;
-                  "
-                >
-                  <a
-                    href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215"
-                    class="btn-dl"
-                    ><i class="fab fa-apple"></i> App Store</a
-                  >
-                  <a
-                    href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973"
-                    class="btn-dl"
-                    ><i class="fas fa-store"></i> Ru Store</a
-                  >
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
-                    class="btn-dl"
-                    ><i class="fas fa-hard-drive"></i> Скачать .dmg (Для Mac)</a
-                  >
-                </div>
+                  ">
+                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
+                  class="btn-dl">
+                  <i class="fab fa-windows"></i> Скачать Happ (.exe)
+                </a>
               </div>
+            </div>
 
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div
-                  class="os-header"
-                  onclick="
+            <div class="device-item" onclick="event.stopPropagation()">
+              <div class="os-header" onclick="
                     event.stopPropagation();
                     this.parentElement.classList.toggle('open');
-                  "
-                >
-                  <span><i class="fab fa-android"></i> Android</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div
-                  class="os-content"
-                  style="
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                    padding: 0 16px 16px;
-                  "
-                >
-                  <a
-                    href="https://play.google.com/store/apps/details?id=com.happproxy"
-                    class="btn-dl"
-                    ><i class="fab fa-google-play"></i> Google Play</a
-                  >
-                  <a
-                    href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk"
-                    class="btn-dl"
-                    ><i class="fas fa-file-download"></i> Скачать APK</a
-                  >
-                </div>
+                  ">
+                <span><i class="fab fa-apple"></i> iOS</span>
+                <i class="fas fa-chevron-down arrow"></i>
               </div>
-
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div
-                  class="os-header"
-                  onclick="
-                    event.stopPropagation();
-                    this.parentElement.classList.toggle('open');
-                  "
-                >
-                  <span><i class="fab fa-linux"></i> Linux</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div
-                  class="os-content"
-                  style="
+              <div class="os-content" style="
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
                     padding: 0 16px 16px;
-                  "
-                >
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-box"></i> Скачать .deb
-                  </a>
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-box"></i> Скачать .rpm
-                  </a>
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-file-archive"></i> Скачать .pkg
-                  </a>
-                </div>
+                  ">
+                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"><i
+                    class="fab fa-apple"></i> App Store</a>
+                <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl"><i
+                    class="fas fa-store"></i> Ru Store</a>
+                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg"
+                  class="btn-dl"><i class="fas fa-hard-drive"></i> Скачать .dmg (Для Mac)</a>
+              </div>
+            </div>
+
+            <div class="device-item" onclick="event.stopPropagation()">
+              <div class="os-header" onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  ">
+                <span><i class="fab fa-android"></i> Android</span>
+                <i class="fas fa-chevron-down arrow"></i>
+              </div>
+              <div class="os-content" style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  ">
+                <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl"><i
+                    class="fab fa-google-play"></i> Google Play</a>
+                <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl"><i
+                    class="fas fa-file-download"></i> Скачать APK</a>
+              </div>
+            </div>
+
+            <div class="device-item" onclick="event.stopPropagation()">
+              <div class="os-header" onclick="
+                    event.stopPropagation();
+                    this.parentElement.classList.toggle('open');
+                  ">
+                <span><i class="fab fa-linux"></i> Linux</span>
+                <i class="fas fa-chevron-down arrow"></i>
+              </div>
+              <div class="os-content" style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    padding: 0 16px 16px;
+                  ">
+                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
+                  class="btn-dl">
+                  <i class="fas fa-box"></i> Скачать .deb
+                </a>
+                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
+                  class="btn-dl">
+                  <i class="fas fa-box"></i> Скачать .rpm
+                </a>
+                <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
+                  class="btn-dl">
+                  <i class="fas fa-file-archive"></i> Скачать .pkg
+                </a>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="os-item open" onclick="this.classList.toggle('open')">
-          <div class="os-header">
-            <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-connection"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 6.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
-                <path d="M4 17.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
-                <path d="M8.5 15.5l7 -7" />
-              </svg>
-              3. Подключение
-            </h2>
-            <i class="fas fa-chevron-down arrow"></i>
-          </div>
-          <div class="os-content" onclick="event.stopPropagation()">
-            <a href="happ://add/{{ user.subscription_url }}" class="btn-main"
-              >Подключиться к Happ</a
-            >
-            <div class="action-row">
-              <button
-                class="btn-secondary"
-                onclick="copyLink('{{ user.subscription_url }}', this)"
-              >
-                Копировать ссылку
-              </button>
-              <button
-                class="btn-qr"
-                onclick="showQR('happ://add/{{ user.subscription_url }}')"
-              >
-                <i class="fas fa-qrcode"></i>
-              </button>
-            </div>
+      <div class="os-item open" onclick="this.classList.toggle('open')">
+        <div class="os-header">
+          <h2 class="stat-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-connection">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 6.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
+              <path d="M4 17.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
+              <path d="M8.5 15.5l7 -7" />
+            </svg>
+            3. Подключение
+          </h2>
+          <i class="fas fa-chevron-down arrow"></i>
+        </div>
+        <div class="os-content" onclick="event.stopPropagation()">
+          <a href="happ://add/{{ user.subscription_url }}" class="btn-main">Подключиться к Happ</a>
+          <div class="action-row">
+            <button class="btn-secondary" onclick="copyLink('{{ user.subscription_url }}', this)">
+              Копировать ссылку
+            </button>
+            <button class="btn-qr" onclick="showQR('happ://add/{{ user.subscription_url }}')">
+              <i class="fas fa-qrcode"></i>
+            </button>
           </div>
         </div>
+      </div>
 
-        <a href="https://t.me/CrackenVPN_bot" class="footer-link"
-          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
-        >
-      </main>
+      <a href="https://t.me/CrackenVPN_bot" class="footer-link"><i class="fab fa-telegram-plane"></i> Telegram-бот</a>
+    </main>
     </div>
 
     <div id="qrModal" class="modal-overlay" onclick="closeQR()">
@@ -1331,10 +1188,7 @@
     </div>
 
     <!-- Подключение внешних библиотек -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- Встроенный скрипт -->
@@ -1693,18 +1547,13 @@
         </div>
 
         <!-- 1. Пользовательское соглашение -->
-        <div
-          class="policy-item"
-          onclick="
+        <div class="policy-item" onclick="
             event.stopPropagation();
             this.classList.toggle('open');
-          "
-        >
+          ">
           <div class="policy-header">
-            <span
-              ><i class="fas fa-file-contract"></i> Пользовательское
-              соглашение</span
-            >
+            <span><i class="fas fa-file-contract"></i> Пользовательское
+              соглашение</span>
             <i class="fas fa-chevron-down arrow"></i>
           </div>
           <div class="policy-content">
@@ -1784,18 +1633,13 @@
         </div>
 
         <!-- 2. Политика конфиденциальности -->
-        <div
-          class="policy-item"
-          onclick="
+        <div class="policy-item" onclick="
             event.stopPropagation();
             this.classList.toggle('open');
-          "
-        >
+          ">
           <div class="policy-header">
-            <span
-              ><i class="fas fa-shield-alt"></i> Политика
-              конфиденциальности</span
-            >
+            <span><i class="fas fa-shield-alt"></i> Политика
+              конфиденциальности</span>
             <i class="fas fa-chevron-down arrow"></i>
           </div>
           <div class="policy-content">
@@ -1888,18 +1732,13 @@
         </div>
 
         <!-- 3. Правила допустимого использования (AUP) -->
-        <div
-          class="policy-item"
-          onclick="
+        <div class="policy-item" onclick="
             event.stopPropagation();
             this.classList.toggle('open');
-          "
-        >
+          ">
           <div class="policy-header">
-            <span
-              ><i class="fas fa-gavel"></i> Правила допустимого использования
-              (AUP)</span
-            >
+            <span><i class="fas fa-gavel"></i> Правила допустимого использования
+              (AUP)</span>
             <i class="fas fa-chevron-down arrow"></i>
           </div>
           <div class="policy-content">
@@ -1920,5 +1759,6 @@
         </div>
       </div>
     </div>
-  </body>
-</html>
+</body>
+
+</html>1
