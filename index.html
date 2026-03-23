@@ -1131,7 +1131,7 @@
           const diffTime = expireDate - now;
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-          if (diffDays > 0) {
+          if (diffTime > 0) {
             remainingEl.textContent = `Осталось: ${diffDays} дн.`;
           } else if (diffDays === 0) {
             remainingEl.textContent = "Истекает сегодня";
