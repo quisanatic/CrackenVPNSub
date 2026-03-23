@@ -1295,6 +1295,7 @@
             }
           } else {
             // Время истекло
+            window.Location.reload(); // Перезагружаем страницу, чтобы обновить статус
             remainingEl.textContent = "Истекла";
             if (remainingWrapper) {
               remainingWrapper.style.color = "#e74c3c"; // Красный
