@@ -24,11 +24,9 @@
         --border: rgba(255, 255, 255, 0.05);
         --pg-bg: #1c2230;
         --pg-fill: #4d77ff;
-        /* Цвета анимации для темной темы */
         --net-color: rgba(120, 120, 120, 0.2);
-        /* Серый цвет сети */
         --pulse-color: rgba(200, 200, 200, 0.8);
-        /* Цвет импульса данных */
+        --sheet-bg: #161a26;
       }
 
       :root[data-theme="light"] {
@@ -43,51 +41,34 @@
         --pg-fill: #4d77ff;
         --net-color: rgba(100, 100, 100, 0.15);
         --pulse-color: rgba(77, 119, 255, 0.6);
+        --sheet-bg: #ffffff;
       }
 
       body {
         background-color: var(--bg-body);
         color: var(--text-main);
-        font-family: "Inter", -apple-system, sans-serif;
-        transition: background 0.3s, color 0.3s;
+        font-family:
+          "Inter",
+          -apple-system,
+          sans-serif;
+        transition:
+          background 0.3s,
+          color 0.3s;
         margin: 0;
         padding: 20px;
         position: relative;
         min-height: 100vh;
+        overflow-x: hidden;
       }
 
-      #particle-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        pointer-events: none;
-      }
-
-      .container {
-        max-width: 480px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-      }
-
-      .header {
+      /* Кнопки в хедере */
+      .header-actions {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
+        gap: 8px;
       }
 
-      .logo-text {
-        font-weight: 800;
-        font-size: 18px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .theme-btn {
+      .theme-btn,
+      .info-btn {
         background: var(--bg-card);
         border: 1px solid var(--border);
         color: var(--text-main);
@@ -98,15 +79,144 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.2s ease;
       }
 
+      .info-btn {
+        color: var(--accent);
+      }
+
+      /* Bottom Sheet Styles */
+      .sheet-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        display: none;
+        align-items: flex-end;
+      }
+
+      .sheet-overlay.active {
+        display: flex;
+      }
+
+      .bottom-sheet {
+        background: var(--sheet-bg);
+        width: 100%;
+        max-height: 85vh;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        padding: 20px;
+        box-sizing: border-box;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .sheet-overlay.active .bottom-sheet {
+        transform: translateY(0);
+      }
+
+      .sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--text-dim);
+        border-radius: 2px;
+        margin: -10px auto 20px;
+        opacity: 0.3;
+      }
+
+      .sheet-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .sheet-btn {
+        background: var(--bg-item);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        padding: 16px;
+        border-radius: 14px;
+        text-align: left;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .doc-content {
+        display: none;
+        text-align: left;
+      }
+      .doc-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: var(--accent);
+      }
+      .doc-content p,
+      .doc-content li {
+        font-size: 14px;
+        color: var(--text-dim);
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+      .doc-content ul {
+        padding-left: 20px;
+      }
+
+      .back-btn {
+        margin-top: 20px;
+        padding: 12px;
+        width: 100%;
+        border-radius: 10px;
+        background: var(--bg-item);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      /* Остальные стили из оригинала */
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .container {
+        max-width: 480px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .logo-text {
+        font-weight: 800;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
       .user-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 24px;
       }
-
       .user-card.profile {
         grid-column: span 2;
         display: flex;
@@ -115,47 +225,35 @@
         gap: 15px;
         padding: 20px;
       }
-
-      .stat-card, .user-card {
+      .stat-card,
+      .user-card {
         background: var(--bg-card);
         border-radius: 18px;
         padding: 16px;
         border: 1px solid var(--border);
         backdrop-filter: blur(8px);
       }
-
       .profile-info-wrapper {
         display: flex;
         align-items: center;
         gap: 14px;
       }
-
       .user-svg-large {
         width: 28px;
         height: 28px;
         color: var(--accent);
         flex-shrink: 0;
       }
-
       .text-group {
         display: flex;
         flex-direction: column;
         line-height: 1.1;
       }
-
       .text-group h3 {
         margin: 0;
         font-size: 18px;
         font-weight: 800;
       }
-
-      .stat-icon {
-        width: 18px;
-        height: 18px;
-        color: var(--accent);
-        margin-bottom: 2px;
-      }
-
       .traffic-progress {
         width: 60px;
         height: 60px;
@@ -170,7 +268,6 @@
         position: relative;
         flex-shrink: 0;
       }
-
       .traffic-progress::after {
         content: "";
         position: absolute;
@@ -179,14 +276,12 @@
         border-radius: 50%;
         background: var(--bg-card);
       }
-
       .pg-text {
         position: relative;
         z-index: 1;
         font-weight: 800;
         font-size: 13px;
       }
-
       .stat-label {
         display: flex;
         align-items: center;
@@ -196,12 +291,16 @@
         text-transform: uppercase;
         margin-bottom: 8px;
       }
-
       .stat-value {
         font-size: 15px;
         font-weight: 700;
       }
-
+      .status-active {
+        color: #2ecc71;
+      }
+      .status-expired {
+        color: #e74c3c;
+      }
       .os-item {
         background: var(--bg-card);
         border-radius: 14px;
@@ -209,7 +308,6 @@
         border: 1px solid var(--border);
         overflow: hidden;
       }
-
       .os-header {
         padding: 14px 18px;
         display: flex;
@@ -219,19 +317,15 @@
         font-size: 14px;
         font-weight: 600;
       }
-
       .os-content {
         display: none;
         padding: 0 16px 16px;
         flex-direction: column;
         gap: 8px;
-        transition: all 0.3s ease;
       }
-
       .os-item.open .os-content {
         display: flex;
       }
-
       .btn-dl {
         background: var(--bg-item);
         color: var(--text-main);
@@ -243,7 +337,6 @@
         align-items: center;
         gap: 10px;
       }
-
       .btn-main {
         background: var(--accent);
         color: white;
@@ -256,15 +349,12 @@
         margin-top: 15px;
         box-shadow: 0 4px 15px rgba(77, 119, 255, 0.2);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
       }
-
       .action-row {
         display: flex;
         gap: 10px;
         margin-top: 10px;
       }
-
       .btn-secondary {
         background: var(--bg-card);
         color: var(--text-main);
@@ -275,7 +365,6 @@
         cursor: pointer;
         font-weight: 600;
       }
-
       .btn-qr {
         background: var(--bg-card);
         border: 1px solid var(--border);
@@ -286,41 +375,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
       }
-
-      .status-active { color: #2ecc71; }
-      .status-expired { color: #e74c3c; }
-
       .modal-overlay {
         display: none;
         position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
+        z-index: 3000;
         align-items: center;
         justify-content: center;
       }
-
-      .modal-overlay.active { display: flex; }
-
-      .modal-content {
-        background: var(--bg-card);
-        padding: 25px;
-        border-radius: 24px;
-        text-align: center;
-        max-width: 280px;
+      .modal-overlay.active {
+        display: flex;
       }
-
-      #qrcode {
-        background: #fff;
-        padding: 12px;
-        border-radius: 12px;
-        margin: 15px 0;
-        display: inline-block;
-      }
-
       .footer-link {
         display: block;
         text-align: center;
@@ -329,116 +399,31 @@
         text-decoration: none;
         font-size: 13px;
       }
-
-      .arrow { transition: transform 0.3s ease; }
-      .os-item.open > .os-header .arrow { transform: rotate(180deg); }
-
+      .arrow {
+        transition: transform 0.3s ease;
+      }
+      .os-item.open > .os-header .arrow {
+        transform: rotate(180deg);
+      }
       .device-item {
         background: var(--bg-card);
         border-radius: 14px;
         margin-bottom: 8px;
         border: 1px solid var(--border);
-        overflow: hidden;
       }
-
-      .device-item .os-content { display: none !important; }
-      .device-item.open .os-content { display: flex !important; }
-
-      .device-item.open > .os-header .arrow { transform: rotate(180deg); }
-
-      .device-item .os-header {
-        padding: 14px 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .device-item .os-content {
-        display: none;
-        padding: 0 16px 16px;
-        flex-direction: column;
-        gap: 8px;
-        transition: all 0.3s ease;
-      }
-
       .location-card {
         background: var(--bg-item);
         border-radius: 12px;
         margin-bottom: 10px;
         border: 1px solid var(--border);
       }
-
-
       @font-face {
         font-family: "Twemoji Country Flags";
         src: url("https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2")
           format("woff2");
       }
-
       .server-title {
-        font-family:
-          "Twemoji Country Flags",
-          "Inter",
-          -apple-system,
-          sans-serif !important;
-      }
-
-      img.emoji {
-        height: 1.2em;
-        width: 1.2em;
-        margin: 0 0.1em 0 0.1em;
-        vertical-align: -0.2em;
-        display: inline-block;
-      }
-
-      /* Общие стили для заголовков секций внутри раскрывашек */
-      .os-header .section-title {
-        color: var(--text-main);
-        text-align: left;
-      }
-
-      /* Анимация стрелки */
-      .arrow {
-        transition: transform 0.3s ease;
-        color: var(--text-dim);
-        font-size: 12px;
-      }
-
-      /* Поворот стрелки при открытии */
-      .os-item.open > .os-header .arrow {
-        transform: rotate(180deg);
-      }
-
-      /* Общий стиль для заголовков секций */
-      .main-section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-
-      .main-section-header h2 {
-        margin: 0;
-        font-size: 13px;
-        text-transform: uppercase;
-      }
-
-      .section-title {
-        font-size: 13px;
-        font-weight: 700;
-        margin: 24px 0 12px;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        text-align: center;
-      }
-
-      .text-group p {
-        margin: 4px 0 0;
-        font-size: 13px;
-        color: var(--text-dim);
+        font-family: "Twemoji Country Flags", "Inter", sans-serif !important;
       }
     </style>
   </head>
@@ -446,21 +431,22 @@
   <body>
     <canvas id="particle-canvas"></canvas>
 
-    {% set used = user.used_traffic | default(0) %} 
-    {% set limit = user.data_limit | default(0) %} 
-    {% if limit and limit > 0 %} 
-      {% set percent = ((used / limit) * 100) | round %} 
-    {% else %} 
-      {% set percent = 0 %} 
-    {% endif %} 
-    {% set display_percent = percent if percent <= 100 else 100 %}
+    {% set used = user.used_traffic | default(0) %} {% set limit =
+    user.data_limit | default(0) %} {% if limit and limit > 0 %} {% set percent
+    = ((used / limit) * 100) | round %} {% else %} {% set percent = 0 %} {%
+    endif %} {% set display_percent = percent if percent <= 100 else 100 %}
 
     <div class="container">
       <header class="header">
         <div class="logo-text">🐙 Cracken VPN</div>
-        <button id="theme-toggle" class="theme-btn">
-          <i class="fas fa-moon"></i>
-        </button>
+        <div class="header-actions">
+          <button id="info-btn" class="info-btn" onclick="openInfo()">
+            <i class="fas fa-circle-info"></i>
+          </button>
+          <button id="theme-toggle" class="theme-btn">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
       </header>
 
       <section class="user-grid">
@@ -471,7 +457,6 @@
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 stroke-linecap="round"
@@ -497,23 +482,9 @@
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">
-            <svg
-              class="stat-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-              ></path>
-            </svg>
-            Статус
-          </span>
+          <span class="stat-label"
+            ><i class="fas fa-shield-halved"></i> Статус</span
+          >
           <strong
             class="stat-value {% if user.status == 'active' and (limit == 0 or percent < 100) %}status-active{% else %}status-expired{% endif %}"
           >
@@ -523,327 +494,21 @@
         </div>
 
         <div class="stat-card">
-          <span class="stat-label">
-            <svg
-              class="stat-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-              ></path>
-            </svg>
-            Трафик
-          </span>
-          <strong class="stat-value">
-            {{ used | bytesformat }} / {% if not limit or limit == 0 %}<span
-              style="font-size: 13px; color: var(--accent)"
-              >Неограниченный</span
-            >{% else %}{{ limit | bytesformat }}{% endif %}
-          </strong>
-        </div>
-
-        <div
-          class="user-card profile"
-          style="grid-column: span 2; margin-top: 4px"
-        >
-          <div style="width: 100%">
-            <span class="stat-label">
-              <svg
-                class="stat-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                ></path>
-              </svg>
-              Срок действия
-            </span>
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 1fr auto 1fr;
-                align-items: center;
-                margin-top: 10px;
-                gap: 10px;
-              "
-            >
-              <div style="text-align: left; min-width: 0">
-                <p
-                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
-                >
-                  Начало
-                </p>
-                <strong
-                  style="
-                    font-size: 13px;
-                    display: block;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  "
-                >
-                  {{ user.created_at | datetime if user.created_at else '—' }}
-                </strong>
-              </div>
-
-              <div
-                style="
-                  color: var(--text-dim);
-                  display: flex;
-                  justify-content: center;
-                  width: 30px;
-                "
-              >
-                <i class="fas fa-long-arrow-alt-right"></i>
-              </div>
-
-              <div style="text-align: right; min-width: 0">
-                <p
-                  style="font-size: 11px; color: var(--text-dim); margin: 5px 0"
-                >
-                  Конец
-                </p>
-                <strong
-                  style="
-                    font-size: 13px;
-                    color: var(--accent);
-                    display: block;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  "
-                >
-                  {% if not user.expire %}Никогда{% else %}{{ user.expire |
-                  datetime }}{% endif %}
-                </strong>
-              </div>
-            </div>
-          </div>
+          <span class="stat-label"
+            ><i class="fas fa-right-left"></i> Трафик</span
+          >
+          <strong class="stat-value"
+            >{{ used | bytesformat }} / {% if not limit or limit == 0
+            %}Безлимит{% else %}{{ limit | bytesformat }}{% endif %}</strong
+          >
         </div>
       </section>
 
       <main>
-        <div class="os-item" onclick="this.classList.toggle('open')">
-          <div class="os-header">
-            <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-map-pin"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6"
-                />
-              </svg>
-              1. Локации
-            </h2>
-            <i class="fas fa-chevron-down arrow"></i>
-          </div>
-          <div class="os-content">
-            <div class="os-list">
-              {% for link in user.links %} 
-              {% set raw_label = link.split('#')[1] if '#' in link else 'VPN Сервер' %}
-
-              <div
-                class="location-card"
-                style="
-                  background: var(--bg-item);
-                  border-radius: 12px;
-                  margin-bottom: 10px;
-                  border: 1px solid var(--border);
-                "
-                onclick="event.stopPropagation()"
-              >
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    gap: 16px;
-                    padding: 16px;
-                  "
-                >
-                  <div
-                    class="server-flag"
-                    style="
-                      font-size: 32px;
-                      line-height: 1;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      min-width: 48px;
-                    "
-                  >
-                    {{ raw_label }}
-                  </div>
-
-                  <div style="display: flex; flex-direction: column; gap: 4px">
-                    <span
-                      class="server-title"
-                      style="
-                        font-size: 16px;
-                        font-weight: 700;
-                        color: var(--text-main);
-                        line-height: 1.2;
-                      "
-                    >
-                      {{ raw_label }}
-                    </span>
-                    <span
-                      style="
-                        font-size: 11px;
-                        color: var(--text-dim);
-                        text-transform: uppercase;
-                        letter-spacing: 0.8px;
-                        font-weight: 500;
-                      "
-                    >
-                      VLESS + Reality
-                    </span>
-                  </div>
-                </div>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-        <div class="os-item" onclick="this.classList.toggle('open')">
-          <div class="os-header">
-            <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="icon icon-tabler icons-tabler-filled icon-tabler-brand-tabler"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path
-                  d="M17 2a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h-10a5 5 0 0 1 -5 -5v-10a5 5 0 0 1 5 -5zm-1 12h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0 -2m-7.293 -5.707a1 1 0 0 0 -1.414 0l-.083 .094a1 1 0 0 0 .083 1.32l2.292 2.293l-2.292 2.293a1 1 0 0 0 1.414 1.414l3 -3a1 1 0 0 0 0 -1.414z"
-                />
-              </svg>
-              2. Установка клиента
-            </h2>
-            <i class="fas fa-chevron-down arrow"></i>
-          </div>
-          <div class="os-content">
-            <div class="os-list">
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
-                  <span><i class="fab fa-windows"></i> Windows</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/setup-Happ.x64.exe"
-                    class="btn-dl"
-                  >
-                    <i class="fab fa-windows"></i> Скачать Happ (.exe)
-                  </a>
-                </div>
-              </div>
-
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
-                  <span><i class="fab fa-apple"></i> iOS</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn-dl"
-                    ><i class="fab fa-apple"></i> App Store</a
-                  >
-                  <a href="https://apps.apple.com/ru/app/happ-proxy-utility-plus/id6746188973" class="btn-dl"
-                    ><i class="fas fa-store"></i> Ru Store</a
-                  >
-                  <a href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.macOS.universal.dmg" class="btn-dl"
-                    ><i class="fas fa-hard-drive"></i> Скачать .dmg (Для Mac)</a
-                  >
-                </div>
-              </div>
-
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
-                  <span><i class="fab fa-android"></i> Android</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn-dl"
-                    ><i class="fab fa-google-play"></i> Google Play</a
-                  >
-                  <a href="https://github.com/Happ-proxy/happ-android/releases/latest/download/Happ.apk" class="btn-dl"
-                    ><i class="fas fa-file-download"></i> Скачать APK</a
-                  >
-                </div>
-              </div>
-
-              <div class="device-item" onclick="event.stopPropagation()">
-                <div class="os-header" onclick="event.stopPropagation(); this.parentElement.classList.toggle('open')">
-                  <span><i class="fab fa-linux"></i> Linux</span>
-                  <i class="fas fa-chevron-down arrow"></i>
-                </div>
-                <div class="os-content" style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 16px;">
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.deb"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-box"></i> Скачать .deb
-                  </a>
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.rpm"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-box"></i> Скачать .rpm
-                  </a>
-                  <a
-                    href="https://github.com/Happ-proxy/happ-desktop/releases/latest/download/Happ.linux.x64.pkg.tar.zst"
-                    class="btn-dl"
-                  >
-                    <i class="fas fa-file-archive"></i> Скачать .pkg
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="os-item open" onclick="this.classList.toggle('open')">
           <div class="os-header">
             <h2 class="stat-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-connection"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 6.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
-                <path d="M4 17.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
-                <path d="M8.5 15.5l7 -7" />
-              </svg>
-              3. Подключение
+              <i class="fas fa-link"></i> 3. Подключение
             </h2>
             <i class="fas fa-chevron-down arrow"></i>
           </div>
@@ -867,228 +532,202 @@
             </div>
           </div>
         </div>
-
-        <a href="https://t.me/CrackenVPN_bot" class="footer-link"
-          ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
-        >
       </main>
+
+      <a href="https://t.me/CrackenVPN_bot" class="footer-link"
+        ><i class="fab fa-telegram-plane"></i> Telegram-бот</a
+      >
+    </div>
+
+    <div id="infoSheetOverlay" class="sheet-overlay" onclick="closeInfo()">
+      <div class="bottom-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+
+        <div id="infoMenu" class="sheet-menu">
+          <button class="sheet-btn" onclick="showDoc('tos')">
+            Пользовательское соглашение (ToS)
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <button class="sheet-btn" onclick="showDoc('privacy')">
+            Политика конфиденциальности <i class="fas fa-chevron-right"></i>
+          </button>
+          <button class="sheet-btn" onclick="showDoc('aup')">
+            Acceptable Use Policy (AUP) <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div id="tosDoc" class="doc-content">
+          <h2>Пользовательское соглашение</h2>
+          <p>
+            <strong>1. Общие положения</strong><br />CrackenVPN предоставляет
+            сервис для повышения безопасности интернет-соединения.
+          </p>
+          <p>
+            <strong>2. Описание услуги</strong><br />Мы предоставляем
+            инструменты защиты данных, но не гарантируем доступ к конкретным
+            ресурсам.
+          </p>
+          <p>
+            <strong>3. Обязанности</strong><br />Запрещено использование для
+            атак, спама, взломов и мошенничества.
+          </p>
+          <p>
+            <strong>4. Ответственность</strong><br />Пользователь несет полную
+            ответственность за свои действия в сети.
+          </p>
+          <button class="back-btn" onclick="backToMenu()">Назад</button>
+        </div>
+
+        <div id="privacyDoc" class="doc-content">
+          <h2>Политика конфиденциальности</h2>
+          <p>
+            <strong>1. Сбор данных</strong><br />Мы собираем только Telegram ID,
+            имя пользователя и данные о подписке.
+          </p>
+          <p>
+            <strong>2. Логи</strong><br />Технические журналы используются
+            только для стабильности работы и безопасности. Мы не мониторим
+            активность пользователей.
+          </p>
+          <p>
+            <strong>3. Передача данных</strong><br />Данные не продаются и не
+            передаются третьим лицам.
+          </p>
+          <button class="back-btn" onclick="backToMenu()">Назад</button>
+        </div>
+
+        <div id="aupDoc" class="doc-content">
+          <h2>Правила использования (AUP)</h2>
+          <p>Запрещено использовать CrackenVPN для:</p>
+          <ul>
+            <li>Нарушения законодательства</li>
+            <li>Мошенничества и обмана</li>
+            <li>Взломов и атак</li>
+            <li>Рассылки спама</li>
+          </ul>
+          <p>При нарушении доступ прекращается без предупреждения.</p>
+          <button class="back-btn" onclick="backToMenu()">Назад</button>
+        </div>
+      </div>
     </div>
 
     <div id="qrModal" class="modal-overlay" onclick="closeQR()">
-      <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 style="margin: 0 0 10px; font-size: 16px">Ваш QR-код</h3>
-        <div id="qrcode"></div>
-        <p style="font-size: 12px; color: var(--text-dim)">
-          Отсканируйте код камерой
+      <div
+        class="modal-content"
+        style="
+          background: var(--bg-card);
+          padding: 25px;
+          border-radius: 24px;
+          text-align: center;
+        "
+        onclick="event.stopPropagation()"
+      >
+        <div
+          id="qrcode"
+          style="
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+          "
+        ></div>
+        <p style="margin-top: 15px; font-size: 12px; color: var(--text-dim)">
+          Отсканируйте код в приложении
         </p>
       </div>
     </div>
 
-    <!-- Подключение внешних библиотек -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/@twemoji/api@14.1.0/dist/twemoji.min.js"
-      crossorigin="anonymous"
-    ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
-    <!-- Встроенный скрипт -->
     <script>
-        // Инициализация интерфейса
-        // Дополнительные функции для управления
+      // Управление Bottom Sheet
+      function openInfo() {
+        document.getElementById("infoSheetOverlay").classList.add("active");
+        document.body.style.overflow = "hidden"; // Запрет скролла
+      }
 
-        // --- Инициализация при загрузке ---
-        document.addEventListener("DOMContentLoaded", () => {
-          // 1. Прогресс-бар
-          const pg = document.getElementById("progress-circle");
-          if (pg) {
-            const p = parseInt(pg.style.getPropertyValue("--pg-percent")) || 0;
-            pg.style.setProperty(
-              "--dynamic-color",
-              `hsl(${Math.max(0, 120 - p * 1.2)}, 75%, 50%)`
-            );
-          }
+      function closeInfo() {
+        document.getElementById("infoSheetOverlay").classList.remove("active");
+        document.body.style.overflow = "";
+        setTimeout(backToMenu, 300);
+      }
 
-          // 2. Переключение темы
-          const html = document.documentElement;
-          const toggle = document.getElementById("theme-toggle");
-          const theme = localStorage.getItem("theme") || "dark";
-          html.setAttribute("data-theme", theme);
-          toggle.addEventListener("click", () => {
-            const next =
-              html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", next);
-            localStorage.setItem("theme", next);
-          });
+      function showDoc(id) {
+        document.getElementById("infoMenu").style.display = "none";
+        document
+          .querySelectorAll(".doc-content")
+          .forEach((d) => (d.style.display = "none"));
+        document.getElementById(id + "Doc").style.display = "block";
+        document.querySelector(".bottom-sheet").scrollTop = 0;
+      }
 
-          // 3. Обработка флагов (Twemoji)
-          parseFlags();
+      function backToMenu() {
+        document.getElementById("infoMenu").style.display = "flex";
+        document
+          .querySelectorAll(".doc-content")
+          .forEach((d) => (d.style.display = "none"));
+      }
+
+      // Тема
+      const themeToggle = document.getElementById("theme-toggle");
+      const html = document.documentElement;
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = html.getAttribute("data-theme") === "dark";
+        const next = isDark ? "light" : "dark";
+        html.setAttribute("data-theme", next);
+        themeToggle.innerHTML = isDark
+          ? '<i class="fas fa-sun"></i>'
+          : '<i class="fas fa-moon"></i>';
+        localStorage.setItem("theme", next);
+      });
+
+      // QR и копирование (оригинальные функции)
+      function showQR(url) {
+        const qrDiv = document.getElementById("qrcode");
+        qrDiv.innerHTML = "";
+        new QRCode(qrDiv, { text: url, width: 180, height: 180 });
+        document.getElementById("qrModal").classList.add("active");
+      }
+      function closeQR() {
+        document.getElementById("qrModal").classList.remove("active");
+      }
+      async function copyLink(text, btn) {
+        await navigator.clipboard.writeText(text);
+        const original = btn.innerText;
+        btn.innerText = "Скопировано!";
+        setTimeout(() => (btn.innerText = original), 2000);
+      }
+
+      // Анимация фона (упрощенная версия для примера)
+      const canvas = document.getElementById("particle-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      let particles = Array.from({ length: 50 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: Math.random() * 0.5 - 0.25,
+        vy: Math.random() * 0.5 - 0.25,
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const color = getComputedStyle(
+          document.documentElement,
+        ).getPropertyValue("--net-color");
+        ctx.fillStyle = color;
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
         });
-
-        // --- Функции управления ---
-        async function copyLink(l, b) {
-          try {
-            await navigator.clipboard.writeText(l);
-            const old = b.textContent;
-            b.textContent = "Готово!";
-            setTimeout(() => (b.textContent = old), 1500);
-          } catch (e) {
-            alert("Ошибка");
-          }
-        }
-
-        function showQR(l) {
-          const c = document.getElementById("qrcode");
-          c.innerHTML = "";
-          new QRCode(c, {
-            text: l,
-            width: 180,
-            height: 180,
-            colorDark: "#0b0d14",
-            colorLight: "#ffffff",
-          });
-          document.getElementById("qrModal").classList.add("active");
-        }
-
-        function closeQR() {
-          document.getElementById("qrModal").classList.remove("active");
-        }
-
-        function parseFlags() {
-          if (typeof twemoji === "undefined") return;
-
-          const flags = document.querySelectorAll(".server-flag");
-          flags.forEach((el) => {
-            try {
-              let text = el.textContent.trim();
-              if (text.includes("%")) text = decodeURIComponent(text);
-
-              // Оставляем только эмодзи для блока флага
-              const emojiOnly = text.match(
-                /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g,
-              );
-              el.textContent = emojiOnly ? emojiOnly.join("") : "🌍";
-
-              twemoji.parse(el, {
-                folder: "svg",
-                ext: ".svg",
-                base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
-              });
-            } catch (e) {
-              console.error(e);
-            }
-          });
-
-          const titles = document.querySelectorAll(".server-title");
-          titles.forEach((el) => {
-            let text = el.textContent.trim();
-            if (text.includes("%")) text = decodeURIComponent(text);
-
-            // Убираем эмодзи из названия, чтобы было чисто: "Германия #1"
-            const cleanText = text
-              .replace(
-                /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g,
-                "",
-              )
-              .trim();
-            el.textContent = cleanText || text;
-          });
-        }
-
-        // --- АНИМАЦИЯ НЕЙРОННОЙ СЕТИ ---
-        const canvas = document.getElementById("particle-canvas");
-        if (canvas) {
-          const ctx = canvas.getContext("2d");
-          let particlesArray = [];
-          let pulsesArray = [];
-
-          const getVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-
-          function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-          }
-          window.addEventListener("resize", resize);
-          resize();
-
-          class Particle {
-            constructor() {
-              this.x = Math.random() * canvas.width;
-              this.y = Math.random() * canvas.height;
-              this.dx = Math.random() * 0.4 - 0.2;
-              this.dy = Math.random() * 0.4 - 0.2;
-              this.size = Math.random() * 2 + 1.5;
-            }
-            draw() {
-              ctx.beginPath();
-              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-              ctx.fillStyle = getVar("--net-color");
-              ctx.fill();
-            }
-            update() {
-              if (this.x < 0 || this.x > canvas.width) this.dx *= -1;
-              if (this.y < 0 || this.y > canvas.height) this.dy *= -1;
-              this.x += this.dx;
-              this.y += this.dy;
-              this.draw();
-            }
-          }
-
-          class Pulse {
-            constructor(start, end) {
-              this.start = start;
-              this.end = end;
-              this.progress = 0;
-              this.speed = 0.005 + Math.random() * 0.01;
-            }
-            update() {
-              this.progress += this.speed;
-              if (this.progress >= 1) return false;
-              const x = this.start.x + (this.end.x - this.start.x) * this.progress;
-              const y = this.start.y + (this.end.y - this.start.y) * this.progress;
-              ctx.beginPath();
-              ctx.arc(x, y, 2, 0, Math.PI * 2);
-              ctx.shadowBlur = 10;
-              ctx.shadowColor = getVar("--pulse-color");
-              ctx.fillStyle = getVar("--pulse-color");
-              ctx.fill();
-              ctx.shadowBlur = 0;
-              return true;
-            }
-          }
-
-          function init() {
-            particlesArray = [];
-            for (let i = 0; i < 90; i++) particlesArray.push(new Particle());
-          }
-
-          function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-              particlesArray[i].update();
-              for (let j = i + 1; j < particlesArray.length; j++) {
-                const dx = particlesArray[i].x - particlesArray[j].x;
-                const dy = particlesArray[i].y - particlesArray[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 180) {
-                  ctx.strokeStyle = getVar("--net-color");
-                  ctx.lineWidth = 0.8;
-                  ctx.beginPath();
-                  ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                  ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                  ctx.stroke();
-                  if (Math.random() > 0.9985 && pulsesArray.length < 20) {
-                    pulsesArray.push(new Pulse(particlesArray[i], particlesArray[j]));
-                  }
-                }
-              }
-            }
-            pulsesArray = pulsesArray.filter(p => p.update());
-            requestAnimationFrame(animate);
-          }
-
-          init();
-          animate();
-        }
+        requestAnimationFrame(animate);
+      }
+      animate();
     </script>
   </body>
 </html>
