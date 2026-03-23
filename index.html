@@ -10,35 +10,34 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
     :root[data-theme="dark"] {
-      --bg-body: #080a10;
-      /* Эффект стекла требует полупрозрачных фонов */
-      --bg-card: rgba(22, 26, 38, 0.6);
-      --bg-item: rgba(28, 34, 48, 0.5);
+      --bg-body: #0b0d14;
+      --bg-card: #161a26;
+      --bg-item: #1c2230;
       --text-main: #ffffff;
-      --text-dim: rgba(255, 255, 255, 0.6);
+      --text-dim: #717686;
       --accent: #4d77ff;
-      /* Граница "стекла" — тонкая и светлая сверху */
-      --border: rgba(255, 255, 255, 0.1);
-      --pg-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.05);
+      --pg-bg: #1c2230;
       --pg-fill: #4d77ff;
-      --net-color: rgba(77, 119, 255, 0.15);
-      --pulse-color: rgba(77, 119, 255, 0.5);
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      /* Цвета анимации для темной темы */
+      --net-color: rgba(120, 120, 120, 0.2);
+      /* Серый цвет сети */
+      --pulse-color: rgba(200, 200, 200, 0.8);
+      /* Цвет импульса данных */
     }
 
     :root[data-theme="light"] {
-      --bg-body: #f0f2f7;
-      --bg-card: rgba(255, 255, 255, 0.6);
-      --bg-item: rgba(240, 242, 247, 0.7);
+      --bg-body: #f4f7fa;
+      --bg-card: #ffffff;
+      --bg-item: #f8f9fc;
       --text-main: #1a1c23;
       --text-dim: #676d7c;
       --accent: #3b5bdb;
-      --border: rgba(255, 255, 255, 0.4);
-      --pg-bg: rgba(0, 0, 0, 0.05);
-      --pg-fill: #3b5bdb;
-      --net-color: rgba(59, 91, 219, 0.1);
-      --pulse-color: rgba(59, 91, 219, 0.4);
-      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+      --border: rgba(0, 0, 0, 0.05);
+      --pg-bg: #e1e7f0;
+      --pg-fill: #4d77ff;
+      --net-color: rgba(100, 100, 100, 0.15);
+      --pulse-color: rgba(77, 119, 255, 0.6);
     }
 
     body {
@@ -113,25 +112,12 @@
     }
 
     .stat-card,
-    .user-card,
-    .os-item,
-    .device-item,
-    .policy-btn,
-    .theme-btn,
-    .policy-item {
+    .user-card {
       background: var(--bg-card);
-      border-radius: 20px;
-      /* Сделаем углы чуть более "жидкими" */
+      border-radius: 18px;
       padding: 16px;
       border: 1px solid var(--border);
-
-      /* ГЛАВНЫЕ ЭФФЕКТЫ СТЕКЛА */
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: var(--glass-shadow);
-
-      /* Внутренний блик для объема */
-      background-clip: padding-box;
+      backdrop-filter: blur(8px);
     }
 
     .profile-info-wrapper {
@@ -744,40 +730,12 @@
       opacity: 0.8;
     }
 
-    /* Эффект при наведении на стеклянные элементы */
     .os-item:hover,
     .stat-card:hover,
     .user-card:hover {
       border-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
       transition: all 0.3s ease;
-    }
-
-    /* Убираем стандартные фоны, чтобы работало стекло */
-    .os-header,
-    .policy-header {
-      background: transparent !important;
-    }
-
-    .os-content,
-    .policy-content {
-      background: rgba(255, 255, 255, 0.03) !important;
-      border-top: 1px solid var(--border);
-    }
-
-    /* Кнопка "Подключиться" тоже должна быть слегка стеклянной, но яркой */
-    .btn-main {
-      backdrop-filter: blur(5px);
-      background: linear-gradient(135deg, var(--accent), rgba(77, 119, 255, 0.8));
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Делаем модальные окна тоже стеклянными */
-    .modal-content,
-    .policy-modal-content {
-      background: var(--bg-card) !important;
-      backdrop-filter: blur(25px) !important;
-      border: 1px solid var(--border) !important;
     }
 
     /* Для Firefox */
