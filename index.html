@@ -868,7 +868,7 @@
                   ">
                 {% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}
               </strong>
-              {% if user.expire %}
+              {% if not user.expire %}
               <p id="time-remaining" style="font-size: 10px; color: #2ecc71; margin: 2px 0 0 0; font-weight: 600;"></p>
               {% endif %}
             </div>
