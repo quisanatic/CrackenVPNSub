@@ -880,7 +880,7 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                   ">
-                {% if not user.expire %}Никогда{% else %}{{ user.expire.strftime('%d-%m-%Y %H:%M:%S')}}{% endif %}
+                {% if not user.expire %}Никогда{% else %}{{ user.expire | datetime }}{% endif %}
               </strong>
             </div>
           </div>
