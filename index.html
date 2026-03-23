@@ -855,7 +855,7 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                   ">
-                {{ user.created_at.strftime('%d-%m-%Y %H:%M:%S') if user.created_at else '—' }}
+                {{ user.created_at.strftime('%d-%m-%Y %H:%M') if user.created_at else '—' }}
               </strong>
             </div>
 
