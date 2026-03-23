@@ -16,14 +16,11 @@
       --text-main: #ffffff;
       --text-dim: #717686;
       --accent: #4d77ff;
-      --border: rgba(255, 255, 255, 0.05);
-      --pg-bg: #1c2230;
+      --border: rgba(255, 255, 255, 0.1);
+      --pg-bg: rgba(255, 255, 255, 0.05);
       --pg-fill: #4d77ff;
-      /* Цвета анимации для темной темы */
-      --net-color: rgba(120, 120, 120, 0.2);
-      /* Серый цвет сети */
-      --pulse-color: rgba(200, 200, 200, 0.8);
-      /* Цвет импульса данных */
+      --net-color: rgba(77, 119, 255, 0.15);
+      --pulse-color: rgba(77, 119, 255, 0.5);
     }
 
     :root[data-theme="light"] {
@@ -33,11 +30,11 @@
       --text-main: #1a1c23;
       --text-dim: #676d7c;
       --accent: #3b5bdb;
-      --border: rgba(0, 0, 0, 0.05);
-      --pg-bg: #e1e7f0;
-      --pg-fill: #4d77ff;
-      --net-color: rgba(100, 100, 100, 0.15);
-      --pulse-color: rgba(77, 119, 255, 0.6);
+      --border: rgba(255, 255, 255, 0.4);
+      --pg-bg: rgba(0, 0, 0, 0.05);
+      --pg-fill: #3b5bdb;
+      --net-color: rgba(59, 91, 219, 0.1);
+      --pulse-color: rgba(59, 91, 219, 0.4);
     }
 
     body {
@@ -736,18 +733,6 @@
       border-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
       transition: all 0.3s ease;
-    }
-
-    /* Убираем стандартные фоны, чтобы работало стекло */
-    .os-header,
-    .policy-header {
-      background: transparent !important;
-    }
-
-    .os-content,
-    .policy-content {
-      background: rgba(255, 255, 255, 0.03) !important;
-      border-top: 1px solid var(--border);
     }
 
     /* Для Firefox */
