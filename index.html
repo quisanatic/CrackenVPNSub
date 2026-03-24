@@ -1287,9 +1287,15 @@
               remainingWrapper.style.color = "#e74c3c"; // Красный
               remainingWrapper.style.animation = "none";
             }
-            setTimeout(function () {
-              window.location.reload(); // Перезагружаем страницу
-            }, 15000);
+            // Получаем статус из шаблона и приводим к нижнему регистру для надежности
+            const userStatus = "{{ user.status | lower }}";
+
+            // Если статус на момент загрузки был active ИЛИ limited, обновляем через 15 сек
+            if (userStatus === "active" || userStatus === "limited") {
+              setTimeout(function () {
+                window.location.reload();
+              }, 15000);
+            }
           }
         }
 
@@ -1297,7 +1303,9 @@
         updateSubscriptionTimer();
 
         // Устанавливаем интервал обновления 1 секунда для живого отсчета секунд
-        setInterval(updateSubscriptionTimer, 1000);
+        if ("{{ user.status | lower }}" === "active") {
+          setInterval(updateSubscriptionTimer, 1000);
+        }
 
         // 4.1 Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
         function formatDate(unix) {
