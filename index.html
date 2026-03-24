@@ -911,15 +911,15 @@
               <p style="font-size: 11px; color: var(--text-dim); margin: 5px 0">
                 Начало
               </p>
-              <strong style="
-                    font-size: 13px;
-                    display: block;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                  ">
-                {{ user.created_at.strftime('%d-%m-%Y %H:%M') if
-                user.created_at else '—' }}
+              <strong id="start-date-formatted"
+                data-unix="{{ user.created_at.timestamp() | int if user.created_at else 0 }}" style="
+            font-size: 13px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          ">
+                —
               </strong>
             </div>
 
@@ -1282,12 +1282,14 @@
             }
           } else {
             // Время истекло
-            //window.location.reload(); // Перезагружаем страницу, чтобы обновить статус
             remainingEl.textContent = "Истекла";
             if (remainingWrapper) {
               remainingWrapper.style.color = "#e74c3c"; // Красный
               remainingWrapper.style.animation = "none";
             }
+            setTimeout(function () {
+              window.location.reload(); // Перезагружаем страницу
+            }, 15000);
           }
         }
 
@@ -1309,11 +1311,15 @@
           return `${day}-${month}-${year} ${hours}:${minutes}`;
         }
 
-        // 4.2 Форматируем дату начала
-        const startEl = document.getElementById("start-date");
-        if (startEl) {
-          const startUnix = parseInt(startEl.getAttribute("data-unix"));
-          startEl.textContent = formatDate(startUnix);
+        // 4.2 Форматируем дату начала (Локальное время пользователя)
+        const startElFormatted = document.getElementById("start-date-formatted");
+        if (startElFormatted) {
+          const startUnix = parseInt(startElFormatted.getAttribute("data-unix"));
+          if (startUnix > 0) {
+            startElFormatted.textContent = formatDate(startUnix);
+          } else {
+            startElFormatted.textContent = "—";
+          }
         }
 
         // 4.3 Форматируем дату конца
