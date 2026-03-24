@@ -1303,9 +1303,7 @@
         updateSubscriptionTimer();
 
         // Устанавливаем интервал обновления 1 секунда для живого отсчета секунд
-        if (userStatus === "active" || userStatus === "limited") {
-          setInterval(updateSubscriptionTimer, 1000);
-        }
+        setInterval(updateSubscriptionTimer, 1000);
 
         // 4.1 Функция для форматирования даты в ДД-ММ-ГГГГ ЧЧ:ММ
         function formatDate(unix) {
