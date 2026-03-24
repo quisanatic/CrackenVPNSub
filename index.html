@@ -1303,7 +1303,7 @@
         updateSubscriptionTimer();
 
         // Устанавливаем интервал обновления 1 секунда для живого отсчета секунд
-        if ("{{ user.status | lower }}" === "active") {
+        if (userStatus === "active" || userStatus === "limited") {
           setInterval(updateSubscriptionTimer, 1000);
         }
 
